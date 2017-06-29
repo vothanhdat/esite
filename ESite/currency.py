@@ -1,6 +1,6 @@
+from decimal import ROUND_HALF_EVEN
 import moneyed
 from moneyed.localization import _FORMATTER
-from decimal import ROUND_HALF_EVEN
 
 
 VND = moneyed.add_currency(

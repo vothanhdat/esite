@@ -9,14 +9,17 @@ from abc import ABCMeta, abstractmethod
 
 class BaseUser(User):
     GENDER = (
-        ('U','Unknow'),
-        ('M','Male'),
-        ('F','Female'),
+        ('U','Unknow'), 
+        ('M','Male'), 
+        ('F','Female'), 
     )
     baseuser_bio = models.TextField(max_length=500, blank=True)
     baseuser_address = models.TextField(max_length=500, blank=True)
     baseuser_birthday = models.DateField(null=True, blank=True)
     baseuser_gender = models.CharField(max_length=1, choices=GENDER,default='U')
+
+
+
 
 class Agency(models.Model):
     agency_name = models.CharField(max_length=100,null=True, blank=True)
@@ -26,6 +29,24 @@ class Agency(models.Model):
         through='AgencyMember',
         through_fields=('agency', 'user'),
     )
+
+class Promotion(models.Model) : 
+    PROMOTION_TYPE = (
+        ('M','Minus'), 
+        ('P','Percentage'), 
+        ('O','Offer'), 
+    )
+    promotion_name = models.CharField(max_length=100)
+    promotion_type = models.CharField(max_length=1, choices=PROMOTION_TYPE,default='P')
+    promotion_value = models.FloatField()
+    # promotion_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
+    class Meta:
+        abstract = True
+
+
+class AgencyPromotion(Promotion):
+    apply_to = models.ForeignKey(Agency, on_delete=models.CASCADE)
+    
 
 class AgencyMember(models.Model):
     agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
@@ -50,14 +71,20 @@ class Brand(models.Model):
     def __str__(self):
         return self.brand_name
 
+
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
     product_cagetory = models.ForeignKey(Cagetory)
     product_branch = models.ForeignKey(Brand)
     product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
+    product_quatity = models.IntegerField(verbose_name='numbers',default=0)
+    
     def __str__(self):
         return self.product_name
+
+class ProductPromotion(Promotion) : 
+    apply_to = models.ManyToManyField(Product)
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, default=None)
