@@ -45,6 +45,9 @@ class Promotion(models.Model) :
     # promotion_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     class Meta:
         abstract = True
+        
+    def __str__(self):
+        return self.promotion_name
 
 
 class AgencyPromotion(Promotion):
@@ -88,8 +91,10 @@ class Product(models.Model):
         return self.product_name
 
 class ProductPromotion(Promotion) : 
-    apply_to = models.ManyToManyField(Product)
+    apply_to = models.ManyToManyField(Product,null=True,blank=True)
 
+
+        
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, default=None)
     image = models.ImageField(upload_to='prjimages/%Y/%m/%d/%H/%M/%S/')
