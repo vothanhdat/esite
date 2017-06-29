@@ -17,13 +17,14 @@ class BaseUser(User):
     baseuser_address = models.TextField(max_length=500, blank=True)
     baseuser_birthday = models.DateField(null=True, blank=True)
     baseuser_gender = models.CharField(max_length=1, choices=GENDER,default='U')
-
+    baseuser_avatar = models.ImageField(upload_to='prjimages/%Y/%m/%d/%H/%M/%S/',null=True)
 
 
 
 class Agency(models.Model):
     agency_name = models.CharField(max_length=100,null=True, blank=True)
     agency_id = models.CharField(max_length=20,null=True, blank=True)
+    agency_logo = models.ImageField(upload_to='prjimages/%Y/%m/%d/%H/%M/%S/',null=True)
     agency_member = models.ManyToManyField(
         BaseUser,
         through='AgencyMember',
@@ -39,8 +40,8 @@ class Promotion(models.Model) :
     promotion_name = models.CharField(max_length=100)
     promotion_type = models.CharField(max_length=1, choices=PROMOTION_TYPE,default='P')
     promotion_value = models.FloatField()
-    promotion_start = models.DateTimeField()
-    promotion_end = models.DateTimeField()
+    promotion_start = models.DateTimeField(null=True)
+    promotion_end = models.DateTimeField(null=True)
     # promotion_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     class Meta:
         abstract = True
@@ -70,6 +71,7 @@ class Cagetory(models.Model):
 class Brand(models.Model):
     brand_name = models.CharField(max_length=100)
     brand_sym = models.CharField(max_length=20)
+    brand_logo = models.ImageField(upload_to='prjimages/%Y/%m/%d/%H/%M/%S/',null=True)
     def __str__(self):
         return self.brand_name
 
