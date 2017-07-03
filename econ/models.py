@@ -17,14 +17,14 @@ class BaseUser(User):
     baseuser_address = models.TextField(max_length=500, blank=True)
     baseuser_birthday = models.DateField(null=True, blank=True)
     baseuser_gender = models.CharField(max_length=1, choices=GENDER,default='U')
-    baseuser_avatar = models.ImageField(upload_to='prjimages/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
+    baseuser_avatar = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
 
 
 
 class Agency(models.Model):
     agency_name = models.CharField(max_length=100,null=True, blank=True)
     agency_id = models.CharField(max_length=20,null=True, blank=True)
-    agency_logo = models.ImageField(upload_to='prjimages/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
+    agency_logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
     agency_member = models.ManyToManyField(
         BaseUser,
         through='AgencyMember',
@@ -74,10 +74,19 @@ class Cagetory(models.Model):
     def __str__(self):
         return self.cagetory_name
 
+    def paths(self):
+        current_cagetory = self
+        paths = [current_cagetory,]
+        while current_cagetory.cagetory_parent :
+            current_cagetory = current_cagetory.cagetory_parent
+            paths.append(current_cagetory)
+        paths.reverse()
+        return paths
+
 class Brand(models.Model):
     brand_name = models.CharField(max_length=100)
     brand_sym = models.CharField(max_length=20)
-    brand_logo = models.ImageField(upload_to='prjimages/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
+    brand_logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
     def __str__(self):
         return self.brand_name
 
@@ -99,7 +108,7 @@ class ProductPromotion(Promotion) :
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, default=None)
-    image = models.ImageField(upload_to='prjimages/%Y/%m/%d/%H/%M/%S/')
+    image = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/')
     def __str__(self):
         return self.image.__str__()
 
@@ -110,7 +119,7 @@ class ProductSpecific(models.Model):
     specific_unit = models.CharField(max_length=20,null=True,blank=True)
     specific_of = models.ForeignKey(Cagetory,on_delete=models.CASCADE)
     def __str__(self):
-        return  "%s(%s)" % (self.specific_name,self.specific_of)
+        return  self.specific_name
 
 class ProductSpecificDetail(models.Model):
     detail_field = models.ForeignKey(ProductSpecific,on_delete=models.CASCADE)

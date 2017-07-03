@@ -1,0 +1,26 @@
+
+
+{% load staticfiles %}
+<div class="product-container">       
+    <h1>{{ product.product_name }}</h1>
+    <h2>{{ product.product_price }}</h2>
+    <h3>
+        {% for cagetory in product.product_cagetory.paths %}
+            <span class='product-cagetory'>{{cagetory}}</span>
+        {% endfor %}
+    </h3>
+    <div class="product-agency">{{ product.product_agency }}</div class="">
+    <div class="product-details-title">Specification : </div>
+    <div class="product-details">
+        {% for detail in product.product_detail.all %}
+            <div class="product-detail">{{detail}}</div>
+        {% endfor %}
+    </div>
+    <div class="product-img">
+        {% if product.productimage_set and product.productimage_set.first %}
+        {% with product.productimage_set.first as image %}   
+            <img src="{{image.image.url}}" alt=""/>
+        {% endwith %}
+        {% endif %}
+    </div>
+</div>

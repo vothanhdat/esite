@@ -1,7 +1,41 @@
 from django.contrib import admin
 from django import forms
+from django.contrib.admin.sites import site
 
 from .models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,ProductSpecific,ProductSpecificDetail
+
+
+
+# <select name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>{% for group_name, group_choices, group_index in widget.optgroups %}{% if group_name %}
+#   <optgroup label="{{ group_name }}">{% endif %}{% for option in group_choices %}
+#   {% include option.template_name with widget=option %}{% endfor %}{% if group_name %}
+#   </optgroup>{% endif %}{% endfor %}
+# </select>
+#<option value="{{ widget.value }}"{% include "django/forms/widgets/attrs.html" %}>{{ widget.label }}</option>
+
+
+class ProductSpecWrapper(admin.widgets.RelatedFieldWidgetWrapper):
+  template_name = 'custom_related_widget_wrapper.html'
+
+  def get_context(self, name, value, attrs):
+    context = super(ProductSpecWrapper, self).get_context(name, value, attrs)
+    print context['rendered_widget']
+    print value
+    return context
+
+
+class ProductAdminForm(forms.ModelForm):
+  def __init__(self, *args, **kwargs):
+    super(ProductAdminForm, self).__init__(*args, **kwargs)
+    self.fields['product_detail'].widget = ProductSpecWrapper(
+      self.fields['product_detail'].widget.widget, 
+      # admin.widgets.FilteredSelectMultiple(verbose_name = 'product_detail',is_stacked = False,choices=((0,'True'),(1,'False'))),
+      Product._meta.get_field('product_detail').remote_field,
+      site
+    )
+    print self.fields['product_detail'].widget.widget
+
+    
 
 class MyModelAdmin(admin.ModelAdmin):
   def get_model_perms(self, request):
@@ -9,6 +43,8 @@ class MyModelAdmin(admin.ModelAdmin):
 
 
 class PostProduct(admin.ModelAdmin):
+  # fields = ['name', 'by_admin']
+  form = ProductAdminForm
   class ProductImageInLine(admin.StackedInline):
     model = ProductImage
     fields = ['image']
