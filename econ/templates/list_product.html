@@ -1,5 +1,13 @@
 
 
+{% if cagetory_list %}
+    <ul>
+    {% for cagetory in cagetory_list %}
+        {% include "cagetory_tree.html" %}
+    {% endfor %}
+    </ul>
+{% endif %}
+
 {% if product_list %}
     <ul>
     {% for product in product_list %}

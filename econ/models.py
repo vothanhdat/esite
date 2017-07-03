@@ -83,6 +83,13 @@ class Cagetory(models.Model):
         paths.reverse()
         return paths
 
+    def allproducts(self):
+        for product in self.product_set.all():
+            yield product
+        for child_cagetory in self.cagetory_set.all():
+            for product in child_cagetory.allproducts():
+                yield product
+
 class Brand(models.Model):
     brand_name = models.CharField(max_length=100)
     brand_sym = models.CharField(max_length=20)

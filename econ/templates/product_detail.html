@@ -6,7 +6,7 @@
     <h2>{{ product.product_price }}</h2>
     <h3>
         {% for cagetory in product.product_cagetory.paths %}
-            <span class='product-cagetory'>{{cagetory}}</span>
+            <a class='product-cagetory' href="{% url 'econ:cagetory' cagetory.id %}">{{cagetory}}</a>
         {% endfor %}
     </h3>
     <div class="product-agency">{{ product.product_agency }}</div class="">
