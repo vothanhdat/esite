@@ -5,6 +5,7 @@ from django.utils.text import *
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
 from abc import ABCMeta, abstractmethod
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 class BaseUser(User):
@@ -64,12 +65,14 @@ class AgencyMember(models.Model):
 
 
 
-class Cagetory(models.Model):
+class Cagetory(MPTTModel):
     cagetory_name = models.CharField(max_length=50)
-    cagetory_parent = models.ForeignKey(
+    parent = TreeForeignKey(
         'self',
         null=True,
-        blank=True
+        blank=True,
+        related_name='children',
+        db_index=True,
     )
     def __str__(self):
         return self.cagetory_name
@@ -77,8 +80,8 @@ class Cagetory(models.Model):
     def paths(self):
         current_cagetory = self
         paths = [current_cagetory,]
-        while current_cagetory.cagetory_parent :
-            current_cagetory = current_cagetory.cagetory_parent
+        while current_cagetory.parent :
+            current_cagetory = current_cagetory.parent
             paths.append(current_cagetory)
         paths.reverse()
         return paths
