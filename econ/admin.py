@@ -24,16 +24,6 @@ class ProductSpecWrapper(admin.widgets.RelatedFieldWidgetWrapper):
     return context
 
 
-class ProductAdminForm(forms.ModelForm):
-  def __init__(self, *args, **kwargs):
-    super(ProductAdminForm, self).__init__(*args, **kwargs)
-    self.fields['product_detail'].widget = ProductSpecWrapper(
-      self.fields['product_detail'].widget.widget, 
-      # admin.widgets.FilteredSelectMultiple(verbose_name = 'product_detail',is_stacked = False,choices=((0,'True'),(1,'False'))),
-      Product._meta.get_field('product_detail').remote_field,
-      site
-    )
-    print self.fields['product_detail'].widget.widget
 
     
 
@@ -44,7 +34,6 @@ class MyModelAdmin(admin.ModelAdmin):
 
 class PostProduct(admin.ModelAdmin):
   # fields = ['name', 'by_admin']
-  form = ProductAdminForm
   class ProductImageInLine(admin.StackedInline):
     model = ProductImage
     fields = ['image']
@@ -52,6 +41,18 @@ class PostProduct(admin.ModelAdmin):
   class ProductPromotionInLine(admin.StackedInline):
     model = ProductPromotion.apply_to.through
     extra = 1
+
+  class ProductAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+      super(forms.ModelForm, self).__init__(*args, **kwargs)
+      self.fields['product_detail'].widget = ProductSpecWrapper(
+        self.fields['product_detail'].widget.widget, 
+        # admin.widgets.FilteredSelectMultiple(verbose_name = 'product_detail',is_stacked = False,choices=((0,'True'),(1,'False'))),
+        Product._meta.get_field('product_detail').remote_field,
+        site
+      )
+      print self.fields['product_detail'].widget.widget
+
 
   def get_form(self, request, obj=None, **kwargs):
     self.parent_obj = obj
@@ -64,8 +65,10 @@ class PostProduct(admin.ModelAdmin):
       kwargs["queryset"] = ProductSpecificDetail.objects.filter(detail_field__specific_of=self.parent_obj.product_cagetory)
     return super(PostProduct, self).formfield_for_manytomany(db_field, request, **kwargs)
 
-  
+  form = ProductAdminForm
+
   inlines = [ProductImageInLine,ProductPromotionInLine]
+
 
 class BaseUserAdmin(admin.ModelAdmin):
   class BaseUserMemberInline(admin.StackedInline):
@@ -88,9 +91,29 @@ class AgencyAdmin(admin.ModelAdmin):
     
   inlines = [AgencyMembersInline,AgencyPromotionsInline]
 
+class CagetoryAdmin(admin.ModelAdmin):
+
+  class ChildCagetory(admin.StackedInline):
+    model = Cagetory
+
+  class ProductInline(admin.TabularInline):
+    model = Product
+
+    def get_formset(self, request, obj=None, **kwargs):
+      self.parent_obj = obj
+      print super(admin.TabularInline, self)
+      return super(admin.TabularInline, self).get_formset(request, obj, **kwargs)
+
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+      if db_field.name == "product_detail" and self.parent_obj:
+        kwargs["queryset"] = ProductSpecificDetail.objects.filter(detail_field__specific_of=self.parent_obj)
+      return super(admin.TabularInline, self).formfield_for_manytomany(db_field, request, **kwargs)
+
+  inlines = [ChildCagetory,ProductInline]
 
 admin.site.register(Brand)
-admin.site.register(Cagetory)
+admin.site.register(Cagetory,CagetoryAdmin)
 admin.site.register(BaseUser,BaseUserAdmin)
 admin.site.register(Product,PostProduct)
 admin.site.register(ProductSpecific,MyModelAdmin)

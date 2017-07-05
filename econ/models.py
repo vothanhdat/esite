@@ -84,11 +84,33 @@ class Cagetory(models.Model):
         return paths
 
     def allproducts(self):
-        for product in self.product_set.all():
-            yield product
+        allprod = self.product_set.all()
+
         for child_cagetory in self.cagetory_set.all():
-            for product in child_cagetory.allproducts():
-                yield product
+            allprod = allprod | child_cagetory.allproducts()
+        
+        return allprod
+
+    # def allspecific(self):
+    #     allspec = self.productspecific_set.all()
+    #     for child_cagetory in self.cagetory_set.all():
+    #         allspec = allspec | child_cagetory.allspecific()
+    #     return allspec
+
+
+    # def allproductsdetails(self):
+    #     allspec = null
+
+    #     for spec in self.allspecific():
+    #         if allspec : 
+    #             allspec = allspec | child_cagetory.allspecific()
+    #         else 
+    #             allspec = child_cagetory.allspecific()
+                
+    #     return allspec
+
+                
+
 
 class Brand(models.Model):
     brand_name = models.CharField(max_length=100)

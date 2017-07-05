@@ -1,7 +1,9 @@
 {% with template_name="cagetory_tree.html" %}
     {% if cagetory %}
         <div class="cagetory">
-            <div class="cagetory-title">{{cagetory}}</div>
+            <div class="cagetory-title">
+                <a class='product-cagetory' href="{% url 'econ:cagetory' cagetory.id %}">{{cagetory}}</a>
+            </div>
             {% if cagetory.cagetory_set.all|length %}
             <div class="cagetory-child"> 
             {% for cagetory in cagetory.cagetory_set.all %}
