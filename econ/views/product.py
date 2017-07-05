@@ -11,7 +11,7 @@ from ..models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyM
 # Create your views here.
 def index(request,product_id):
     product = Product.objects.get(id=product_id)
-    print product
+    print (product)
     template = loader.get_template('product_detail.html')
     context = {
         'product': product,

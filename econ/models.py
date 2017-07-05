@@ -91,24 +91,20 @@ class Cagetory(models.Model):
         
         return allprod
 
-    # def allspecific(self):
-    #     allspec = self.productspecific_set.all()
-    #     for child_cagetory in self.cagetory_set.all():
-    #         allspec = allspec | child_cagetory.allspecific()
-    #     return allspec
+    def allspecific(self):
+        allspec = ProductSpecific.objects.none()
+        for cagetory in self.paths():
+            allspec = allspec | cagetory.productspecific_set.all()
+        return allspec
 
 
-    # def allproductsdetails(self):
-    #     allspec = null
+    def allproductsdetails(self):
+        alldetails = ProductSpecificDetail.objects.none()
 
-    #     for spec in self.allspecific():
-    #         if allspec : 
-    #             allspec = allspec | child_cagetory.allspecific()
-    #         else 
-    #             allspec = child_cagetory.allspecific()
-                
-    #     return allspec
+        for spec in self.allspecific():
+            alldetails = alldetails | spec.productspecificdetail_set.all()
 
+        return alldetails
                 
 
 
@@ -158,10 +154,3 @@ class ProductSpecificDetail(models.Model):
         return "%s : %s" % (self.detail_field,self.detail_value)
         # self.detail_field.__str__() + ' : ' + self.detail_value.__str__() 
 
-
-# class ProductDetail(models.Model):
-#     productdetail_prod = models.ForeignKey(Product, on_delete=models.CASCADE)
-#     productdetail_detail = models.ForeignKey(ProductSpecificDetail,null=True,blank=True)
-
-#     def __str__(self):
-#         return self.productdetail_detail.__str__()

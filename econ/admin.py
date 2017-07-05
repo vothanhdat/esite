@@ -19,8 +19,7 @@ class ProductSpecWrapper(admin.widgets.RelatedFieldWidgetWrapper):
 
   def get_context(self, name, value, attrs):
     context = super(ProductSpecWrapper, self).get_context(name, value, attrs)
-    print context['rendered_widget']
-    print value
+    print (value)
     return context
 
 
@@ -51,18 +50,18 @@ class PostProduct(admin.ModelAdmin):
         Product._meta.get_field('product_detail').remote_field,
         site
       )
-      print self.fields['product_detail'].widget.widget
+      print (self.fields['product_detail'].widget.widget)
 
 
   def get_form(self, request, obj=None, **kwargs):
     self.parent_obj = obj
-    print super(PostProduct, self)
+    print (super(PostProduct, self))
     return super(PostProduct, self).get_form(request, obj, **kwargs)
 
 
   def formfield_for_manytomany(self, db_field, request, **kwargs):
     if db_field.name == "product_detail" and self.parent_obj:
-      kwargs["queryset"] = ProductSpecificDetail.objects.filter(detail_field__specific_of=self.parent_obj.product_cagetory)
+      kwargs["queryset"] = self.parent_obj.product_cagetory.allproductsdetails() 
     return super(PostProduct, self).formfield_for_manytomany(db_field, request, **kwargs)
 
   form = ProductAdminForm
@@ -93,24 +92,28 @@ class AgencyAdmin(admin.ModelAdmin):
 
 class CagetoryAdmin(admin.ModelAdmin):
 
-  class ChildCagetory(admin.StackedInline):
-    model = Cagetory
 
   class ProductInline(admin.TabularInline):
     model = Product
 
     def get_formset(self, request, obj=None, **kwargs):
       self.parent_obj = obj
-      print super(admin.TabularInline, self)
+      print (super(admin.TabularInline, self))
       return super(admin.TabularInline, self).get_formset(request, obj, **kwargs)
 
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
       if db_field.name == "product_detail" and self.parent_obj:
-        kwargs["queryset"] = ProductSpecificDetail.objects.filter(detail_field__specific_of=self.parent_obj)
+        kwargs["queryset"] = self.parent_obj.allproductsdetails() 
       return super(admin.TabularInline, self).formfield_for_manytomany(db_field, request, **kwargs)
-
-  inlines = [ChildCagetory,ProductInline]
+    class ProductImageInLine(admin.StackedInline):
+      model = ProductImage
+      fields = ['image']
+      extra = 1
+    inlines = [ProductImageInLine]
+    extra = 1
+    
+  inlines = [ProductInline]
 
 admin.site.register(Brand)
 admin.site.register(Cagetory,CagetoryAdmin)
