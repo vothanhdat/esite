@@ -152,7 +152,7 @@ class SpecificDetail(models.Model):
     detail_field = models.ForeignKey(Specific,on_delete=models.CASCADE)
     detail_value = models.CharField(max_length=50)
     def __str__(self):
-        return "%s : %s" % (self.detail_field,self.detail_value)
+        return self.detail_value
 
 
 class ProductSpecDetail(models.Model):

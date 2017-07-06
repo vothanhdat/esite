@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.admin.sites import site
 from django_mptt_admin.admin import DjangoMpttAdmin
 from .models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail,ProductSpecDetail
-from dal import autocomplete
+from dal import autocomplete, forward
 
 
 
@@ -43,8 +43,13 @@ class SpecificDetailForm(forms.ModelForm):
     fields = ('__all__')
 
     widgets = {
-      'specof' : autocomplete.ModelSelect2('econ:specac',forward=['product_cagetory']),
-      'spec': autocomplete.ModelSelect2('econ:prodspecdeitac',forward=['specof']),
+      'specof' : autocomplete.ModelSelect2(
+        'econ:spec-ac',
+        forward=[
+          forward.Field(src='product_cagetory',dst='specific_of')
+        ]
+      ),
+      'spec': autocomplete.ModelSelect2('econ:prodspecdeit-ac',forward=['specof']),
     }
 
 
