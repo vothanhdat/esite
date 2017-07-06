@@ -156,9 +156,9 @@ class SpecificDetail(models.Model):
 
 
 class ProductSpecDetail(models.Model):
-    specof = models.ForeignKey(Specific,null=True,blank=True)
+    specof = models.ForeignKey(Specific)
     spec = models.ForeignKey(SpecificDetail,on_delete=models.CASCADE)
     prod = models.ForeignKey(Product,on_delete=models.CASCADE)
-    desc = models.CharField(max_length=100)
-    def __str__(self):
-        return  self.spec
+    desc = models.CharField(max_length=100,null=True,blank=True)
+    # def __str__(self):
+    #     return  self.spec

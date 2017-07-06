@@ -45,11 +45,12 @@ class SpecificDetailForm(forms.ModelForm):
     widgets = {
       'specof' : autocomplete.ModelSelect2(
         'econ:spec-ac',
-        forward=[
-          forward.Field(src='product_cagetory',dst='specific_of')
-        ]
+        forward=['product_cagetory']
       ),
-      'spec': autocomplete.ModelSelect2('econ:prodspecdeit-ac',forward=['specof']),
+      'spec': autocomplete.ModelSelect2(
+        'econ:prodspecdeit-ac',
+        forward=['specof']
+      ),
     }
 
 
