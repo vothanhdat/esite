@@ -1,6 +1,6 @@
 from dal import autocomplete
 from django.conf.urls import url
-from ..models import SpecificDetail,Specific
+from ..models import SpecificDetail,Specific,Cagetory
 
 
 class SpecificDetailAutoComplete(autocomplete.Select2QuerySetView):
@@ -30,7 +30,8 @@ class SpecificAutoComplete(autocomplete.Select2QuerySetView):
         specific_of = self.forwarded.get('product_cagetory', None)
 
         if specific_of:
-            qs = qs.filter(specific_of__id=specific_of)
+            cagetory = Cagetory.objects.get(id=specific_of)
+            qs = cagetory.allspecific()
             
         if self.q:
             qs = qs.filter(specific_name__istartswith=self.q)

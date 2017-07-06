@@ -78,37 +78,16 @@ class Cagetory(MPTTModel):
         return self.cagetory_name
 
     def paths(self):
-        current_cagetory = self
-        paths = [current_cagetory,]
-        while current_cagetory.parent :
-            current_cagetory = current_cagetory.parent
-            paths.append(current_cagetory)
-        paths.reverse()
-        return paths
+        return self.get_ancestors(ascending=False, include_self=True)
 
     def allproducts(self):
-        allprod = self.product_set.all()
-
-        for child_cagetory in self.cagetory_set.all():
-            allprod = allprod | child_cagetory.allproducts()
+        allcagetory = self.get_descendants(include_self=True)
+        return Product.objects.filter(product_cagetory__id__in=allcagetory.values('id'))
         
-        return allprod
-
     def allspecific(self):
-        allspec = Specific.objects.none()
-        for cagetory in self.paths():
-            allspec = allspec | cagetory.Specific_set.all()
-        return allspec
 
 
-    def allproductsdetails(self):
-        alldetails = SpecificDetail.objects.none()
-
-        for spec in self.allspecific():
-            alldetails = alldetails | spec.Specificdetail_set.all()
-
-        return alldetails
-                
+        return Specific.objects.filter(specific_of__id__in=self.paths().values('id'))
 
 
 class Brand(models.Model):

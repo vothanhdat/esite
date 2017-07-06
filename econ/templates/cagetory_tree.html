@@ -4,9 +4,9 @@
             <div class="cagetory-title">
                 <a class='product-cagetory' href="{% url 'econ:cagetory' cagetory.id %}">{{cagetory}}</a>
             </div>
-            {% if cagetory.cagetory_set.all|length %}
+            {% if cagetory.get_children.all|length %}
             <div class="cagetory-child"> 
-            {% for cagetory in cagetory.cagetory_set.all %}
+            {% for cagetory in cagetory.get_children.all %}
                 {% include template_name %}
             {% endfor %}
             </div>
