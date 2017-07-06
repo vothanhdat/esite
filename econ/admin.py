@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.contrib.admin.sites import site
 from django_mptt_admin.admin import DjangoMpttAdmin
-from .models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,ProductSpecific,ProductSpecificDetail
+from .models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail
 from dal import autocomplete
 
 
@@ -43,7 +43,12 @@ class PostProduct(admin.ModelAdmin):
   class ProductPromotionInLine(admin.StackedInline):
     model = ProductPromotion.apply_to.through
     extra = 1
-    
+
+
+  # class SpecificDetailInline(admin.StackedInline):
+  #   model = SpecificDetail
+
+
   class ProductAdminForm(forms.ModelForm):
     class Media:
       js = ('custom.js',)
@@ -51,7 +56,7 @@ class PostProduct(admin.ModelAdmin):
       # model = Product
       fields = ('__all__')
       # product_detail = forms.ModelMultipleChoiceField(
-      #   queryset=ProductSpecificDetail.objects.all(),
+      #   queryset=SpecificDetail.objects.all(),
       #   widget=autocomplete.ModelSelect2Multiple(url='econ:prodspecdeitac')
       # )
       widgets = {
@@ -126,7 +131,7 @@ admin.site.register(Brand)
 admin.site.register(Cagetory,CagetoryAdmin)
 admin.site.register(BaseUser,BaseUserAdmin)
 admin.site.register(Product,PostProduct)
-admin.site.register(ProductSpecific,MyModelAdmin)
-admin.site.register(ProductSpecificDetail,MyModelAdmin)
+admin.site.register(Specific,MyModelAdmin)
+admin.site.register(SpecificDetail,MyModelAdmin)
 admin.site.register(ProductPromotion)
 admin.site.register(Agency,AgencyAdmin)

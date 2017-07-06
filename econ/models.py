@@ -95,17 +95,17 @@ class Cagetory(MPTTModel):
         return allprod
 
     def allspecific(self):
-        allspec = ProductSpecific.objects.none()
+        allspec = Specific.objects.none()
         for cagetory in self.paths():
-            allspec = allspec | cagetory.productspecific_set.all()
+            allspec = allspec | cagetory.Specific_set.all()
         return allspec
 
 
     def allproductsdetails(self):
-        alldetails = ProductSpecificDetail.objects.none()
+        alldetails = SpecificDetail.objects.none()
 
         for spec in self.allspecific():
-            alldetails = alldetails | spec.productspecificdetail_set.all()
+            alldetails = alldetails | spec.Specificdetail_set.all()
 
         return alldetails
                 
@@ -126,7 +126,7 @@ class Product(models.Model):
     product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     product_quatity = models.IntegerField(verbose_name='numbers',default=0)
-    product_detail = models.ManyToManyField('ProductSpecificDetail')
+    product_detail = models.ManyToManyField('SpecificDetail',related_name='product')
     def __str__(self):
         return self.product_name
 
@@ -142,17 +142,17 @@ class ProductImage(models.Model):
 
 
 
-class ProductSpecific(models.Model):
+class Specific(models.Model):
     specific_name = models.CharField(max_length=50)
-    specific_unit = models.CharField(max_length=20,null=True,blank=True)
+    # specific_unit = models.CharField(max_length=20,null=True,blank=True)
     specific_of = models.ForeignKey(Cagetory,on_delete=models.CASCADE)
     def __str__(self):
         return  self.specific_name
 
-class ProductSpecificDetail(models.Model):
-    detail_field = models.ForeignKey(ProductSpecific,on_delete=models.CASCADE)
+class SpecificDetail(models.Model):
+    detail_field = models.ForeignKey(Specific,on_delete=models.CASCADE)
     detail_value = models.CharField(max_length=50)
-    detail_desc = models.CharField(max_length=200,null=True,blank=True)
+    # detail_desc = models.CharField(max_length=200,null=True,blank=True)
     def __str__(self):
         return "%s : %s" % (self.detail_field,self.detail_value)
         # self.detail_field.__str__() + ' : ' + self.detail_value.__str__() 

@@ -1,12 +1,12 @@
 from dal import autocomplete
 
-from ..models import ProductSpecificDetail
+from ..models import SpecificDetail
 
 
-class ProductSpecificDetailAutoComplete(autocomplete.Select2QuerySetView):
+class SpecificDetailAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
 
-        qs = ProductSpecificDetail.objects.all()
+        qs = SpecificDetail.objects.all()
 
         if self.q:
             qs = qs.filter(detail_field__specific_name__istartswith=self.q)
