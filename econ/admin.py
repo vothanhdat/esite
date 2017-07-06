@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.contrib.admin.sites import site
 from django_mptt_admin.admin import DjangoMpttAdmin
-from .models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail
+from .models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail,ProductSpecDetail
 from dal import autocomplete
 
 
@@ -31,6 +31,22 @@ class MyModelAdmin(admin.ModelAdmin):
   def get_model_perms(self, request):
     return {}
 
+##
+
+    # specof = models.ForeignKey(Specific,null=True,blank=True)
+    # spec = models.ForeignKey(SpecificDetail,on_delete=models.CASCADE)
+
+
+class SpecificDetailForm(forms.ModelForm):
+
+  class Meta:
+    fields = ('__all__')
+
+    widgets = {
+      'specof' : autocomplete.ModelSelect2('econ:specac',forward=['product_cagetory']),
+      'spec': autocomplete.ModelSelect2('econ:prodspecdeitac',forward=['specof']),
+    }
+
 
 class PostProduct(admin.ModelAdmin):
   # fields = ['name', 'by_admin']
@@ -45,23 +61,10 @@ class PostProduct(admin.ModelAdmin):
     extra = 1
 
 
-  # class SpecificDetailInline(admin.StackedInline):
-  #   model = SpecificDetail
+  class SpecificDetailInline(admin.TabularInline):
+    model = ProductSpecDetail
+    form = SpecificDetailForm
 
-
-  class ProductAdminForm(forms.ModelForm):
-    class Media:
-      js = ('custom.js',)
-    class Meta:
-      # model = Product
-      fields = ('__all__')
-      # product_detail = forms.ModelMultipleChoiceField(
-      #   queryset=SpecificDetail.objects.all(),
-      #   widget=autocomplete.ModelSelect2Multiple(url='econ:prodspecdeitac')
-      # )
-      widgets = {
-        'product_detail': autocomplete.ModelSelect2Multiple('econ:prodspecdeitac'),
-      }
 
   # def get_form(self, request, obj=None, **kwargs):
   #   self.parent_obj = obj
@@ -74,9 +77,9 @@ class PostProduct(admin.ModelAdmin):
   #     kwargs["queryset"] = self.parent_obj.product_cagetory.allproductsdetails() 
   #   return super(PostProduct, self).formfield_for_manytomany(db_field, request, **kwargs)
 
-  form = ProductAdminForm
+  # form = ProductAdminForm
   # exclude = ('product_detail',)
-  inlines = [ProductImageInLine,ProductPromotionInLine]
+  inlines = [ProductImageInLine,ProductPromotionInLine,SpecificDetailInline]
 
 
 class BaseUserAdmin(admin.ModelAdmin):

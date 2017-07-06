@@ -126,7 +126,7 @@ class Product(models.Model):
     product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     product_quatity = models.IntegerField(verbose_name='numbers',default=0)
-    product_detail = models.ManyToManyField('SpecificDetail',related_name='product')
+    # product_detail = models.ManyToManyField('SpecificDetail',related_name='product')
     def __str__(self):
         return self.product_name
 
@@ -144,7 +144,6 @@ class ProductImage(models.Model):
 
 class Specific(models.Model):
     specific_name = models.CharField(max_length=50)
-    # specific_unit = models.CharField(max_length=20,null=True,blank=True)
     specific_of = models.ForeignKey(Cagetory,on_delete=models.CASCADE)
     def __str__(self):
         return  self.specific_name
@@ -152,8 +151,14 @@ class Specific(models.Model):
 class SpecificDetail(models.Model):
     detail_field = models.ForeignKey(Specific,on_delete=models.CASCADE)
     detail_value = models.CharField(max_length=50)
-    # detail_desc = models.CharField(max_length=200,null=True,blank=True)
     def __str__(self):
         return "%s : %s" % (self.detail_field,self.detail_value)
-        # self.detail_field.__str__() + ' : ' + self.detail_value.__str__() 
 
+
+class ProductSpecDetail(models.Model):
+    specof = models.ForeignKey(Specific,null=True,blank=True)
+    spec = models.ForeignKey(SpecificDetail,on_delete=models.CASCADE)
+    prod = models.ForeignKey(Product,on_delete=models.CASCADE)
+    desc = models.CharField(max_length=100)
+    def __str__(self):
+        return  self.spec
