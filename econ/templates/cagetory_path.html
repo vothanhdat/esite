@@ -7,4 +7,6 @@
         <a class='product-cagetory' href="{% url 'econ:cagetory' cagetory.id %}">{{cagetory}}</a>
     {% endfor %}
 </h3>
+{% else %}
+    <div></div>
 {% endif %}

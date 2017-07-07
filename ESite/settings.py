@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_mptt_admin',
+    'social_django',
     # 'mptt',
 )
 
@@ -54,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'ESite.urls'
@@ -69,6 +71,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',  # <--
+                'social_django.context_processors.login_redirect',
             ],
             # 'loaders':[
             #     'django.template.loaders.filesystem.Loader',
@@ -77,6 +81,16 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.google.GoogleOpenId',
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.google.GoogleOAuth',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 WSGI_APPLICATION = 'ESite.wsgi.application'
 
@@ -90,6 +104,7 @@ DATABASES = {
         'NAME': 'esite',
         'USER': 'root',
         'PASSWORD': 'qwe',
+        'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
 
@@ -107,6 +122,16 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'econ:index'
+
+
+SOCIAL_AUTH_FACEBOOK_KEY = '1472925602767492'  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = 'd68f6faf5dca9addeb4b0a8d0db0e4e1'  # App Secret
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '787750051756-iviqd3qlke519oooi925130fj1kmnq0g.apps.googleusercontent.com'  # App ID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'STEIr2IaCVngvg_1Q0sLOGHT'  # App Secret
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/

@@ -1,29 +1,32 @@
-{% include 'cagetory_path.html' %}
 
+{% extends 'base.html' %}
 
-{% if cagetory_list %}
-    <ul>
-    {% for cagetory in cagetory_list %}
-        {% include "cagetory_tree.html" %}
-    {% endfor %}
-    </ul>
-{% endif %}
+{% block content %}
+    {% include 'cagetory_path.html' %}
+    {% if cagetory_list %}
+        <ul>
+        {% for cagetory in cagetory_list %}
+            {% include "cagetory_tree.html" %}
+        {% endfor %}
+        </ul>
+    {% endif %}
 
-{% if product_list %}
-    <ul>
-    {% for product in product_list %}
-        <li> 
-            <div class="product-container">       
-                <h1>
-                    <a href="{% url 'econ:product' product.id %}">{{ product.product_name }}</a>
-                </h1>
-                <h2>{{ product.product_price }}</h2>
-                <h3>{{ product.product_cagetory }}</h3>
-                <div class="product-agency">{{ product.product_agency }}</div class="">
-            </div>
-        </li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No products are available.</p>
-{% endif %}
+    {% if product_list %}
+        <ul>
+        {% for product in product_list %}
+            <li> 
+                <div class="product-container">       
+                    <h1>
+                        <a href="{% url 'econ:product' product.id %}">{{ product.product_name }}</a>
+                    </h1>
+                    <h2>{{ product.product_price }}</h2>
+                    <h3>{{ product.product_cagetory }}</h3>
+                    <div class="product-agency">{{ product.product_agency }}</div class="">
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No products are available.</p>
+    {% endif %}
+{% endblock %}

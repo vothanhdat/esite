@@ -1,29 +1,31 @@
+{% extends 'base.html' %}
 
+{% block content %}
+    {% load staticfiles %}
+    <div class="product-container">       
+        <h1>{{ product.product_name }}</h1>
+        <h2>{{ product.product_price }}</h2>
 
-{% load staticfiles %}
-<div class="product-container">       
-    <h1>{{ product.product_name }}</h1>
-    <h2>{{ product.product_price }}</h2>
-
-    {% with cagetory_paths=product.product_cagetory.paths %}
-        {% include 'cagetory_path.html' %}
-    {% endwith %}
-    
-    <div class="product-agency">{{ product.product_agency }}</div class="">
-    <div class="product-details-title">Specification : </div>
-    <div class="product-details">
-        {% for detail in product.productspecdetail_set.all %}
-            <div class="product-detail">
-                <span class='detail-name'> {{detail.specof}}</span> : 
-                <span class='detail-value'>{{detail.spec}} </span>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="product-img">
-        {% if product.productimage_set and product.productimage_set.first %}
-        {% with product.productimage_set.first as image %}   
-            <img src="{{image.image.url}}" alt=""/>
+        {% with cagetory_paths=product.product_cagetory.paths %}
+            {% include 'cagetory_path.html' %}
         {% endwith %}
-        {% endif %}
+        
+        <div class="product-agency">{{ product.product_agency }}</div class="">
+        <div class="product-details-title">Specification : </div>
+        <div class="product-details">
+            {% for detail in product.productspecdetail_set.all %}
+                <div class="product-detail">
+                    <span class='detail-name'> {{detail.specof}}</span> : 
+                    <span class='detail-value'>{{detail.spec}} </span>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="product-img">
+            {% if product.productimage_set and product.productimage_set.first %}
+            {% with product.productimage_set.first as image %}   
+                <img src="{{image.image.url}}" alt=""/>
+            {% endwith %}
+            {% endif %}
+        </div>
     </div>
-</div>
+{% endblock %}
