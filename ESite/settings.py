@@ -124,11 +124,14 @@ USE_TZ = True
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'econ:index'
 
 
 SOCIAL_AUTH_FACEBOOK_KEY = '1472925602767492'  # App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'd68f6faf5dca9addeb4b0a8d0db0e4e1'  # App Secret
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id,name,email', 
+}
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '787750051756-iviqd3qlke519oooi925130fj1kmnq0g.apps.googleusercontent.com'  # App ID
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'STEIr2IaCVngvg_1Q0sLOGHT'  # App Secret
