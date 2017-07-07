@@ -7,34 +7,11 @@ from dal import autocomplete, forward
 
 
 
-# <select name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>{% for group_name, group_choices, group_index in widget.optgroups %}{% if group_name %}
-#   <optgroup label="{{ group_name }}">{% endif %}{% for option in group_choices %}
-#   {% include option.template_name with widget=option %}{% endfor %}{% if group_name %}
-#   </optgroup>{% endif %}{% endfor %}
-# </select>
-#<option value="{{ widget.value }}"{% include "django/forms/widgets/attrs.html" %}>{{ widget.label }}</option>
-
-
-# class ProductSpecWrapper(admin.widgets.RelatedFieldWidgetWrapper):
-#   template_name = 'custom_related_widget_wrapper.html'
-
-#   def get_context(self, name, value, attrs):
-#     context = super(ProductSpecWrapper, self).get_context(name, value, attrs)
-#     print (value)
-#     return context
-
-
-
     
 
 class MyModelAdmin(admin.ModelAdmin):
   def get_model_perms(self, request):
     return {}
-
-##
-
-    # specof = models.ForeignKey(Specific,null=True,blank=True)
-    # spec = models.ForeignKey(SpecificDetail,on_delete=models.CASCADE)
 
 
 class SpecificDetailForm(forms.ModelForm):
@@ -45,7 +22,7 @@ class SpecificDetailForm(forms.ModelForm):
     widgets = {
       'specof' : autocomplete.ModelSelect2(
         'econ:spec-ac',
-        forward=['product_cagetory']
+        forward=['product_cagetory','productspecdetail_set-0-specof','productspecdetail_set-1-specof','productspecdetail_set-2-specof','productspecdetail_set-3-specof','productspecdetail_set-4-specof']
       ),
       'spec': autocomplete.ModelSelect2(
         'econ:prodspecdeit-ac',
@@ -72,20 +49,7 @@ class PostProduct(admin.ModelAdmin):
     form = SpecificDetailForm
 
 
-  # def get_form(self, request, obj=None, **kwargs):
-  #   self.parent_obj = obj
-  #   print (super(PostProduct, self))
-  #   return super(PostProduct, self).get_form(request, obj, **kwargs)
-
-
-  # def formfield_for_manytomany(self, db_field, request, **kwargs):
-  #   if db_field.name == "product_detail" and self.parent_obj:
-  #     kwargs["queryset"] = self.parent_obj.product_cagetory.allproductsdetails() 
-  #   return super(PostProduct, self).formfield_for_manytomany(db_field, request, **kwargs)
-
-  # form = ProductAdminForm
-  # exclude = ('product_detail',)
-  inlines = [ProductImageInLine,ProductPromotionInLine,SpecificDetailInline]
+  inlines = [SpecificDetailInline,ProductImageInLine,ProductPromotionInLine]
 
 
 class BaseUserAdmin(admin.ModelAdmin):
@@ -114,17 +78,6 @@ class CagetoryAdmin(DjangoMpttAdmin):
 
   class ProductInline(admin.TabularInline):
     model = Product
-
-    # def get_formset(self, request, obj=None, **kwargs):
-    #   self.parent_obj = obj
-    #   print (super(admin.TabularInline, self))
-    #   return super(admin.TabularInline, self).get_formset(request, obj, **kwargs)
-
-
-    # def formfield_for_manytomany(self, db_field, request, **kwargs):
-    #   if db_field.name == "product_detail" and self.parent_obj:
-    #     kwargs["queryset"] = self.parent_obj.allproductsdetails() 
-    #   return super(admin.TabularInline, self).formfield_for_manytomany(db_field, request, **kwargs)
 
     class ProductImageInLine(admin.StackedInline):
       model = ProductImage

@@ -28,6 +28,7 @@ def indexbycagetory(request,cagetory_id):
     template = loader.get_template('list_product.html')
 
     context = {
+        'cagetory_paths' : cagetoty.paths(),
         'product_list': product_list,
         'cagetory_list': cagetory_list,
     }

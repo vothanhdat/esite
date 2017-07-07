@@ -85,8 +85,6 @@ class Cagetory(MPTTModel):
         return Product.objects.filter(product_cagetory__id__in=allcagetory.values('id'))
         
     def allspecific(self):
-
-
         return Specific.objects.filter(specific_of__id__in=self.paths().values('id'))
 
 
@@ -126,6 +124,8 @@ class Specific(models.Model):
     specific_of = models.ForeignKey(Cagetory,on_delete=models.CASCADE)
     def __str__(self):
         return  self.specific_name
+    class Meta:
+        unique_together = ("specific_name", "specific_of")
 
 class SpecificDetail(models.Model):
     detail_field = models.ForeignKey(Specific,on_delete=models.CASCADE)
@@ -139,5 +139,8 @@ class ProductSpecDetail(models.Model):
     spec = models.ForeignKey(SpecificDetail,on_delete=models.CASCADE)
     prod = models.ForeignKey(Product,on_delete=models.CASCADE)
     desc = models.CharField(max_length=100,null=True,blank=True)
-    # def __str__(self):
-    #     return  self.spec
+    class Meta:
+        unique_together = ("specof", "prod")
+    def __str__(self):
+        return  self.spec.__str__()
+
