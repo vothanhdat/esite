@@ -12,6 +12,15 @@
         <script src="{% static "bootstrap.js" %}"></script>
     </head>
     <body>
+        <h1>Simple ESite Apps</h1>
+        <div>
+            {% if request.user.is_authenticated %}
+                You are loggin at <a href="{% url 'econ:settings' %}">{{ request.user.username }}</a>
+            {% else %}
+                You aren't loggin, please <a href="{% url 'login' %}">login</a>.
+            {% endif %}
+        </div>
+        <br/>
 
         {% block content %} {% endblock %}
     </body>

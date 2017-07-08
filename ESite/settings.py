@@ -43,7 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_mptt_admin',
     'social_django',
-    # 'mptt',
+    'mptt',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,0 +1,11 @@
+tr  > td.original > p {
+    display: none;
+}
+
+.inline-group .tabular tr.has_original td {
+    padding-top: 0.7em;
+}
+
+fieldset{
+    /*min-width: unset !important;*/
+}

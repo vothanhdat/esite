@@ -118,6 +118,7 @@ class ProductImage(models.Model):
         return self.image.__str__()
 
 
+fix_encoding = lambda s: s.decode('utf8', 'ignore')
 
 class Specific(models.Model):
     specific_name = models.CharField(max_length=50)
@@ -130,6 +131,8 @@ class Specific(models.Model):
 class SpecificDetail(models.Model):
     detail_field = models.ForeignKey(Specific,on_delete=models.CASCADE)
     detail_value = models.CharField(max_length=50)
+    class Meta:
+        unique_together = ("detail_field", "detail_value")
     def __str__(self):
         return self.detail_value
 

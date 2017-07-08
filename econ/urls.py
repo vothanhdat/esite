@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from .views import index,product,autocomplete,setting,password
 
@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^accounts/$', setting.index, name='settings'),
     url(r'^accounts/profile/$', setting.index, name='settings'),
     url(r'^settings/$', password.index, name='password'),
+    url(r'^autocomplete/', include(autocomplete.urlpatterns), name='auto-complete'),
     url(r'^$', index.index, name='index'),
-] + autocomplete.urlpatterns
+]
 

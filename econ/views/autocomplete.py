@@ -54,18 +54,24 @@ class SpecificDetailAutoComplete(autocomplete.Select2QuerySetView):
         })
 
 @loginRequired
-
 class SpecificAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         
         qs = Specific.objects.all()
         specific_of = self.forwarded.get('product_cagetory', None)
+        exist_id = self.forwarded.get('exist_id', None)
+        self_id = self.forwarded.get('self', None)
 
         if specific_of:
             cagetory = Cagetory.objects.get(id=specific_of)
             qs = cagetory.allspecific()
         else :
             return Specific.objects.none()
+            
+        if exist_id :
+            if self_id in exist_id:
+                exist_id.remove(self_id)
+            qs = qs.exclude(id__in=exist_id)
             
         if self.q:
             qs = qs.filter(specific_name__istartswith=self.q)
@@ -81,20 +87,35 @@ class SpecificAutoComplete(autocomplete.Select2QuerySetView):
 
 
 
+@loginRequired
+class CagetoryAutoComplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Cagetory.objects.all()
+        if self.q:
+            qs = qs.filter(cagetory_name__istartswith=self.q)
+        return qs
+
+
+
 app_name = 'econ'
 urlpatterns = [
     url(
-        r'^spec_auco/$',
+        r'^specific/$',
         SpecificAutoComplete.as_view(
             create_field='specific_name',
             model=Specific),
         name='spec-ac'
     ),
     url(
-        r'^prodspecdeit_auco/$',
+        r'^specificdetail/$',
         SpecificDetailAutoComplete.as_view(
             create_field='detail_value',
             model=SpecificDetail),
         name='prodspecdeit-ac'
+    ),
+    url(
+        r'^cagetory/$',
+        CagetoryAutoComplete.as_view(),
+        name='cagetory-ac'
     ),
 ]

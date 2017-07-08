@@ -2,6 +2,8 @@ from django.contrib import admin
 from django import forms
 from django.contrib.admin.sites import site
 from django_mptt_admin.admin import DjangoMpttAdmin
+from mptt.admin import TreeRelatedFieldListFilter,TreeNodeChoiceField
+
 from .models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail,ProductSpecDetail
 from dal import autocomplete, forward
 
@@ -14,21 +16,40 @@ class MyModelAdmin(admin.ModelAdmin):
     return {}
 
 
+class AutoCompleteWiget(autocomplete.ModelSelect2):
+  autocomplete_function = 'select2'
+  class Media:
+    js = (
+        'autocomplete_light/jquery.init.js',
+        'autocomplete_light/autocomplete.init.js',
+        'autocomplete_light/vendor/select2/dist/js/select2.full.js',
+        'custom.js',
+    )
+    css = {
+      'all': (
+          'autocomplete_light/vendor/select2/dist/css/select2.css',
+          'autocomplete_light/select2.css',
+          'custom.css',
+      )
+    }
+
 class SpecificDetailForm(forms.ModelForm):
 
   class Meta:
     fields = ('__all__')
 
     widgets = {
-      'specof' : autocomplete.ModelSelect2(
+      'specof' : AutoCompleteWiget(
         'econ:spec-ac',
-        forward=['product_cagetory','productspecdetail_set-0-specof','productspecdetail_set-1-specof','productspecdetail_set-2-specof','productspecdetail_set-3-specof','productspecdetail_set-4-specof']
+        forward=['product_cagetory',forward.Field(src='productspecdetail_set---specof',dst='exist_id')],
+        
       ),
-      'spec': autocomplete.ModelSelect2(
+      'spec': AutoCompleteWiget(
         'econ:prodspecdeit-ac',
         forward=['specof']
       ),
     }
+
 
 
 class PostProduct(admin.ModelAdmin):
@@ -45,12 +66,39 @@ class PostProduct(admin.ModelAdmin):
 
 
   class SpecificDetailInline(admin.TabularInline):
+    class SpecificDetailForm(forms.ModelForm):
+
+      class Meta:
+        fields = ('__all__')
+
+        widgets = {
+          'specof' : AutoCompleteWiget(
+            'econ:spec-ac',
+            forward=['product_cagetory',forward.Field(src='productspecdetail_set---specof',dst='exist_id')],
+            
+          ),
+          'spec': AutoCompleteWiget(
+            'econ:prodspecdeit-ac',
+            forward=['specof']
+          ),
+        }
+
     model = ProductSpecDetail
     form = SpecificDetailForm
 
 
-  inlines = [SpecificDetailInline,ProductImageInLine,ProductPromotionInLine]
+  class ProductForm(forms.ModelForm):
+    class Meta:
+      fields = ('__all__')
+      widgets = {
+        'product_cagetory' : AutoCompleteWiget('econ:cagetory-ac'),
+      }
 
+  form = ProductForm
+  inlines = [SpecificDetailInline,ProductImageInLine,ProductPromotionInLine]
+  list_display = ['product_name', 'product_cagetory', 'product_branch','product_price','product_agency','product_quatity' ] 
+  list_filter = [ ('product_cagetory', TreeRelatedFieldListFilter),'product_branch','product_agency']
+  search_fields = ['product_name', 'product_cagetory__cagetory_name', 'product_branch__brand_name','product_agency__agency_name' ] 
 
 class BaseUserAdmin(admin.ModelAdmin):
   class BaseUserMemberInline(admin.StackedInline):
@@ -75,25 +123,18 @@ class AgencyAdmin(admin.ModelAdmin):
 
 class CagetoryAdmin(DjangoMpttAdmin):
 
-
-  class ProductInline(admin.TabularInline):
-    model = Product
-
-    class ProductImageInLine(admin.StackedInline):
-      model = ProductImage
-      fields = ['image']
-      extra = 1
-    inlines = [ProductImageInLine]
-    extra = 1
-    
   tree_auto_open = False
-  inlines = [ProductInline]
+
+class SpecificAdmin(admin.ModelAdmin):
+  list_display = ['specific_name', 'specific_of'] 
+  list_filter = [ ('specific_of', TreeRelatedFieldListFilter)]
+
 
 admin.site.register(Brand)
 admin.site.register(Cagetory,CagetoryAdmin)
 admin.site.register(BaseUser,BaseUserAdmin)
 admin.site.register(Product,PostProduct)
-admin.site.register(Specific)
-admin.site.register(SpecificDetail)
+admin.site.register(Specific,SpecificAdmin)
+admin.site.register(SpecificDetail,MyModelAdmin)
 admin.site.register(ProductPromotion)
 admin.site.register(Agency,AgencyAdmin)

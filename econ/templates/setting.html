@@ -3,6 +3,8 @@
 {% block content %}
   <h2>Settings</h2>
 
+  <div> <a href="{% url 'password_change' %}">Change yours password</a></div>
+
   <h3>GitHub</h3>
   {% if github_login %}
     <p>Connected as <a href="https://github.com/{{ github_login.extra_data.login }}/" target="_blank">{{ github_login.extra_data.login }}</a></p>
