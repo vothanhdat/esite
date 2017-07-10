@@ -104,6 +104,14 @@ class Product(models.Model):
     product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     product_quatity = models.IntegerField(verbose_name='numbers',default=0)
     # product_detail = models.ManyToManyField('SpecificDetail',related_name='product')
+    
+    def product_img(self):
+        first = self.productimage_set.first()
+        if first :
+            return first.url()
+        else :
+            return ''; 
+
     def __str__(self):
         return self.product_name
 
@@ -112,10 +120,22 @@ class ProductPromotion(Promotion) :
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, default=None)
-    image = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/')
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
+    image_link = models.CharField(max_length=300,null=True, blank=True)
+    
     def __str__(self):
-        return self.image.__str__()
+        if(self.image):
+            return self.image.__str__()
+        else :
+            return self.image_link
+
+    def url(self):
+        if(self.image):
+            return self.image.url
+        else :
+            return self.image_link
+
 
 
 fix_encoding = lambda s: s.decode('utf8', 'ignore')
@@ -130,7 +150,7 @@ class Specific(models.Model):
 
 class SpecificDetail(models.Model):
     detail_field = models.ForeignKey(Specific,on_delete=models.CASCADE)
-    detail_value = models.CharField(max_length=50)
+    detail_value = models.CharField(max_length=50,null=True,blank=True)
     class Meta:
         unique_together = ("detail_field", "detail_value")
     def __str__(self):

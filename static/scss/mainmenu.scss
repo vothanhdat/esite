@@ -1,0 +1,58 @@
+
+.menu-main {
+//   width: fit-content;
+  background-color: #fff;
+  font-weight: 500;
+  color: #555;
+  position: relative;
+  display: block;
+  > .menu-title {
+    position: relative;
+    border-bottom: solid #ddd 1px;
+    white-space: nowrap;
+    min-width: 200px;
+
+    > a{
+      padding: 0.5em 1em;
+      display: block;
+      color: inherit;
+    }
+
+    &:hover {
+      background-color: #89f;
+      color : #fff;
+    }
+  }
+
+  > .menu-container {
+    display: none;
+    position: absolute;
+    width: fit-content;
+    left: calc(100% + 1px);
+    top: 0;
+    transition: 0.4s;
+    border: solid #ddd 1px;
+    background-color: #fff;
+  }
+
+  > .menu-title:hover ~ .menu-container ,
+  > .menu-container:hover  {
+    display: block;
+  }
+
+
+}
+
+.menu-root {
+  display: flex;
+  flex-direction: row;
+  font-size: 1.3em;
+  > .menu-main > .menu-container{
+    top: 100%;
+    left: 0;
+  }
+
+  > .menu-main > .menu-title:hover {
+    /*background-color: #fff;*/
+  }
+}

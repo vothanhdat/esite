@@ -1,0 +1,7 @@
+<div class="product-container"> 
+    <img src="{{product.product_img}}" alt="">      
+    <a  class="product-name" href="{% url 'econ:product' product.id %}">{{ product.product_name }}</a>
+    <div class="product-price">{{ product.product_price }}</div class="product-price">
+    {% comment %}<div class="product-cagetory">{{ product.product_cagetory }}</h3>{% endcomment %}
+    <div class="product-agency">{{ product.product_agency }}</div class="">
+</div>

@@ -20,16 +20,11 @@ class AutoCompleteWiget(autocomplete.ModelSelect2):
   autocomplete_function = 'select2'
   class Media:
     js = (
-        'autocomplete_light/jquery.init.js',
-        'autocomplete_light/autocomplete.init.js',
-        'autocomplete_light/vendor/select2/dist/js/select2.full.js',
         'custom.js',
     )
     css = {
       'all': (
-          'autocomplete_light/vendor/select2/dist/css/select2.css',
-          'autocomplete_light/select2.css',
-          'custom.css',
+        'custom.css',
       )
     }
 
@@ -55,9 +50,9 @@ class SpecificDetailForm(forms.ModelForm):
 class PostProduct(admin.ModelAdmin):
   # fields = ['name', 'by_admin']
   
-  class ProductImageInLine(admin.StackedInline):
+  class ProductImageInLine(admin.TabularInline):
     model = ProductImage
-    fields = ['image']
+    fields = ['image','image_link']
     extra = 1
 
   class ProductPromotionInLine(admin.StackedInline):
@@ -96,9 +91,9 @@ class PostProduct(admin.ModelAdmin):
 
   form = ProductForm
   inlines = [SpecificDetailInline,ProductImageInLine,ProductPromotionInLine]
-  list_display = ['product_name', 'product_cagetory', 'product_branch','product_price','product_agency','product_quatity' ] 
+  list_display = ['product_name', 'product_cagetory', 'product_branch','product_price','product_quatity' ] 
   list_filter = [ ('product_cagetory', TreeRelatedFieldListFilter),'product_branch','product_agency']
-  search_fields = ['product_name', 'product_cagetory__cagetory_name', 'product_branch__brand_name','product_agency__agency_name' ] 
+  search_fields = ['product_name', 'product_cagetory__cagetory_name', 'product_branch__brand_name' ] 
 
 class BaseUserAdmin(admin.ModelAdmin):
   class BaseUserMemberInline(admin.StackedInline):
@@ -128,7 +123,9 @@ class CagetoryAdmin(DjangoMpttAdmin):
 class SpecificAdmin(admin.ModelAdmin):
   list_display = ['specific_name', 'specific_of'] 
   list_filter = [ ('specific_of', TreeRelatedFieldListFilter)]
-
+  class SpecificDetailInline(admin.StackedInline):
+    model = SpecificDetail
+  inlines=[SpecificDetailInline]    
 
 admin.site.register(Brand)
 admin.site.register(Cagetory,CagetoryAdmin)

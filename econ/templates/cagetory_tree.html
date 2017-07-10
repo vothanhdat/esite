@@ -1,17 +1,14 @@
-{% with template_name="cagetory_tree.html" %}
-    {% if cagetory %}
-        <div class="cagetory">
-            <div class="cagetory-title">
-                <a class='product-cagetory' href="{% url 'econ:cagetory' cagetory.id %}">{{cagetory}}</a>
-            </div>
-            {% if cagetory.get_children.all|length %}
-            <div class="cagetory-child"> 
-            {% for cagetory in cagetory.get_children.all %}
-                {% include template_name %}
-            {% endfor %}
-            </div>
-            {% endif %}   
+{% if cagetory %}
+    <div class="cagetory menu-main">
+        <div class="cagetory-title menu-title">
+            <a class='product-cagetory' href="{% url 'econ:cagetory' cagetory.id %}">{{cagetory}}</a>
         </div>
-    {% endif %}
-
-{% endwith %}
+        {% if cagetory.get_children.all|length %}
+        <div class="cagetory-child menu-container"> 
+        {% for cagetory in cagetory.get_children.all %}
+            {% include "cagetory_tree.html" %}
+        {% endfor %}
+        </div>
+        {% endif %}   
+    </div>
+{% endif %}

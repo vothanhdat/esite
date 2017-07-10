@@ -23,7 +23,7 @@ def index(request):
 def indexbycagetory(request,cagetory_id):
     page = request.GET.get('page') or 1
     cagetoty = Cagetory.objects.get(id=cagetory_id)
-    cagetory_list = Cagetory.objects.filter(parent__id=cagetory_id)
+    cagetory_list = Cagetory.objects.filter(parent=None)
     product_list = itertools.islice(cagetoty.allproducts(),5)
     template = loader.get_template('list_product.html')
 

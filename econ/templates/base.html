@@ -1,4 +1,5 @@
 {% load static %}
+{% load compress %}
 <html>
     <head>
 <!-- Latest compiled and minified CSS -->
@@ -6,22 +7,17 @@
 
         <!-- Optional theme -->
         <link rel="stylesheet" href="{% static "bootstrap-theme.css" %}">
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static "main.scss" %}" />
+        {% endcompress %}
+        {% comment %}<link rel="stylesheet" href="{% static "main.css" %}">{% endcomment %}
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="{% static "jquery.js" %}"></script>
         <script src="{% static "bootstrap.js" %}"></script>
     </head>
     <body>
-        <h1>Simple ESite Apps</h1>
-        <div>
-            {% if request.user.is_authenticated %}
-                You are loggin at <a href="{% url 'econ:settings' %}">{{ request.user.username }}</a>
-            {% else %}
-                You aren't loggin, please <a href="{% url 'login' %}">login</a>.
-            {% endif %}
-        </div>
-        <br/>
-
+        {% include "header.html" %}
         {% block content %} {% endblock %}
     </body>
 </html>

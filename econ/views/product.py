@@ -12,9 +12,11 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def index(request,product_id):
     product = Product.objects.get(id=product_id)
-    print (product)
-    template = loader.get_template('product_detail.html')
+    cagetory_list = Cagetory.objects.filter(parent=None)
+
+    template = loader.get_template('product-detail.html')
     context = {
         'product': product,
+        'cagetory_list' : cagetory_list
     }
     return HttpResponse(template.render(context, request))

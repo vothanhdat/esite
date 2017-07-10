@@ -1,0 +1,19 @@
+<h1>Simple ESite Apps</h1>
+<div>
+    {% if request.user.is_authenticated %}
+        You are loggin at <a href="{% url 'econ:settings' %}">{{ request.user.username }}</a>
+        <a href="{% url 'logout' %}">Sign out</a>
+    {% else %}
+        You aren't loggin, please <a href="{% url 'login' %}">login</a>.
+    {% endif %}
+</div>
+<br/>
+<div>
+    {% if cagetory_list %}
+        <div class='menu-root'>
+            {% for cagetory in cagetory_list %}
+                {% include "cagetory_tree.html" %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

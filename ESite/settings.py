@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'django_mptt_admin',
     'social_django',
     'mptt',
+    "compressor",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -122,8 +123,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
+# LOGIN_URL = 'login'
+LOGOUT_URL = 'index'
 
 
 SOCIAL_AUTH_FACEBOOK_KEY = '1472925602767492'  # App ID
@@ -140,6 +141,17 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'STEIr2IaCVngvg_1Q0sLOGHT'  # App Secret
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfile")
 STATICFILES_DIRS = ( os.path.join(BASE_DIR, "static"), )
 
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
 MEDIA_URL ='/media/'
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
