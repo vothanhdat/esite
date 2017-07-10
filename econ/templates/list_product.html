@@ -3,9 +3,12 @@
 
 {% block content %}
     {% include 'cagetory_path.html' %}
-    {% for product in product_list %}
-        {% include 'product-item.html' %}
-    {% empty %}
-        <p>No products are available.</p>
-    {% endfor %}
+    
+    <div class="product_list product-grid">
+        {% for product in product_list %}
+            {% include 'product-item.html' %}
+        {% empty %}
+            <p>No products are available.</p>
+        {% endfor %}
+    </div>
 {% endblock %}

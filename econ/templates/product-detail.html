@@ -23,7 +23,7 @@
         <div class="product-img">
             {% if product.productimage_set and product.productimage_set.first %}
             {% with product.productimage_set.first as image %}   
-                <img src="{{image.image.url}}" alt=""/>
+                <img src="{{product.product_img}}" alt=""/>
             {% endwith %}
             {% endif %}
         </div>

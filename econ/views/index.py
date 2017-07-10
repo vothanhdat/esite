@@ -12,7 +12,7 @@ import itertools
 # Create your views here.
 def index(request):
     product_list = Product.objects.all()
-    cagetory_list = Cagetory.objects.filter(parent=None)
+    cagetory_list = Cagetory.objects.filter(parent=None)[:12]
     template = loader.get_template('list_product.html')
     context = {
         'product_list': product_list,
@@ -24,7 +24,7 @@ def indexbycagetory(request,cagetory_id):
     page = request.GET.get('page') or 1
     cagetoty = Cagetory.objects.get(id=cagetory_id)
     cagetory_list = Cagetory.objects.filter(parent=None)
-    product_list = itertools.islice(cagetoty.allproducts(),5)
+    product_list = itertools.islice(cagetoty.allproducts(),12)
     template = loader.get_template('list_product.html')
 
     context = {
