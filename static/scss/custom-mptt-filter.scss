@@ -22,8 +22,13 @@
     >a{
         display: inline !important;
     }
+    >a.boiled{
+        color : #57a2d1 !important;
+        font-weight: bold;
+    }
     >a.selected{
         color : #08d !important;
+        font-weight: bold;
     }
     >div{
         display: none !important;

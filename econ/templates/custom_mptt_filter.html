@@ -32,6 +32,16 @@
                     localStorage.setItem('mptt-filter-input',JSON.stringify(data))
                 });
 
+                var selected = $(".mptt-filter-item > a.selected")[0]
+
+                if(selected){
+                    do{
+                        var parent = selected.parentElement.parentElement.parentElement
+                        selected = parent.children[2];
+                        selected && selected.classList.add('boiled');
+                        console.log(parent)
+                    }while(selected && parent.classList.contains('mptt-filter-item'))
+                }
             })
 
         }
