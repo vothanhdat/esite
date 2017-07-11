@@ -1,0 +1,29 @@
+.mptt-filter-item{
+    >input{
+        display: inline !important;
+    }
+    // >label:before{
+    //     // font-family: monospace;
+    //     font-size: 1.2em;
+    //     font-weight: bold;
+    //     content: '+';
+    //     padding-left: 10px;
+    // }
+    // >input:checked ~ label:before{
+    //     content: '-';
+    // }
+
+    >a{
+        display: inline !important;
+    }
+    >div{
+        display: none !important;
+        padding-left: 15px;
+    }
+    >input:checked ~ div{
+        display: block !important;
+    }
+    &.leaf > a{
+        padding-left: 10px;
+    }
+}

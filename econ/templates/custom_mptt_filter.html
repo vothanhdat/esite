@@ -1,0 +1,42 @@
+{% load i18n %}
+{% load mptt_admin %}
+{% load static %}
+{% load compress %}
+
+<h3>{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</h3>
+{% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static "scss/custom-mptt-filter.scss" %}" />
+{% endcompress %}
+<script>
+
+    !function(){
+        if(!window.mptt_filter_tree){
+            window.mptt_filter_tree = true;
+            
+            addEventListener('load',function(){
+                $ = django.jQuery;
+                var rawdata =localStorage.getItem('mptt-filter-input')
+                try{
+                    var data = JSON.parse(rawdata) || {}
+                }catch(e){
+                    var data = {}
+                }
+
+                for(var e of [...$('input[id^=mptt-filter-]')]){
+                    e.checked = data[e.id] 
+                }
+                
+
+                $("input[id^=mptt-filter-]").change(function() {
+                    data[this.id] = this.checked
+                    localStorage.setItem('mptt-filter-input',JSON.stringify(data))
+                });
+
+            })
+
+        }
+    }()
+</script>
+{% for choice in choices %}
+    {% include "custom_mptt_filter_tree.html" %}
+{% endfor %}
