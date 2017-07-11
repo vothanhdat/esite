@@ -16,6 +16,9 @@
     >a{
         display: inline !important;
     }
+    >a.selected{
+        color : #08d !important;
+    }
     >div{
         display: none !important;
         padding-left: 15px;

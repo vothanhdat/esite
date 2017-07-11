@@ -7,7 +7,7 @@
             <input type="checkbox" checked id="mptt-filter-{{title}}-{{choice.display.id}}"/>
             {% comment %}id="mptt-filter-{{title}}-{{choice.display.id}}"{% endcomment %}
             {% comment %}<label for="mptt-filter-{{title}}-{{choice.display.id}}"></label>{% endcomment %}
-            <a href="{{ choice.query_string|iriencode }}">{{choice.display}}</a>
+            <a href="{{ choice.query_string|iriencode }}" {% if choice.selected %} class="selected"{% endif %} >{{choice.display}}</a>
             <div class="mptt-filter-childs">
                 {% for choice in local_var %}
                     {% include "custom_mptt_filter_tree.html" %}
@@ -16,7 +16,7 @@
         </div>
     {% else %}
         <div class="mptt-filter-item leaf">
-            <a href="{{ choice.query_string|iriencode }}">{{choice.display}}</a>
+            <a href="{{ choice.query_string|iriencode }}"  {% if choice.selected %} class="selected"{% endif %}  >{{choice.display}}</a>
         </div>
     {% endif %}
 {% endwith %}
