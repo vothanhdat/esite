@@ -1,17 +1,23 @@
+.mptt-filter-root{
+    padding-left: 4px;
+}
+
 .mptt-filter-item{
     >input{
-        display: inline !important;
+        display: none !important;
     }
-    // >label:before{
-    //     // font-family: monospace;
-    //     font-size: 1.2em;
-    //     font-weight: bold;
-    //     content: '+';
-    //     padding-left: 10px;
-    // }
-    // >input:checked ~ label:before{
-    //     content: '-';
-    // }
+    >label:before{
+        font-weight: bold;
+        content: '▼';
+        margin-left: 10px;
+        display: inline-block;
+        transform: rotate(-90deg);
+        transition: transform 0.2s;
+        cursor: pointer;
+    }
+    >input:checked ~ label:before{
+        transform: rotate(0deg);
+    }
 
     >a{
         display: inline !important;
@@ -27,6 +33,6 @@
         display: block !important;
     }
     &.leaf > a{
-        padding-left: 10px;
+        padding-left: 25px;
     }
 }

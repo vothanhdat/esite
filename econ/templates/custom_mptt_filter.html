@@ -37,6 +37,8 @@
         }
     }()
 </script>
-{% for choice in choices %}
-    {% include "custom_mptt_filter_tree.html" %}
-{% endfor %}
+<div class='mptt-filter-root'>
+    {% for choice in choices %}
+        {% include "custom_mptt_filter_tree.html" %}
+    {% endfor %}
+</div>
