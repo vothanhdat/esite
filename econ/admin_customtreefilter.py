@@ -35,13 +35,7 @@ class CustomTreeRelatedFieldListFilter(TreeRelatedFieldListFilter):
 
 
   def choices(self, cl):
-    # #### MPTT ADDITION START
-    try:
-      # EMPTY_CHANGELIST_VALUE has been removed in django 1.9
-      from django.contrib.admin.views.main import EMPTY_CHANGELIST_VALUE
-    except:
-      EMPTY_CHANGELIST_VALUE = self.empty_value_display
-    # #### MPTT ADDITION END
+    EMPTY_CHANGELIST_VALUE = self.empty_value_display
     yield {
       'selected': self.lookup_val is None and not self.lookup_val_isnull,
       'query_string': cl.get_query_string({
