@@ -1,7 +1,7 @@
 from dal import autocomplete
 from django.conf.urls import url
 
-from ..models import SpecificDetail,Specific,Cagetory
+from ..models import SpecificDetail,Specific,Cagetory,Product
 
 
 
@@ -59,19 +59,18 @@ class SpecificAutoComplete(autocomplete.Select2QuerySetView):
         
         qs = Specific.objects.all()
         specific_of = self.forwarded.get('product_cagetory', None)
-        exist_id = self.forwarded.get('exist_id', None)
-        self_id = self.forwarded.get('self', None)
+        prod_id = self.forwarded.get('prod', None)
 
         if specific_of:
             cagetory = Cagetory.objects.get(id=specific_of)
             qs = cagetory.allspecific()
+        elif prod_id:
+            prod = Product.objects.get(id=prod_id)
+            specific_ids = prod.productspecdetail_set.values("specof__id")
+            qs = qs.filter(id__in=specific_ids)
         else :
             return Specific.objects.none()
             
-        if exist_id :
-            if self_id in exist_id:
-                exist_id.remove(self_id)
-            qs = qs.exclude(id__in=exist_id)
             
         if self.q:
             qs = qs.filter(specific_name__istartswith=self.q)
@@ -82,7 +81,7 @@ class SpecificAutoComplete(autocomplete.Select2QuerySetView):
         specific_of = self.forwarded.get('product_cagetory', None)
         return self.get_queryset().create(**{
             self.create_field: text,
-            'specific_of_id':specific_of
+            'specific_of_id':specific_of,
         })
 
 

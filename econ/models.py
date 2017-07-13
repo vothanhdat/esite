@@ -20,6 +20,24 @@ class BaseUser(User):
     baseuser_gender = models.CharField(max_length=1, choices=GENDER,default='U')
     baseuser_avatar = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
 
+class Image(models.Model):
+    class Meta:
+         abstract = True
+    
+    image = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
+    image_link = models.CharField(max_length=300,null=True, blank=True)
+    
+    def __str__(self):
+        if(self.image):
+            return self.image
+        else :
+            return self.image_link
+
+    def url(self):
+        if(self.image):
+            return self.imageurl
+        else :
+            return self.image_link
 
 
 class Agency(models.Model):
@@ -119,26 +137,9 @@ class ProductPromotion(Promotion) :
     apply_to = models.ManyToManyField(Product,null=True,blank=True)
 
 
-class ProductImage(models.Model):
+class ProductImage(Image):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
-    image_link = models.CharField(max_length=300,null=True, blank=True)
-    
-    def __str__(self):
-        if(self.image):
-            return self.image.__str__()
-        else :
-            return self.image_link
 
-    def url(self):
-        if(self.image):
-            return self.image.url
-        else :
-            return self.image_link
-
-
-
-fix_encoding = lambda s: s.decode('utf8', 'ignore')
 
 class Specific(models.Model):
     specific_name = models.CharField(max_length=50)
@@ -157,13 +158,23 @@ class SpecificDetail(models.Model):
         return self.detail_value
 
 
+
+class ProductOption(models.Model):
+    prod = models.ForeignKey(Product,on_delete=models.CASCADE)
+    product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+
+class ProductOptionImage(Image):
+    productoption = models.ForeignKey(ProductOption,on_delete=models.CASCADE)
+
 class ProductSpecDetail(models.Model):
     specof = models.ForeignKey(Specific)
     spec = models.ForeignKey(SpecificDetail,on_delete=models.CASCADE)
-    prod = models.ForeignKey(Product,on_delete=models.CASCADE)
     desc = models.CharField(max_length=100,null=True,blank=True)
+    prod = models.ForeignKey(Product,on_delete=models.CASCADE)
+    prod_option = models.ForeignKey(ProductOption,on_delete=models.CASCADE,null=True,blank=True)
     class Meta:
-        unique_together = ("specof", "prod")
+        unique_together = ("specof", "prod","prod_option")
     def __str__(self):
         return  self.spec.__str__()
+
 
