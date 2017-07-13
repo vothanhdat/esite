@@ -28,7 +28,7 @@ class Exclude(forward.Forward):
         return d
 
 class AutoCompleteWiget(autocomplete.ModelSelect2):
-  autocomplete_function = 'select2'
+  autocomplete_function = 'customselect2'
   class Media:
     js = (
         'custom.js',
