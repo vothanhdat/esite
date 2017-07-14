@@ -13,6 +13,37 @@ from .admin_customtreefilter import CustomTreeRelatedFieldListFilter
 from django.utils.html import format_html_join,format_html
 from django.utils.safestring import mark_safe    
 
+
+from django.template.response import TemplateResponse, SimpleTemplateResponse
+from django.template.loader import render_to_string
+
+
+
+IS_POPUP_VAR = '_popup'
+RANDOM_VAR = '_random'
+
+# import nested_admin
+from django.core.urlresolvers import reverse
+try:
+    import urlparse
+    from urllib import urlencode
+except: # For Python 3
+    import urllib.parse as urlparse
+    from urllib.parse import urlencode
+
+
+import uuid
+import base64
+def rabdombase64():
+  return base64.b64encode(uuid.uuid4().bytes).replace('=', '')
+
+def addparamtourl(url,params):
+  url_parts = list(urlparse.urlparse(url))
+  query = dict(urlparse.parse_qsl(url_parts[4]))
+  query.update(params)
+  url_parts[4] = urlencode(query)
+  return urlparse.urlunparse(url_parts)
+
 class MyModelAdmin(admin.ModelAdmin):
   def get_model_perms(self, request):
     return {}
@@ -64,10 +95,56 @@ class SpecificDetailInline(admin.TabularInline):
           forward=['specof']
         ),
       }
-
   model = ProductSpecDetail
   form = SpecificDetailForm
+  extra = 1
 
+
+class ProductOptionInline(admin.StackedInline):
+  template = "custom_product_option.html"
+  model = ProductOption
+  extra = 1
+  readonly_fields = ('specific_detail',)
+  fields = ('specific_detail', )
+  def specific_detail(self, instance):
+    reference_url = ''
+    render_content = 'Click to Add'
+    random = rabdombase64()
+    params = {
+      "_popup": True,
+      RANDOM_VAR : random,
+    }
+    if instance.id:
+      reference_url = reverse( 'admin:econ_productoption_change', args=(instance.id,)  )
+      render_content = render_to_string(
+        'product_specific_detail.html',
+        {'details' : self.prod_details(instance),}
+      ) 
+    else : 
+      reference_url = reverse('admin:econ_productoption_add')
+      if self.parent_obj:
+        params['prod'] = self.parent_obj.id
+
+
+    return format_html(
+      '<a href="{}" target="_blank" id="{}" class="related-widget-wrapper-link add-related">{}</a>',
+      addparamtourl(reference_url,params) ,
+      random  ,
+      render_content
+    )
+    
+
+  def prod_details(self,instance):
+    return instance.productspecdetail_set.all()[:]
+
+
+  def get_formset(self, request, obj=None, **kwargs):
+    self.parent_obj = obj
+    return super(ProductOptionInline, self).get_formset(request, obj, **kwargs)
+
+  specific_detail.allow_tags = True
+  can_delete = True
+  show_change_link = True
 
 class PostProduct(admin.ModelAdmin):
   # fields = ['name', 'by_admin']
@@ -82,11 +159,8 @@ class PostProduct(admin.ModelAdmin):
     extra = 1
 
 
-  class ProductOptionInline(admin.StackedInline):
-    # template = "custom_product_option.html"
-    show_change_link = True
-    model = ProductOption
-    extra = 1
+
+
 
   class ProductForm(forms.ModelForm):
     class Meta:
@@ -132,7 +206,11 @@ class SpecificAdmin(admin.ModelAdmin):
   
 
 
+
+
+#id="add_id_productspecdetail_set-0-specof"
 class ProductOptionAdmin(admin.ModelAdmin):
+  popup_response_template = "custom_admin_popup_res.html"
   inlines = [SpecificDetailInline]
   readonly_fields = ('product',)
   fields = ('product','product_price',)
@@ -161,6 +239,28 @@ class ProductOptionAdmin(admin.ModelAdmin):
 
   def get_model_perms(self, request):
     return {}
+
+  def popup_response(self,request,obj):
+    to_id = request.GET.get(RANDOM_VAR)
+    return TemplateResponse(request, self.popup_response_template, {
+      'to_id' : to_id,
+      'object': render_to_string(
+        'product_specific_detail.html',
+        {'details' : obj.prod_details(),}
+      )
+    })
+
+  def response_change(self, request, obj):
+    if IS_POPUP_VAR in request.POST:
+      return self.popup_response(request,obj)
+    else:
+      return super(ProductOptionAdmin,self).response_change(request, obj)
+
+  def response_add(self, request, obj, post_url_continue=None):
+    if IS_POPUP_VAR in request.POST:
+      return self.popup_response(request,obj)
+    else:
+      return super(ProductOptionAdmin,self).response_add(request, obj, post_url_continue)
 
 admin.site.register(Brand)
 admin.site.register(Cagetory,CagetoryAdmin)

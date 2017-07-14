@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'social_django',
     'mptt',
     "compressor",
+    'nested_admin',
 )
 
 MIDDLEWARE_CLASSES = (

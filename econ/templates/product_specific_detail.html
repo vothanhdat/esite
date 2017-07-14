@@ -1,0 +1,13 @@
+<div class="product-details">
+    {% for detail in details %}
+    <div class="product-detail">
+        <span class='detail-name'> {{detail.specof}}</span> :
+        <span class='detail-value'>{{detail.spec}} </span>
+    </div>
+    {% empty %}
+    <div class="product-detail product-detail-empty ">
+        ----------------------
+    </div>    
+    {% endfor %}
+
+</div>

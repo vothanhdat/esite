@@ -6,9 +6,10 @@ tr  > td.original > p {
     padding-top: 0.7em;
 }
 
+/* 
 fieldset{
-    /*min-width: unset !important;*/
-}
+    min-width: unset !important;
+} */
 
 
 /* .select2-container {

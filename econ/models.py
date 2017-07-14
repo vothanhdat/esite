@@ -163,6 +163,9 @@ class ProductOption(models.Model):
     prod = models.ForeignKey(Product,on_delete=models.CASCADE)
     product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
+    def prod_details(self):
+        return self.productspecdetail_set.all()
+
 class ProductOptionImage(Image):
     productoption = models.ForeignKey(ProductOption,on_delete=models.CASCADE)
 
@@ -170,11 +173,11 @@ class ProductSpecDetail(models.Model):
     specof = models.ForeignKey(Specific)
     spec = models.ForeignKey(SpecificDetail,on_delete=models.CASCADE)
     desc = models.CharField(max_length=100,null=True,blank=True)
-    prod = models.ForeignKey(Product,on_delete=models.CASCADE)
+    prod = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
     prod_option = models.ForeignKey(ProductOption,on_delete=models.CASCADE,null=True,blank=True)
     class Meta:
         unique_together = ("specof", "prod","prod_option")
     def __str__(self):
-        return  self.spec.__str__()
+        return self.spec.__str__()
 
 

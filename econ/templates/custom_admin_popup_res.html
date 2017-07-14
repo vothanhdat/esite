@@ -1,0 +1,17 @@
+<html>
+<head></head>
+<body>
+    <div id="{{to_id}}">
+        {{object}}
+    </div>
+    <script>
+        try{
+            var id="{{to_id}}";
+            var dataHTML = document.getElementById(id) 
+            opener.document.getElementById(id).innerHTML = dataHTML.innerHTML
+            window.close();
+        }catch(e){}
+    </script>
+</body>
+
+</html>
