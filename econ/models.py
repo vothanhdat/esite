@@ -170,14 +170,20 @@ class ProductOptionImage(Image):
     productoption = models.ForeignKey(ProductOption,on_delete=models.CASCADE)
 
 class ProductSpecDetail(models.Model):
-    specof = models.ForeignKey(Specific)
+    # specof = models.ForeignKey(Specific)
     spec = models.ForeignKey(SpecificDetail,on_delete=models.CASCADE)
     desc = models.CharField(max_length=100,null=True,blank=True)
     prod = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
     prod_option = models.ForeignKey(ProductOption,on_delete=models.CASCADE,null=True,blank=True)
     class Meta:
-        unique_together = ("specof", "prod","prod_option")
+        unique_together = ("prod","prod_option")
     def __str__(self):
         return self.spec.__str__()
-
+    
+    def specof(self):
+        print 'sssssssssssssssssssssss'
+        if self.spec:
+            return self.spec.detail_field
+        else:
+            return None
 

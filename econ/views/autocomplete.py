@@ -66,7 +66,7 @@ class SpecificAutoComplete(autocomplete.Select2QuerySetView):
             qs = cagetory.allspecific()
         elif prod_id:
             prod = Product.objects.get(id=prod_id)
-            specific_ids = prod.productspecdetail_set.values("specof__id")
+            specific_ids = prod.productspecdetail_set.values("spec__detail_field__id")
             qs = qs.filter(id__in=specific_ids)
         else :
             return Specific.objects.none()
