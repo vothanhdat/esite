@@ -17,7 +17,7 @@ from django.template.response import TemplateResponse, SimpleTemplateResponse
 from django.template.loader import render_to_string
 
 
-from util.admin.admin_customtreefilter import CustomTreeRelatedFieldListFilter
+from util.admin.admin_customtreefilter import CustomTreeRelatedFieldListFilter, InheritTreeRelatedFieldListFilter
 from util.admin.admin_custommodelpopup import CustomAdminPopup
 
 
@@ -213,7 +213,7 @@ class CagetoryAdmin(DjangoMpttAdmin):
 
 class SpecificAdmin(admin.ModelAdmin):
   list_display = ['specific_name', 'specific_of'] 
-  list_filter = [ ('specific_of', TreeRelatedFieldListFilter)]
+  list_filter = [ ('specific_of', InheritTreeRelatedFieldListFilter)]
   
 
 
