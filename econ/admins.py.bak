@@ -18,34 +18,14 @@ from django.template.loader import render_to_string
 
 
 from util.admin.admin_customtreefilter import CustomTreeRelatedFieldListFilter, InheritTreeRelatedFieldListFilter
-from util.admin.admin_custommodelpopup import CustomAdminPopup
+from util.admin.admin_custommodelpopup import CustomAdminPopup,RANDOM_VAR
+from util.func import addparamtourl,rabdombase64
 
 
-
-IS_POPUP_VAR = '_popup'
-RANDOM_VAR = '_random'
 
 # import nested_admin
 from django.core.urlresolvers import reverse
-try:
-    import urlparse
-    from urllib import urlencode
-except: # For Python 3
-    import urllib.parse as urlparse
-    from urllib.parse import urlencode
 
-
-import uuid
-import base64
-def rabdombase64():
-  return base64.b64encode(uuid.uuid4().bytes).replace('=', '')
-
-def addparamtourl(url,params):
-  url_parts = list(urlparse.urlparse(url))
-  query = dict(urlparse.parse_qsl(url_parts[4]))
-  query.update(params)
-  url_parts[4] = urlencode(query)
-  return urlparse.urlunparse(url_parts)
 
 class MyModelAdmin(admin.ModelAdmin):
   def get_model_perms(self, request):
