@@ -29,13 +29,13 @@ class Image(models.Model):
     
     def __str__(self):
         if(self.image):
-            return self.image
+            return self.image.url
         else :
             return self.image_link
 
     def url(self):
         if(self.image):
-            return self.imageurl
+            return self.image.url
         else :
             return self.image_link
 

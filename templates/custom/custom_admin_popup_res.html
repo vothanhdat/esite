@@ -6,9 +6,12 @@
     </div>
     <script>
         try{
+            var newURL = "{{href}}" + location.search
             var id="{{to_id}}";
-            var dataHTML = document.getElementById(id) 
-            opener.document.getElementById(id).innerHTML = dataHTML.innerHTML
+            var srcHTML = document.getElementById(id)
+            var distHTML = opener.document.getElementById(id)
+            distHTML.innerHTML = srcHTML.innerHTML
+            distHTML.href = newURL
             window.close();
         }catch(e){}
     </script>

@@ -2,14 +2,16 @@ from util.admin.admin_custommodelpopup import CustomAdminPopup,RANDOM_VAR
 from django.utils.html import format_html_join,format_html
 from django.contrib import admin
 from util.func import rabdombase64,addparamtourl
-from econ.models import ProductOption, Product
+from econ.models import ProductOption, Product, ProductOptionImage
 from .specificdetail import SpecificDetailInline
 
+class ProductOptionImageInline(admin.TabularInline):
+  model = ProductOptionImage
 
 @admin.register(ProductOption)
 class ProductOptionAdmin(CustomAdminPopup):
   popup_response_template = "product_specific_detail.html"
-  inlines = [SpecificDetailInline]
+  inlines = [ProductOptionImageInline, SpecificDetailInline]
   readonly_fields = ('product',)
   fields = ('product','product_price',)
 
