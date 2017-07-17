@@ -15,6 +15,31 @@
             
             addEventListener('load',function(){
                 $ = django.jQuery;
+                
+                $('[data-mptttree]').each((i,e) => {
+             
+                    var containers = [...$(e).find('[data-mpttid]')]
+                    var containerindex = containers
+                        .reduce((e, f) => (e[f.dataset.mpttid] = f, e), {})
+
+                    // mode item to right position
+                    for (var e of [...$(e).find('[data-mpttparentid]')]) {
+                        var parent = e.dataset.mpttparentid
+                        if (parent && containerindex[parent]) {
+                            e.remove()
+                            containerindex[parent].appendChild(e)
+                        }
+                    }
+                    for (var e of containers){
+                        if(e.childElementCount == 0)
+                            e.parentElement.getElementsByTagName('label')[0].style.visibility = 'hidden'
+                        
+                    }
+
+
+                })     
+
+
                 var rawdata =localStorage.getItem('mptt-filter-input')
                 try{
                     var data = JSON.parse(rawdata) || {}
@@ -42,13 +67,21 @@
                         console.log(parent)
                     }while(selected && parent.classList.contains('mptt-filter-item'))
                 }
+
+
             })
 
         }
     }()
 </script>
-<div class='mptt-filter-root'>
+<div class='mptt-filter-root' data-mptttree="{{title}}">
     {% for choice in choices %}
-        {% include "custom/custom_mptt_filter_tree.html" %}
+        <div class="mptt-filter-item" data-mpttparentid="{{choice.parent_id}}">
+            <input type="checkbox" checked id="mptt-filter-{{title}}-{{choice.display.id}}"/>
+            <label for="mptt-filter-{{title}}-{{choice.display.id}}"></label>
+            <a href="{{ choice.query_string|iriencode }}" {% if choice.selected %} class="selected"{% endif %} >{{choice.display}}</a>
+            <div class="mptt-filter-childs" data-mpttid="{{choice.display.id}}"> </div>
+        </div>
+    
     {% endfor %}
 </div>
