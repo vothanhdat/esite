@@ -8,7 +8,6 @@ from .models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMe
 from .models import AgencyPromotion,ProductPromotion,Specific,SpecificDetail,ProductSpecDetail
 from .models import ProductOption,ProductImage
 from dal import autocomplete, forward
-from .admin_customtreefilter import CustomTreeRelatedFieldListFilter
 
 from django.utils.html import format_html_join,format_html
 from django.utils.safestring import mark_safe    
@@ -16,6 +15,10 @@ from django.utils.safestring import mark_safe
 
 from django.template.response import TemplateResponse, SimpleTemplateResponse
 from django.template.loader import render_to_string
+
+
+from util.admin.admin_customtreefilter import CustomTreeRelatedFieldListFilter
+from util.admin.admin_custommodelpopup import CustomAdminPopup
 
 
 
@@ -98,21 +101,6 @@ class SpecificDetailForm(forms.ModelForm):
     else:
       return super(SpecificDetailForm,self).get_initial_for_field(field, field_name)
       
-
-
-
-  # def __init__(self, *args, **kwargs):
-  #   instance =  kwargs.get('instance')
-  #   initial = kwargs.pop('initial', {})
-  #   if instance:
-  #     print instance.spec.detail_field_id
-  #     # initial['specof_id'] = instance.spec.detail_field_id
-  #     # initial['specof'] = instance.spec.detail_field_id
-  #     kwargs['initial'] = initial
-  #   super(SpecificDetailForm, self).__init__(*args, **kwargs)
-
-
-
 
 
 
@@ -229,11 +217,8 @@ class SpecificAdmin(admin.ModelAdmin):
   
 
 
-
-
-#id="add_id_productspecdetail_set-0-specof"
-class ProductOptionAdmin(admin.ModelAdmin):
-  popup_response_template = "custom_admin_popup_res.html"
+class ProductOptionAdmin(CustomAdminPopup):
+  popup_response_template = "product_specific_detail.html"
   inlines = [SpecificDetailInline]
   readonly_fields = ('product',)
   fields = ('product','product_price',)
@@ -263,27 +248,8 @@ class ProductOptionAdmin(admin.ModelAdmin):
   def get_model_perms(self, request):
     return {}
 
-  def popup_response(self,request,obj):
-    to_id = request.GET.get(RANDOM_VAR)
-    return TemplateResponse(request, self.popup_response_template, {
-      'to_id' : to_id,
-      'object': render_to_string(
-        'product_specific_detail.html',
-        {'details' : obj.prod_details(),}
-      )
-    })
-
-  def response_change(self, request, obj):
-    if IS_POPUP_VAR in request.POST:
-      return self.popup_response(request,obj)
-    else:
-      return super(ProductOptionAdmin,self).response_change(request, obj)
-
-  def response_add(self, request, obj, post_url_continue=None):
-    if IS_POPUP_VAR in request.POST:
-      return self.popup_response(request,obj)
-    else:
-      return super(ProductOptionAdmin,self).response_add(request, obj, post_url_continue)
+  def get_popup_context(self,request,obj):
+    return {'details' : obj.prod_details(),}
 
 admin.site.register(Brand)
 admin.site.register(Cagetory,CagetoryAdmin)

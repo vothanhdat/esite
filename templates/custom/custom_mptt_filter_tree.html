@@ -10,7 +10,7 @@
             <a href="{{ choice.query_string|iriencode }}" {% if choice.selected %} class="selected"{% endif %} >{{choice.display}}</a>
             <div class="mptt-filter-childs">
                 {% for choice in local_var %}
-                    {% include "custom_mptt_filter_tree.html" %}
+                    {% include "custom/custom_mptt_filter_tree.html" %}
                 {% endfor %}
             </div>
         </div>
