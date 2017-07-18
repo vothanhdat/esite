@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'mptt',
     "compressor",
     'nested_admin',
+    'tinymce',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -156,3 +157,11 @@ MEDIA_URL ='/media/'
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
+
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': "advanced", # default value
+    'relative_urls': False, # default value
+    'width': '100%',
+    'height': 'calc(100vh - 200px)',
+    'font-size': 15,
+}

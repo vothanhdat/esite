@@ -5,7 +5,7 @@ from django.utils.html import format_html
 
 from util.func import rabdombase64,addparamtourl
 from util.wiget.autocomplete import AutoCompleteWiget
-from econ.models import ProductOption, ProductImage, ProductPromotion, ProductSpecDetail
+from econ.models import ProductOption, ProductImage, ProductPromotion, ProductSpecDetail, ProductInfo
 from util.admin.admin_custommodelpopup import RANDOM_VAR
 from util.admin.admin_customtreefilter import CustomTreeRelatedFieldListFilter
 
@@ -22,6 +22,9 @@ class ProductOptionInline(admin.StackedInline):
   readonly_fields = ('specific_detail',)
   fields = ('specific_detail', )
   can_delete = True
+  verbose_name = "Options"
+  verbose_name_plural = "Options"
+
   def specific_detail(self, instance):
     reference_url = ''
     render_content = 'Click to Add'
@@ -70,6 +73,8 @@ class ProductAdmin(admin.ModelAdmin):
   # fields = ['name', 'by_admin']
   
   class ProductImageInLine(admin.TabularInline):
+    verbose_name = "Photos"
+    verbose_name_plural = "Photos"
     model = ProductImage
     fields = ['image','image_link']
     extra = 1
@@ -77,9 +82,24 @@ class ProductAdmin(admin.ModelAdmin):
   class ProductPromotionInLine(admin.StackedInline):
     model = ProductPromotion.apply_to.through
     extra = 1
+    verbose_name = "Promotions"
+    verbose_name_plural = "Promotions"
+
+  class ProductInfoInline(admin.StackedInline):
+    model = ProductInfo
+    verbose_name = "Detail"
+    verbose_name_plural = "Detail"
+
+  class ProSpecificDetailInline(SpecificDetailInline):
+    verbose_name = "Specific"
+    verbose_name_plural = "Specific"
 
 
   class ProductForm(forms.ModelForm):
+    class Media:
+      js = (
+        'product-admin.js',
+      )
     class Meta:
       fields = ('__all__')
       widgets = {
@@ -87,7 +107,7 @@ class ProductAdmin(admin.ModelAdmin):
       }
 
   form = ProductForm
-  inlines = [SpecificDetailInline,ProductImageInLine,ProductOptionInline,ProductPromotionInLine]
+  inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,ProductOptionInline,ProductPromotionInLine]
   list_display = ['product_name', 'product_cagetory', 'product_branch','product_price','product_quatity' ] 
   list_filter = [ ('product_cagetory', CustomTreeRelatedFieldListFilter),'product_branch','product_agency']
   search_fields = ['product_name', 'product_cagetory__cagetory_name', 'product_branch__brand_name' ] 

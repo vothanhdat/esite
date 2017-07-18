@@ -6,6 +6,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
 from abc import ABCMeta, abstractmethod
 from mptt.models import MPTTModel, TreeForeignKey
+from tinymce.models import HTMLField
 
 
 class BaseUser(User):
@@ -118,6 +119,7 @@ class Product(models.Model):
     product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     product_quatity = models.IntegerField(verbose_name='numbers',default=0)
+    # product_info = HTMLField(null=True, blank=True)
     # product_detail = models.ManyToManyField('SpecificDetail',related_name='product')
     
     def product_img(self):
@@ -129,6 +131,18 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+
+
+class ProductInfo(models.Model):
+    product = models.OneToOneField(
+        Product,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    info = HTMLField(null=True, blank=True)
+
+    def __str__(self):
+        return self.product.product_name
 
 class ProductPromotion(Promotion) : 
     apply_to = models.ManyToManyField(Product,null=True,blank=True)

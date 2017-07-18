@@ -9,14 +9,83 @@ tr  > td.original > p {
     border: none;
 }
 .product-details td{
-    padding: 0 12px 0 0;
+    padding: 3px 40px 3px 10px;
     border: none;
 }
 
 .form-row.field-specific_detail{
     padding: 2px 8px;
 }
+
+.dynamic-productoption_set {
+    background: #f8f8f8;
+    border-bottom: 1px solid #eee;
+}
+
+.dynamic-productoption_set fieldset {
+    background: none;
+}
+
+.dynamic-productoption_set .form-row {
+    border: none;
+}
+.dynamic-productoption_set .form-row > div > label{
+    display: none;
+}
+
+.dynamic-productoption_set .form-row > div > label + div{
+    margin-left: 0px;
+}
+
+.dynamic-productinfo h3,.dynamic-productinfo label{
+    display: none;
+}
+.dynamic-productinfo .form-row.field-info{
+    padding: 0;
+}
+
+#productoption_set-group .add-row{
+    display: none;
+}
+
+
+
+
+/* #product_form > div > .inline-group  fieldset > h2 {
+     display: none;
+} */
+
+.admin-tabs {
+    display: flex;
+    width: 100%;
+    background: #4f88a4;
+    margin: 1em 0;
+}
+
+.admin-tabs > a {
+    padding: 0.6em 1em;
+    text-align: center;
+    text-transform: uppercase;
+    color : #fff;
+    font-size: 1.2em;
+    border-right: 2px solid rgba(255,255,255,0.25);
+}
+
+
+
+.admin-tabs ~ .inline-group fieldset > h2 {
+    display: none;
+}
+
+.admin-tabs > a.tab-active {
+    background: #3a667b !important;
+}
+
+/* #product_form > div > *:targer{
+    display: block;
+} */
 /* 
+
 fieldset{
     min-width: unset !important;
 } */

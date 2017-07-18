@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^oauth/', include('social_django.urls', namespace='social')),
     url(r'^', include('econ.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
+    url(r'^tinymce/', include('tinymce.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
