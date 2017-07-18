@@ -25,3 +25,5 @@ _FORMATTER.add_formatting_definition(
     negative_sign="-", trailing_negative_sign="",
     rounding_method=ROUND_HALF_EVEN
 )
+
+CURRENCIES = ('USD', 'VND', 'EUR')

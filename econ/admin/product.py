@@ -16,11 +16,12 @@ from ..models import Product
 
 
 class ProductOptionInline(admin.StackedInline):
-  template = "custom_product_option.html"
+  template = "compact_admin_inline.html"
   model = ProductOption
   extra = 1
   readonly_fields = ('specific_detail',)
   fields = ('specific_detail', )
+  can_delete = True
   def specific_detail(self, instance):
     reference_url = ''
     render_content = 'Click to Add'
@@ -32,8 +33,8 @@ class ProductOptionInline(admin.StackedInline):
     if instance.id:
       reference_url = reverse( 'admin:econ_productoption_change', args=(instance.id,)  )
       render_content = render_to_string(
-        'product_specific_detail.html',
-        {'details' : self.prod_details(instance),}
+        'product_option_compact.html',
+        { 'product' : instance }
       ) 
     else : 
       reference_url = reverse('admin:econ_productoption_add')
@@ -47,10 +48,10 @@ class ProductOptionInline(admin.StackedInline):
       random  ,
       render_content
     )
-    
+
 
   def prod_details(self,instance):
-    return instance.productspecdetail_set.all()[:]
+    return instance.prod_details()
 
 
   def get_formset(self, request, obj=None, **kwargs):

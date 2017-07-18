@@ -1,13 +1,16 @@
-<div class="product-details">
-    {% for detail in details %}
-    <div class="product-detail">
-        <span class='detail-name'> {{detail.spec.detail_field}}</span> :
-        <span class='detail-value'>{{detail.spec}} </span>
-    </div>
-    {% empty %}
-    <div class="product-detail product-detail-empty ">
-        ----------------------
-    </div>    
-    {% endfor %}
-
-</div>
+{% if details %}
+<table class="product-details">
+    <tbody>
+        {% for detail in details %}
+        <tr class="product-detail">
+            <td class='detail-name'> {{detail.spec.detail_field}}</td>
+            <td class='detail-value'>{{detail.spec}} </td>
+        </tr>
+        {% empty %}
+        <tr class="product-detail empty">
+            <td class='detail-name'> -------------------------- </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

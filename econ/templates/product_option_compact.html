@@ -1,0 +1,18 @@
+
+
+<div class="product-option-spec" style="display: flex;">
+    {% with details=product.prod_details images=product.prod_images %}
+        {% if details %}
+            <div class="product-spec" style="flex:1">
+                {% include "product_specific_detail.html" %}
+            </div>
+        {% endif %}
+        {% if images %}
+            <div class="product-images">
+                {% for image in images %}
+                    <img src="{{image.url}}" style='height: 80px;width: 80px;object-fit: contain;'>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</div>

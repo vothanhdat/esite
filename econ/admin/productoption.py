@@ -10,7 +10,7 @@ class ProductOptionImageInline(admin.TabularInline):
 
 @admin.register(ProductOption)
 class ProductOptionAdmin(CustomAdminPopup):
-  popup_response_template = "product_specific_detail.html"
+  popup_response_template = "product_option_compact.html"
   inlines = [ProductOptionImageInline, SpecificDetailInline]
   readonly_fields = ('product',)
   fields = ('product','product_price',)
@@ -41,6 +41,6 @@ class ProductOptionAdmin(CustomAdminPopup):
     return {}
 
   def get_popup_context(self,request,obj):
-    return {'details' : obj.prod_details(),}
+    return { 'product' : obj }
 
 

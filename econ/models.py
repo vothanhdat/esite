@@ -28,10 +28,7 @@ class Image(models.Model):
     image_link = models.CharField(max_length=300,null=True, blank=True)
     
     def __str__(self):
-        if(self.image):
-            return self.image.url
-        else :
-            return self.image_link
+        return self.url()
 
     def url(self):
         if(self.image):
@@ -165,6 +162,9 @@ class ProductOption(models.Model):
 
     def prod_details(self):
         return self.productspecdetail_set.all()
+
+    def prod_images(self):
+        return self.productoptionimage_set.all()
 
 class ProductOptionImage(Image):
     productoption = models.ForeignKey(ProductOption,on_delete=models.CASCADE)

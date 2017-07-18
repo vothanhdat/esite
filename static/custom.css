@@ -5,7 +5,17 @@ tr  > td.original > p {
 .inline-group .tabular tr.has_original td {
     padding-top: 0.7em;
 }
+.product-details tr{
+    border: none;
+}
+.product-details td{
+    padding: 0 12px 0 0;
+    border: none;
+}
 
+.form-row.field-specific_detail{
+    padding: 2px 8px;
+}
 /* 
 fieldset{
     min-width: unset !important;
