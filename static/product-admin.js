@@ -15,10 +15,10 @@ window.addEventListener('DOMContentLoaded',function(){
             console.log(index == i)
             if (i == index){
                 tabs[i].classList.add('tab-active')
-                elements[i].style.display = 'block';
+                elements[i].style.display = 'block'
             }else{
                 tabs[i].classList.remove('tab-active')
-                elements[i].style.display = 'none';
+                elements[i].style.display = 'none'
             }
         }
 
@@ -27,13 +27,19 @@ window.addEventListener('DOMContentLoaded',function(){
     for (var i in elements) {
         var e = elements[i]
         var h2 = $(e).find('h2')[0]
+        var error = $(e).find('.errors') [0]
         var tab = tabs[i]
         tab.href='#tab-' + i
+        if(error)
+            tab.dataset.error = true
+
         tab.onclick = tabonclick.bind(e,i)
         if (h2) {
             tab.innerText = h2.innerText
+        }else if(i == 0){
+            tab.innerText = 'Main'
         }else{
-            tab.innerText = 'tab ' + i
+            tab.innerText = 'Tab ' + i
         }
         tabcontainer.appendChild(tab)
     }

@@ -1,19 +1,57 @@
 <html>
+
 <head></head>
+
 <body>
     <div id="{{to_id}}">
         {{object}}
     </div>
     <script>
-        try{
+        try {
             var newURL = "{{href}}" + location.search
-            var id="{{to_id}}";
+            var id = "{{to_id}}";
+            var isnew = "{{isnew}}";
+            var newuuid = "{{newuuid}}";
             var srcHTML = document.getElementById(id)
+            /** @type {HTMLElement}*/
             var distHTML = opener.document.getElementById(id)
             distHTML.innerHTML = srcHTML.innerHTML
             distHTML.href = newURL
+
+            try {
+                if (isnew) {
+                    /** @type {HTMLElement}*/
+                    var parentnode = distHTML.parentElement
+                    var findCound = 0;
+                    while (parentnode) {
+                        if (parentnode.tagName == 'FIELDSET') {
+                            findCound++;
+                            if (findCound == 2)
+                                break;
+                        }
+                        parentnode = parentnode.parentElement
+                    }
+
+                    opener.console.log('123456789')
+                    if (parentnode.tagName == 'FIELDSET') {
+                        parentnode.getElementsByClassName('add-row')[0].children[0].click()
+                        var nodes = opener.document.querySelectorAll('#' + id);
+                        opener.console.log(nodes)
+                        for (var i = 1; i < nodes.length; i++) {
+                            var dupnode = nodes[i];
+                            var new_uuid = newuuid + i;
+                            dupnode.id = new_uuid;
+                            dupnode.href = (dupnode.href || '').replace(id, new_uuid);
+                            opener.console.log('dupnodeid')
+                        }
+
+                    }
+                }
+            } catch (e) {
+            }
+
             window.close();
-        }catch(e){}
+        } catch (e) { }
     </script>
 </body>
 

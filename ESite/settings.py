@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     "compressor",
     'nested_admin',
     'tinymce',
+    # 'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -59,6 +60,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'ESite.urls'
@@ -162,6 +164,6 @@ TINYMCE_DEFAULT_CONFIG = {
     'theme': "advanced", # default value
     'relative_urls': False, # default value
     'width': '100%',
-    'height': 'calc(100vh - 200px)',
+    'height': 'calc(100vh - 250px)',
     'font-size': 15,
 }

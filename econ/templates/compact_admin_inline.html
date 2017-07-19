@@ -23,7 +23,7 @@
                 {{ inline_admin_form.fk_field.field }}
             </div>
             {% if inline_admin_formset.formset.can_delete and inline_admin_form.original %}
-                <div class="delete" style="padding:0 18px;">
+                <div class="delete" style="padding:0 18px 5px;">
                     {{ inline_admin_form.deletion_field.field }} 
                     {{ inline_admin_form.deletion_field.label_tag }}
                 </div>

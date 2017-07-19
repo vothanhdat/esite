@@ -4,6 +4,7 @@ tr  > td.original > p {
 
 .inline-group .tabular tr.has_original td {
     padding-top: 0.7em;
+    /* min-width: 100px; */
 }
 .product-details tr{
     border: none;
@@ -19,7 +20,13 @@ tr  > td.original > p {
 
 .dynamic-productoption_set {
     background: #f8f8f8;
-    border-bottom: 1px solid #eee;
+    border: 1px solid #ddd;
+}
+
+
+.dynamic-productoption_set ~ .dynamic-productoption_set {
+    background: #f8f8f8;
+    border-top: none;
 }
 
 .dynamic-productoption_set fieldset {
@@ -49,17 +56,11 @@ tr  > td.original > p {
 }
 
 
-
-
-/* #product_form > div > .inline-group  fieldset > h2 {
-     display: none;
-} */
-
 .admin-tabs {
     display: flex;
     width: 100%;
     background: #4f88a4;
-    margin: 1em 0;
+    margin-bottom: 1em;
 }
 
 .admin-tabs > a {
@@ -72,10 +73,21 @@ tr  > td.original > p {
 }
 
 
+.admin-tabs > a[data-error]:after{
+    content: ' ! ';
+    font-weight: bolder;
+    color: #f00;
+}
+
 
 .admin-tabs ~ .inline-group fieldset > h2 {
     display: none;
 }
+
+.admin-tabs ~ .inline-group fieldset > table > thead {
+    /* display: none; */
+}
+
 
 .admin-tabs > a.tab-active {
     background: #3a667b !important;
