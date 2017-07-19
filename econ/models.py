@@ -6,8 +6,8 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
 from abc import ABCMeta, abstractmethod
 from mptt.models import MPTTModel, TreeForeignKey
-from tinymce.models import HTMLField
-
+from django.utils.functional import cached_property
+from ckeditor.fields import RichTextField
 
 class BaseUser(User):
     GENDER = (
@@ -103,6 +103,16 @@ class Cagetory(MPTTModel):
     def allspecific(self):
         return Specific.objects.filter(specific_of__id__in=self.paths().values('id'))
 
+    @staticmethod
+    def hash():
+        return Cagetory.incrementCount 
+
+    def save(self, *args, **kwargs):
+        print ('incrementCount: %s',Cagetory.incrementCount)
+        Cagetory.incrementCount += 1
+        super(Cagetory, self).save(*args, **kwargs) # Call the "real" save() method.
+
+Cagetory.incrementCount = 0
 
 class Brand(models.Model):
     brand_name = models.CharField(max_length=100)
@@ -121,7 +131,8 @@ class Product(models.Model):
     product_quatity = models.IntegerField(verbose_name='numbers',default=0)
     # product_info = HTMLField(null=True, blank=True)
     # product_detail = models.ManyToManyField('SpecificDetail',related_name='product')
-    
+
+    @cached_property
     def product_img(self):
         first = self.productimage_set.first()
         if first :
@@ -139,7 +150,7 @@ class ProductInfo(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
-    info = HTMLField(null=True, blank=True)
+    info = RichTextField(null=True, blank=True)
 
     def __str__(self):
         return self.product.product_name
@@ -201,3 +212,4 @@ class ProductSpecDetail(models.Model):
         else:
             return None
 
+    

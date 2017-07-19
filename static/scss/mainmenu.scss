@@ -56,3 +56,8 @@
     /*background-color: #fff;*/
   }
 }
+
+
+.product-cagetory ~ .product-cagetory:before {
+  content: ' > ';
+}

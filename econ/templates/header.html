@@ -9,11 +9,15 @@
 </div>
 <br/>
 <div>
-    {% if cagetory_list %}
+    {% include "cagetory_list.html" %}
+
+
+    {% comment %} {% if cagetory_list %}
+    
         <div class='menu-root'>
             {% for cagetory in cagetory_list %}
                 {% include "cagetory_tree.html" %}
             {% endfor %}
         </div>
-    {% endif %}
+    {% endif %} {% endcomment %}
 </div>

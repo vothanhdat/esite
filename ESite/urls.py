@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^oauth/', include('social_django.urls', namespace='social')),
     url(r'^', include('econ.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
-    url(r'^tinymce/', include('tinymce.urls')),
+    # url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'hitcount/', include('hitcount.urls', namespace='hitcount')),
 ]
 

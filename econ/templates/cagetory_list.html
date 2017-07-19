@@ -1,0 +1,35 @@
+
+{% load cache %}
+{% cache 3600 cagetory_list %}
+
+<div class='menu-root' id='menu-root'>
+    
+    {% for cagetory in cagetory_list %}
+    <div class="cagetory menu-main" id="cagetory-{{cagetory.id}}" data-parentid="cagetory-{{cagetory.parent_id}}">
+        <div class="cagetory-title menu-title">
+            <a class='product-cagetory' href="{% url 'econ:cagetory' cagetory.id %}">{{cagetory}}</a>
+        </div>
+        <div class="cagetory-child menu-container">
+        </div>
+    </div>
+    {% endfor %}
+
+    <script>
+        !function(){
+            var rootElem = document.getElementById('menu-root')
+            /** @type {HTMLElement[]}*/
+            var childs = [...rootElem.children]
+            var childIndex = {}
+            for(var e of childs)
+                childIndex[e.id] = e;
+            
+            for(var e of childs) if(childIndex[e.dataset.parentid]){
+                /** @type {HTMLElement}*/
+                var parent = childIndex[e.dataset.parentid]
+                e.remove()
+                parent.children[1].appendChild(e);
+            }
+        }()
+    </script>
+</div>
+{% endcache %}

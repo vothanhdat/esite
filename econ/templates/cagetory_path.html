@@ -1,10 +1,9 @@
 {% if cagetory_paths %}
 <h3>
     {% for cagetory in cagetory_paths %}
-        {% if not forloop.first %}
-            <span> > </span>
-        {% endif %}
-        <a class='product-cagetory' href="{% url 'econ:cagetory' cagetory.id %}">{{cagetory}}</a>
+        <span class='product-cagetory'>
+            <a href="{% url 'econ:cagetory' cagetory.id %}">{{cagetory}}</a>
+        </span>
     {% endfor %}
 </h3>
 {% else %}
