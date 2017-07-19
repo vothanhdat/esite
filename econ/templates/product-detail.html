@@ -1,43 +1,40 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
+<div class="product-container">
     {% load staticfiles %}
-    <div class="product-container">       
-        <script src="{% static 'hitcount/jquery.postcsrf.js' %}"></script>
-        {% load hitcount_tags %}
-        {% get_hit_count_js_variables for product as hitcount %}
-        <script type="text/javascript">
-            jQuery(document).ready(function($) {
-              // use the template tags in our JavaScript call
-              $.postCSRF("{{ hitcount.ajax_url }}", { hitcountPK : "{{ hitcount.pk }}" })
-                .done(function(data){
-                  $('<i />').text(data.hit_counted).attr('id','hit-counted-value').appendTo('#hit-counted');
-                  $('#hit-response').text(data.hit_message);
-              }).fail(function(data){
-                  console.log('POST failed');
-                  console.log(data);
-              });
+    <script src="{% static 'hitcount/jquery.postcsrf.js' %}"></script>
+    {% load hitcount_tags %} {% get_hit_count_js_variables for product as hitcount %}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            // use the template tags in our JavaScript call
+            $.postCSRF("{{ hitcount.ajax_url }}", {
+                hitcountPK: "{{ hitcount.pk }}",
+                //csrfmiddlewaretoken: getCookie('csrftoken'),
+            }).done(function (data) {
+                $('<i />').text(data.hit_counted).attr('id', 'hit-counted-value').appendTo('#hit-counted');
+                $('#hit-response').text(data.hit_message);
+            }).fail(function (data) {
+                console.log('POST failed');
+                console.log(data);
             });
-        </script>
-        <h1>{{ product.product_name }}</h1>
-        <h2>{{ product.product_price }}</h2>
+        });
+    </script>
+    <h1>{{ product.product_name }}</h1>
+    <h2>{{ product.product_price }}</h2>
 
-        {% with cagetory_paths=product.product_cagetory.paths %}
-            {% include 'cagetory_path.html' %}
-        {% endwith %}
-        
-        <div class="product-agency">{{ product.product_agency }}</div class="">
+    {% with cagetory_paths=product.product_cagetory.paths %} {% include 'cagetory_path.html' %} {% endwith %}
 
-        {% with details=product.productspecdetail_set.all %}
-            <div class="product-details-title">Specification : </div>
-            {% include "product_specific_detail.html" %}
-        {% endwith %}    
-        <div class="product-img">
-            {% if product.productimage_set and product.productimage_set.first %}
-            {% with product.productimage_set.first as image %}   
-                <img src="{{product.product_img}}" alt=""/>
-            {% endwith %}
-            {% endif %}
-        </div>
+    <div class="product-agency">{{ product.product_agency }}</div class="">
+
+    {% with details=product.productspecdetail_set.all %}
+    <div class="product-details-title">Specification : </div>
+    {% include "product_specific_detail.html" %} {% endwith %}
+    <div class="product-img">
+        {% if product.productimage_set and product.productimage_set.first %} {% with product.productimage_set.first as image %}
+        <img src="{{product.product_img}}" alt="" /> {% endwith %} {% endif %}
     </div>
+
+    <div class='product-info'>
+        {{ product.productinfo.info|safe }}
+    </div>
+</div>
 {% endblock %}
