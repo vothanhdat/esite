@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^', include('econ.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
+    url(r'hitcount/', include('hitcount.urls', namespace='hitcount')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

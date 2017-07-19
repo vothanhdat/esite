@@ -47,6 +47,8 @@ INSTALLED_APPS = (
     "compressor",
     'nested_admin',
     'tinymce',
+    'cacheops',
+    'hitcount',
     # 'debug_toolbar',
 )
 
@@ -166,4 +168,58 @@ TINYMCE_DEFAULT_CONFIG = {
     'width': '100%',
     'height': 'calc(100vh - 250px)',
     'font-size': 15,
+}
+
+
+CACHEOPS_REDIS = {
+    'host': 'localhost', # redis-server is on same machine
+    'port': 6379,        # default redis port
+    'db': 1,             # SELECT non-default redis database
+                         # using separate redis db or redis instance
+                         # is highly recommended
+
+    'socket_timeout': 3,   # connection timeout in seconds, optional
+    'unix_socket_path': '' # replaces host and port
+}
+
+# Alternatively the redis connection can be defined using a URL:
+CACHEOPS_REDIS = "redis://localhost:6379/1"
+
+
+CACHEOPS = {
+    # Automatically cache any User.objects.get() calls for 15 minutes
+    # This includes request.user or post.author access,
+    # where Post.author is a foreign key to auth.User
+    # 'auth.user': {'ops': 'get', 'timeout': 60*15},
+
+    # # Automatically cache all gets and queryset fetches
+    # # to other django.contrib.auth models for an hour
+    'hitcount.*': {'ops': ('all'), 'timeout': 60*60, 'cache_on_save': True},
+    'econ.*': {'ops': ('all'), 'timeout': 60*60, 'cache_on_save': True},
+
+    # Cache all queries to Permission
+    # 'all' is just an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}
+    # 'auth.permission': {'ops': 'all', 'timeout': 60*60},
+
+    # # Enable manual caching on all other models with default timeout of an hour
+    # # Use Post.objects.cache().get(...)
+    # #  or Tags.objects.filter(...).order_by(...).cache()
+    # # to cache particular ORM request.
+    # # Invalidation is still automatic
+    # '*.*': {'ops': (), 'timeout': 60*60},
+
+    # # And since ops is empty by default you can rewrite last line as:
+    # '*.*': {'timeout': 60*60},
+    
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "example"
+    }
 }

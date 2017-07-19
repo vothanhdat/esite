@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 #     template = loader.get_template('list_product.html')
     
 # Create your views here.
-@login_required
+# @login_required
 def index(request,product_id):
     product = Product.objects.get(id=product_id)
     cagetory_list = Cagetory.objects.filter(parent=None)

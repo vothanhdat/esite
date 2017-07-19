@@ -12,11 +12,11 @@ import itertools
 # Create your views here.
 def index(request):
     product_list = Product.objects.all()
-    cagetory_list = Cagetory.objects.filter(parent=None)[:12]
+    cagetory_list = Cagetory.objects.filter(parent=None)
     template = loader.get_template('list_product.html')
     context = {
         'product_list': product_list,
-        'cagetory_list': cagetory_list
+        'cagetory_list': cagetory_list,
     }
     return HttpResponse(template.render(context, request))
 
