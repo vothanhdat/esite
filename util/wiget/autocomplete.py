@@ -18,10 +18,5 @@ class AutoCompleteWiget(autocomplete.ModelSelect2):
   autocomplete_function = 'customselect2'
   class Media:
     js = (
-        'custom.js',
+        'admin/custom-select.js',
     )
-    css = {
-      'all': (
-        'custom.css',
-      )
-    }

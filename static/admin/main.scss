@@ -1,0 +1,112 @@
+//colors
+$color_desert_storm_approx: #f8f8f8;
+$color_alto_approx: #ddd;
+$color_wedgewood_approx: #4f88a4;
+$white: #fff;
+$white_25: rgba(255,255,255,0.25);
+$red: #f00;
+$color_ming_approx: #3a667b;
+
+
+
+.django-ckeditor-widget {
+	width: calc(100% - 2px) !important;
+}
+
+
+
+.product-details {
+	tr {
+		border: none;
+        td {
+            padding: 3px 40px 3px 10px;
+            border: none;
+        }
+	}
+}
+
+
+.dynamic-productoption_set {
+	background: $color_desert_storm_approx;
+	border: 1px solid $color_alto_approx;
+	fieldset {
+		background: none;
+	}
+	.form-row {
+		border: none;
+		> div > label {
+			display: none;
+			+ div {
+				margin-left: 0;
+			}
+		}
+	}
+	~ .dynamic-productoption_set {
+		background: $color_desert_storm_approx;
+		border-top: none;
+	}
+}
+
+.dynamic-productinfo {
+	h3 {
+		display: none;
+	}
+	label {
+		display: none;
+	}
+	.form-row.field-info {
+		padding: 0;
+	}
+}
+
+
+.admin-tabs {
+	display: flex;
+	width: 100%;
+	background: $color_wedgewood_approx;
+	margin-bottom: 1em;
+	> a {
+		padding: 0.6em 1em;
+		text-align: center;
+		text-transform: uppercase;
+		color: $white;
+		font-size: 1.2em;
+		border-right: 2px solid $white_25;
+		&.tab-active {
+			background: $color_ming_approx !important;
+		}
+        &[data-error]:after {
+            content: ' ! ';
+            font-weight: bolder;
+            color: $red;
+        }
+	}
+	~ .inline-group fieldset {
+		> h2 {
+			display: none;
+		}
+		> table > thead {
+		}
+	}
+}
+
+
+.dynamic-productimage_set > td.original > p {
+	display: none;
+}
+
+
+.inline-group .tabular tr.has_original td {
+	padding-top: 0.7em;
+}
+
+
+.form-row.field-specific_detail {
+	padding: 2px 8px;
+}
+#productoption_set-group .add-row {
+	display: none;
+}
+.product-detail .detail-name {
+	min-width: 120px;
+}
