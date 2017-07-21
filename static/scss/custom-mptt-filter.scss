@@ -2,6 +2,8 @@
     padding-left: 4px;
 }
 
+
+
 .mptt-filter-item{
     >input{
         display: none !important;
@@ -22,14 +24,6 @@
     >a{
         display: inline !important;
     }
-    >a.boiled{
-        color : #57a2d1 !important;
-        font-weight: bold;
-    }
-    >a.selected{
-        color : #08d !important;
-        font-weight: bold;
-    }
     >div{
         display: none !important;
         padding-left: 15px;
@@ -39,5 +33,13 @@
     }
     &.leaf > a{
         padding-left: 25px;
+    }
+    &.boiled > a{
+        color : #57a2d1 !important;
+        font-weight: bold;
+    }
+    &.selected > a{
+        color : #08d !important;
+        font-weight: bold;
     }
 }

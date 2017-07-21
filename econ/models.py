@@ -8,6 +8,9 @@ from abc import ABCMeta, abstractmethod
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.functional import cached_property
 from ckeditor.fields import RichTextField
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 
 class BaseUser(User):
     GENDER = (
@@ -82,6 +85,12 @@ class AgencyMember(models.Model):
 
 
 class Cagetory(MPTTModel):
+    OPTIONS_CHOICES = (
+        (1,'Inherit'),
+        (2,'Option by specify'),
+        (3,'Option by generic'),
+    )
+
     cagetory_name = models.CharField(max_length=50)
     parent = TreeForeignKey(
         'self',
@@ -90,26 +99,56 @@ class Cagetory(MPTTModel):
         related_name='children',
         db_index=True,
     )
+    tags = GenericRelation('TaggedInfo')
+
+    optiontype = models.IntegerField(choices=OPTIONS_CHOICES, default=1)   
+
+    def option_type(self):
+        if self.optiontype == 1 and self.parent_id:
+            return self.parent.option_type()
+        else :
+            return self.optiontype
+
     def __str__(self):
         return self.cagetory_name
 
     def paths(self):
         return self.get_ancestors(ascending=False, include_self=True)
 
+    # @cached_property
+    def path_ids(self):
+        return self.paths().values('id')
+
     def allproducts(self):
-        allcagetory = self.get_descendants(include_self=True)
-        return Product.objects.filter(product_cagetory__id__in=allcagetory.values('id'))
-        
+        allcagetory_ids = self.get_descendants(include_self=True).values('id')
+        return Product.objects.filter(product_cagetory__id__in=allcagetory_ids)
+
+
+    # @cached_property
     def allspecific(self):
-        return Specific.objects.filter(specific_of__id__in=self.paths().values('id'))
+        path_ids = self.path_ids()
+        return Specific.objects.filter(specific_of__id__in=path_ids)
+
+    # @cached_property
+    # def parent_tags(self,is_self=True):
+    #     ctype = ContentType.objects.get_for_model(self.__class__)
+    #     parents = self.get_ancestors(ascending=False, include_self=False)
+    #     parent_ids = parents.values('id')
+
+    #     try:
+    #         tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+    #         return ', '.join([(i.tags) for i in tags])
+    #     except :
+    #         return ''
+
 
     @staticmethod
     def hash():
         return Cagetory.incrementCount 
 
     def save(self, *args, **kwargs):
-        print ('incrementCount: %s',Cagetory.incrementCount)
         Cagetory.incrementCount += 1
+        print ('incrementCount: %s',Cagetory.incrementCount)
         super(Cagetory, self).save(*args, **kwargs) # Call the "real" save() method.
 
 Cagetory.incrementCount = 0
@@ -118,6 +157,8 @@ class Brand(models.Model):
     brand_name = models.CharField(max_length=100)
     brand_sym = models.CharField(max_length=20)
     brand_logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
+    tags = GenericRelation('TaggedInfo')
+    
     def __str__(self):
         return self.brand_name
 
@@ -129,6 +170,14 @@ class Product(models.Model):
     product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     product_quatity = models.IntegerField(verbose_name='numbers',default=0)
+    tags = GenericRelation('TaggedInfo')
+
+    # def parent_tags(self):
+    #     if self.product_cagetory_id: 
+    #         return self.product_cagetory.parent_tags()
+    #     else:
+    #         return '-------------------'
+
     # product_info = HTMLField(null=True, blank=True)
     # product_detail = models.ManyToManyField('SpecificDetail',related_name='product')
 
@@ -212,4 +261,34 @@ class ProductSpecDetail(models.Model):
         else:
             return None
 
-    
+
+
+class TaggedInfo(models.Model):
+    slug = models.SlugField(unique=True)
+    tags = models.TextField(max_length=400,null=True,blank=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    def __str__(self):              # __unicode__ on Python 2
+        return self.tags
+
+    def parent_tags(self,instance):
+
+
+        if isinstance(instance,Cagetory):
+            ctype = ContentType.objects.get_for_model(Cagetory)
+            parents = instance.get_ancestors(ascending=False, include_self=False)
+            parent_ids = parents.values('id')
+            tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+            return ', '.join([(i.tags) for i in tags])
+
+        elif isinstance(instance,Product) and instance.product_cagetory_id:
+            cagetory = instance.product_cagetory
+            ctype = ContentType.objects.get_for_model(Cagetory)
+            parents = cagetory.get_ancestors(ascending=False, include_self=True)
+            parent_ids = parents.values('id')
+            tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+            return ', '.join([(i.tags) for i in tags])
+
+        else :
+            return ''

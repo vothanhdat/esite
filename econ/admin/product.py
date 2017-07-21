@@ -12,6 +12,7 @@ from util.admin.admin_customtreefilter import CustomTreeRelatedFieldListFilter
 from .specificdetail  import SpecificDetailInline
 from django import forms
 from ..models import Product
+from .tagged import TagInlineParent
 
 
 
@@ -68,6 +69,8 @@ class ProductOptionInline(admin.StackedInline):
 
 
 
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
   # fields = ['name', 'by_admin']
@@ -106,8 +109,15 @@ class ProductAdmin(admin.ModelAdmin):
         'product_cagetory' : AutoCompleteWiget('econ:cagetory-ac'),
       }
 
+  class ProductTagInline(TagInlineParent):
+    def parent_tags(self,instance):
+      if self.parent_obj: 
+        return instance.parent_tags(self.parent_obj)
+      else:
+        return '-------------------'
+
   form = ProductForm
-  inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,ProductOptionInline,ProductPromotionInLine]
+  inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,ProductOptionInline,ProductTagInline,ProductPromotionInLine]
   list_display = ['product_name', 'product_cagetory', 'product_branch','product_price','product_quatity' ] 
   list_filter = [ ('product_cagetory', CustomTreeRelatedFieldListFilter),'product_branch','product_agency']
   search_fields = ['product_name', 'product_cagetory__cagetory_name', 'product_branch__brand_name' ] 

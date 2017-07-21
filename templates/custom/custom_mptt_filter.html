@@ -7,79 +7,67 @@
 {% compress css %}
     <link rel="stylesheet" type="text/x-scss" href="{% static "scss/custom-mptt-filter.scss" %}" />
 {% endcompress %}
-<script>
 
-    !function(){
-        if(!window.mptt_filter_tree){
-            window.mptt_filter_tree = true;
-            
-            addEventListener('load',function(){
-                $ = django.jQuery;
-                
-                $('[data-mptttree]').each((i,e) => {
-             
-                    var containers = [...$(e).find('[data-mpttid]')]
-                    var containerindex = containers
-                        .reduce((e, f) => (e[f.dataset.mpttid] = f, e), {})
-
-                    // mode item to right position
-                    for (var e of [...$(e).find('[data-mpttparentid]')]) {
-                        var parent = e.dataset.mpttparentid
-                        if (parent && containerindex[parent]) {
-                            e.remove()
-                            containerindex[parent].appendChild(e)
-                        }
-                    }
-                    for (var e of containers) 
-                        if(e.childElementCount == 0)
-                            e.parentElement.getElementsByTagName('label')[0].style.visibility = 'hidden'
-
-
-                })     
-
-
-                var rawdata =localStorage.getItem('mptt-filter-input')
-                try{
-                    var data = JSON.parse(rawdata) || {}
-                }catch(e){
-                    var data = {}
-                }
-
-                for(var e of [...$('input[id^=mptt-filter-]')]){
-                    e.checked = data[e.id] 
-                }
-                
-
-                $("input[id^=mptt-filter-]").change(function() {
-                    data[this.id] = this.checked
-                    localStorage.setItem('mptt-filter-input',JSON.stringify(data))
-                });
-
-                var selected = $(".mptt-filter-item > a.selected")[0]
-
-                if(selected){
-                    do{
-                        var parent = selected.parentElement.parentElement.parentElement
-                        selected = parent.children[2];
-                        selected && selected.classList.add('boiled');
-                        console.log(parent)
-                    }while(selected && parent.classList.contains('mptt-filter-item'))
-                }
-
-
-            })
-
-        }
-    }()
-</script>
 <div class='mptt-filter-root' data-mptttree="{{title}}">
     {% for choice in choices %}
-        <div class="mptt-filter-item" data-mpttparentid="{{choice.parent_id}}">
+        <div class="mptt-filter-item {% if choice.selected %} selected {% endif %}" data-mpttparentid="{{choice.parent_id}}" data-mpttid="{{choice.display.id}}">
             <input type="checkbox" checked id="mptt-filter-{{title}}-{{choice.display.id}}"/>
             <label for="mptt-filter-{{title}}-{{choice.display.id}}"></label>
-            <a href="{{ choice.query_string|iriencode }}" {% if choice.selected %} class="selected"{% endif %} >{{choice.display}}</a>
-            <div class="mptt-filter-childs" data-mpttid="{{choice.display.id}}"> </div>
+            <a href="{{ choice.query_string|iriencode }}">{{choice.display}}</a>
+            <div class="mptt-filter-childs" > </div>
         </div>
     
     {% endfor %}
 </div>
+
+<script>
+    !function(){
+        var mpttTree = [...document.querySelectorAll('[data-mpttid]')]
+        var mpttTreeIndex = mpttTree
+            .reduce((e, f) => (e[f.dataset.mpttid] = f, e), {})
+
+        for(var e of mpttTree){
+            var parent_id = e.dataset.mpttparentid
+            if(parent_id && mpttTreeIndex[parent_id]){
+                e.remove()
+                mpttTreeIndex[parent_id].children[3].appendChild(e)
+            }
+        }
+
+        for(var e of mpttTree){
+            if (e.children[3].childElementCount == 0){
+                e.children[1].style.visibility = 'hidden'
+            }
+        }
+        
+
+        var rawdata = localStorage.getItem('mptt-filter-input')
+        try{
+            var data = JSON.parse(rawdata) || {}
+        }catch(e){
+            var data = {}
+        }
+
+        for(var e of [...document.querySelectorAll('[data-mpttid] input')]){
+            e.checked = data[e.id] 
+        }
+
+        function onchange(){
+            data[this.id] = this.checked
+            localStorage.setItem('mptt-filter-input',JSON.stringify(data))
+        }
+
+        mpttTree.map(e => e.children[0]).forEach(e => {
+            e.addEventListener("change",onchange)
+        })
+        
+        var parent = document.querySelector("[data-mpttid].selected")
+
+        if(parent){
+            do{
+                var parent = parent.parentElement.parentElement
+                parent && parent.classList.add('boiled');
+            }while(parent && parent.dataset['mpttid'])
+        }
+    }()
+</script>

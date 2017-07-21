@@ -28,3 +28,13 @@ def indexbycagetory(request,cagetory_id):
         'product_list': product_list,
     }
     return HttpResponse(template.render(context, request))
+
+def indexbybrand(request,brand_id):
+    page = request.GET.get('page') or 1
+    brand = Brand.objects.get(id=brand_id)
+    product_list = brand.product_set.all()
+    template = loader.get_template('list_product.html')
+    context = {
+        'product_list': product_list,
+    }
+    return HttpResponse(template.render(context, request))

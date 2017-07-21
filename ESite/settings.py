@@ -49,11 +49,13 @@ INSTALLED_APPS = (
     'ckeditor',
     'cacheops',
     'hitcount',
-    # 'debug_toolbar',
+    'debug_toolbar',
 )
 
-MIDDLEWARE_CLASSES = (
+
+MIDDLEWARE = (
     # 'django.middleware.cache.UpdateCacheMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -283,3 +285,5 @@ CKEDITOR_CONFIGS = {
         ]),
     }
 }
+
+INTERNAL_IPS=('127.0.0.1',)
