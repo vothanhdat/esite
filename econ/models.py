@@ -12,6 +12,10 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
 
+
+# from util.func import memoized_method
+# from functools import lru_cache
+
 class BaseUser(User):
     GENDER = (
         ('U','Unknow'), 
@@ -115,7 +119,6 @@ class Cagetory(MPTTModel):
     def paths(self):
         return self.get_ancestors(ascending=False, include_self=True)
 
-    # @cached_property
     def path_ids(self):
         return self.paths().values('id')
 
@@ -124,23 +127,10 @@ class Cagetory(MPTTModel):
         return Product.objects.filter(product_cagetory__id__in=allcagetory_ids)
 
 
-    # @cached_property
+    
     def allspecific(self):
         path_ids = self.path_ids()
         return Specific.objects.filter(specific_of__id__in=path_ids)
-
-    # @cached_property
-    # def parent_tags(self,is_self=True):
-    #     ctype = ContentType.objects.get_for_model(self.__class__)
-    #     parents = self.get_ancestors(ascending=False, include_self=False)
-    #     parent_ids = parents.values('id')
-
-    #     try:
-    #         tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
-    #         return ', '.join([(i.tags) for i in tags])
-    #     except :
-    #         return ''
-
 
     @staticmethod
     def hash():
@@ -171,23 +161,6 @@ class Product(models.Model):
     product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     product_quatity = models.IntegerField(verbose_name='numbers',default=0)
     tags = GenericRelation('TaggedInfo')
-
-    # def parent_tags(self):
-    #     if self.product_cagetory_id: 
-    #         return self.product_cagetory.parent_tags()
-    #     else:
-    #         return '-------------------'
-
-    # product_info = HTMLField(null=True, blank=True)
-    # product_detail = models.ManyToManyField('SpecificDetail',related_name='product')
-
-    @cached_property
-    def product_img(self):
-        first = self.productimage_set.first()
-        if first :
-            return first.url()
-        else :
-            return ''; 
 
     def __str__(self):
         return self.product_name
@@ -234,6 +207,7 @@ class ProductOption(models.Model):
     prod = models.ForeignKey(Product,on_delete=models.CASCADE)
     product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
+    
     def prod_details(self):
         return self.productspecdetail_set.all()
 
@@ -251,12 +225,13 @@ class ProductSpecDetail(models.Model):
     prod_option = models.ForeignKey(ProductOption,on_delete=models.CASCADE,null=True,blank=True)
     class Meta:
         unique_together = ("prod","prod_option")
+
+
     def __str__(self):
-        return self.spec.__str__()
-    
+        return self.spec.detail_value
+        
     def specof(self):
-        print 'sssssssssssssssssssssss'
-        if self.spec:
+        if self.spec_id:
             return self.spec.detail_field
         else:
             return None

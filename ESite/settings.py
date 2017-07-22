@@ -45,7 +45,7 @@ INSTALLED_APPS = (
     'social_django',
     'mptt',
     "compressor",
-    'nested_admin',
+    # 'nested_admin',
     'ckeditor',
     'cacheops',
     'hitcount',
@@ -191,8 +191,10 @@ CACHEOPS = {
 
     # # Automatically cache all gets and queryset fetches
     # # to other django.contrib.auth models for an hour
-    'hitcount.*': {'ops': ('all'), 'timeout': 60*60, 'cache_on_save': True},
-    'econ.*': {'ops': 'all', 'timeout': 60*60, 'cache_on_save': True},
+
+    
+    # 'hitcount.*': {'ops': ('all'), 'timeout': 60*60, 'cache_on_save': True},
+    # 'econ.*': {'ops': 'all', 'timeout': 60*60, 'cache_on_save': True},
 
     # Cache all queries to Permission
     # 'all' is just an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}

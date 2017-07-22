@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 
-from .views import index,product,autocomplete,setting,password,slug
+from .views import index,product,autocomplete,setting,slug
 
 app_name = 'econ'
 urlpatterns = [
@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^brand/(?P<brand_id>[0-9]+)/$', index.indexbybrand, name='brand'),
     url(r'^accounts/$', setting.index, name='settings'),
     url(r'^accounts/profile/$', setting.index, name='settings'),
-    url(r'^settings/$', password.index, name='password'),
+    # url(r'^settings/$', password.index, name='password'),
     url(r'^autocomplete/', include(autocomplete.urlpatterns), name='auto-complete'),
     url(r'^$', index.index, name='index'),
     url(r'^(?P<slug>[\w-]+)/$', slug.index, name='slug'),

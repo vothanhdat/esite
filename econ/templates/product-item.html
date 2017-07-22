@@ -1,6 +1,6 @@
 <div class="product-item"> 
     <a href="{% url 'econ:product' product.id %}">
-        <img src="{{product.product_img}}" alt="">      
+        <img src="{{product.images|first}}" alt="">      
     </a>
     <div class="product-name" href="{% url 'econ:product' product.id %}">{{ product.product_name }}</div>
     <div class="product-price">{{ product.product_price }}</div class="product-price">

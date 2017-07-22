@@ -1,6 +1,6 @@
 
 {% load cache %}
-{% cache 3600 cagetory_list cagetory_list_hash %}
+{% comment %} {% cache 3600 cagetory_list cagetory_list_hash %} {% endcomment %}
 
 <div class='menu-root' id='menu-root'>
     
@@ -32,4 +32,4 @@
         }()
     </script>
 </div>
-{% endcache %}
+{% comment %} {% endcache %} {% endcomment %}

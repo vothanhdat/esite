@@ -25,12 +25,14 @@
 
     <div class="product-agency">{{ product.product_agency }}</div class="">
 
-    {% with details=product.productspecdetail_set.all %}
-    <div class="product-details-title">Specification : </div>
-    {% include "product_specific_detail.html" %} {% endwith %}
+    {% with details=product_details %}
+        <div class="product-details-title">Specification : </div>
+        {% include "product_specific_detail.html" %} 
+    {% endwith %}
     <div class="product-img">
-        {% if product.productimage_set and product.productimage_set.first %} {% with product.productimage_set.first as image %}
-        <img src="{{product.product_img}}" alt="" /> {% endwith %} {% endif %}
+        {% for image in product.productimage_set.all %}
+            <img src="{{image.url}}" alt="" /> 
+        {% endfor %}
     </div>
 
     <div class='product-info'>

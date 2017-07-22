@@ -59,7 +59,6 @@ class InheritTreeRelatedFieldListFilter(CustomTreeRelatedFieldListFilter):
       if self.lookup_val:
         other_model = self.other_model.objects.get(pk=self.lookup_val)
         other_models = other_model.get_ancestors(True, include_self=True).values('id')
-        print other_models
         del self.used_parameters[self.changed_lookup_kwarg]
         self.used_parameters.update(
           {'%s__%s__in' % (self.field_path, self.rel_name): other_models}

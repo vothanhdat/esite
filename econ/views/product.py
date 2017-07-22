@@ -10,11 +10,19 @@ from django.contrib.auth.decorators import login_required
     
 # Create your views here.
 # @login_required
-def index(request,product_id):
-    product = Product.objects.get(id=product_id)
+def index(request,product_id,object=None):
+    product = object or Product.objects.get(id=product_id)
+
+
+    product_details = product.productspecdetail_set.prefetch_related(
+        'spec',
+        'spec__detail_field'
+    )
 
     template = loader.get_template('product-detail.html')
     context = {
         'product': product,
+        'product_details': product_details
     }
+    
     return HttpResponse(template.render(context, request))
