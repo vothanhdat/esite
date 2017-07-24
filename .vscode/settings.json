@@ -6,7 +6,8 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "staticfile": true
+        "staticfile": true,
+        "**/*.pyc": true
     },
     "python.formatting.provider": "yapf"
 }

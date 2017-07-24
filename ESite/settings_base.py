@@ -27,7 +27,7 @@ SECRET_KEY = '%n%1xu43ytm*5z9o347qwb#^osx23y%a+$wgtv9n!r@u@qmyn$'
 
 ALLOWED_HOSTS = []
 
-
+SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = (
@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'dal',
     'dal_select2',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -43,10 +44,14 @@ INSTALLED_APPS = (
     'django_mptt_admin',
     'social_django',
     'mptt',
+    'django_comments',
     "compressor",
     'ckeditor',
     'cacheops',
     'hitcount',
+    'tagging',
+    'zinnia',
+
 )
 
 
@@ -80,7 +85,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',  # <--
                 'social_django.context_processors.login_redirect',
-                'econ.context_processor.cagetory_list'
+                'zinnia.context_processors.version', 
+                'econ.context_processor.cagetory_list',
             ],
             # 'loaders':[
             #     'django.template.loaders.filesystem.Loader',
