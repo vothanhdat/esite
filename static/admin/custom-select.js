@@ -1,5 +1,7 @@
 ; (function ($) {
 
+
+
     function get_forwardList(element) {
         var divSelector = "div.dal-forward-conf#dal-forward-conf-for-" + element.attr("id");
         var form = element.length > 0 ? $(element[0].form) : $();
@@ -125,16 +127,21 @@
             };
         }
 
-        $(this).select2({
-            tokenSeparators: element.attr('data-tags') ? [','] : null,
-            debug: true,
-            placeholder: '',
-            minimumInputLength: 0,
-            allowClear: !$(this).is('required'),
-            templateResult: template,
-            templateSelection: template,
-            ajax: ajax,
-        });
+        try {
+            
+            $(this).select2({
+                tokenSeparators: element.attr('data-tags') ? [','] : null,
+                debug: true,
+                placeholder: '',
+                minimumInputLength: 0,
+                allowClear: !$(this).is('required'),
+                templateResult: template,
+                templateSelection: template,
+                ajax: ajax,
+            });
+        } catch (error) {
+            debugger;
+        }
 
         $(this).on('select2:selecting', function (e) {
             var data = e.params.args.data;
@@ -154,18 +161,20 @@
                     text: data.id,
                     forward: get_forwards($(this))
                 },
-                beforeSend: function(xhr, settings) {
+                beforeSend: function (xhr, settings) {
                     xhr.setRequestHeader("X-CSRFToken", document.csrftoken);
                 },
-                success: function(data, textStatus, jqXHR ) {
+                success: function (data, textStatus, jqXHR) {
                     select.append(
-                        $('<option>', {value: data.id, text: data.text, selected: true})
+                        $('<option>', { value: data.id, text: data.text, selected: true })
                     );
                     select.trigger('change');
                     select.select2('close');
                 }
             });
         });
+
+
 
 
     });

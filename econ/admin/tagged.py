@@ -3,7 +3,25 @@ from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
 from django.forms import Textarea
 from django.contrib.contenttypes.admin  import GenericStackedInline, BaseGenericInlineFormSet
+# from zinnia.admin.widgets import TagAutoComplete
+from ..widget.TaggingWiget import TagAutoComplete
+from django import forms
+
 from ..models import TaggedInfo
+
+
+
+class TaggedInfoForm(forms.ModelForm):
+    class Meta:
+        """
+        EntryAdminForm's Meta.
+        """
+        fields = forms.ALL_FIELDS
+        model = TaggedInfo
+        widgets = {
+            'tags': TagAutoComplete,
+        }
+
 
 class RequiredInlineFormSet(BaseGenericInlineFormSet):
     """
@@ -18,28 +36,25 @@ class RequiredInlineFormSet(BaseGenericInlineFormSet):
         form.empty_permitted = False
         return form
 
+
+
 class TagInline(GenericStackedInline):
+    form = TaggedInfoForm
     model = TaggedInfo
+    # formset = RequiredInlineFormSet
     max_num = 1
     verbose_name = "SEO Info"
     verbose_name_plural = "TAGGED"
-    formset = RequiredInlineFormSet
-
-
-
-
-    formfield_overrides = {
-        models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':40})},
-    }
 
 
 
 class TagInlineParent(TagInline):
-    fields = ('parent_tags','tags','slug',)
-    readonly_fields = ('parent_tags',)
+    
+    # fields = ('slug',)
+    # readonly_fields = ('parent_tags',)
 
-    def parent_tags(self):
-        raise 'sssssssssssssssss'
+    # def parent_tags(self):
+    #     raise 'sssssssssssssssss'
 
     def get_formset(self, request, obj=None, **kwargs):
         self.parent_obj = obj

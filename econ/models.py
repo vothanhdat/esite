@@ -11,7 +11,8 @@ from ckeditor.fields import RichTextField
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
-
+from tagging.registry import register
+from tagging.fields import TagField
 
 # from util.func import memoized_method
 # from functools import lru_cache
@@ -240,30 +241,34 @@ class ProductSpecDetail(models.Model):
 
 class TaggedInfo(models.Model):
     slug = models.SlugField(unique=True)
-    tags = models.TextField(max_length=400,null=True,blank=True)
+    tags = TagField()
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     def __str__(self):              # __unicode__ on Python 2
-        return self.tags
+        return self.slug
 
-    def parent_tags(self,instance):
+    # def parent_tags(self,instance):
 
 
-        if isinstance(instance,Cagetory):
-            ctype = ContentType.objects.get_for_model(Cagetory)
-            parents = instance.get_ancestors(ascending=False, include_self=False)
-            parent_ids = parents.values('id')
-            tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
-            return ', '.join([(i.tags) for i in tags])
+    #     if isinstance(instance,Cagetory):
+    #         ctype = ContentType.objects.get_for_model(Cagetory)
+    #         parents = instance.get_ancestors(ascending=False, include_self=False)
+    #         parent_ids = parents.values('id')
+    #         tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+    #         return ', '.join([(i.tags) for i in tags])
 
-        elif isinstance(instance,Product) and instance.product_cagetory_id:
-            cagetory = instance.product_cagetory
-            ctype = ContentType.objects.get_for_model(Cagetory)
-            parents = cagetory.get_ancestors(ascending=False, include_self=True)
-            parent_ids = parents.values('id')
-            tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
-            return ', '.join([(i.tags) for i in tags])
+    #     elif isinstance(instance,Product) and instance.product_cagetory_id:
+    #         cagetory = instance.product_cagetory
+    #         ctype = ContentType.objects.get_for_model(Cagetory)
+    #         parents = cagetory.get_ancestors(ascending=False, include_self=True)
+    #         parent_ids = parents.values('id')
+    #         tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+    #         return ', '.join([(i.tags) for i in tags])
 
-        else :
-            return ''
+    #     else :
+    #         return ''
+
+
+# register(TaggedInfo)
+
