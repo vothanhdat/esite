@@ -245,7 +245,7 @@ class TaggedInfo(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
-    
+
     def __str__(self):              # __unicode__ on Python 2
         return self.slug
 
@@ -265,6 +265,13 @@ class TaggedInfo(models.Model):
             parents = cagetory.get_ancestors(ascending=False, include_self=True)
             parent_ids = parents.values('id')
             tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+
+            ctype = ContentType.objects.get_for_model(Brand)
+            tags = tags | TaggedInfo.objects.filter(
+                content_type__pk = ContentType.objects.get_for_model(Brand).id,
+                object_id=instance.product_branch_id
+            )
+
             return ', '.join([(i.tags) for i in tags])
 
         else :

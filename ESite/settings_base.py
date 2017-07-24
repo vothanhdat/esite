@@ -118,7 +118,10 @@ DATABASES = {
         'NAME': 'esite',
         'USER': 'root',
         'PASSWORD': 'qwe',
-        'OPTIONS': {'charset': 'utf8mb4'},
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            # 'init_command': ("SET GLOBAL time_zone='%s'" % '+7:00'),
+        },
     }
 }
 
@@ -195,6 +198,5 @@ CACHES = {
 
 from .ckeditor_conf import CKEDITOR_CONFIGS
 
-
-
-
+ZINNIA_MAIL_COMMENT_REPLY = False
+ZINNIA_MAIL_COMMENT_AUTHORS = False
