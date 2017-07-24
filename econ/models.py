@@ -245,29 +245,30 @@ class TaggedInfo(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
+    
     def __str__(self):              # __unicode__ on Python 2
         return self.slug
 
-    # def parent_tags(self,instance):
+    def parent_tags(self,instance):
 
 
-    #     if isinstance(instance,Cagetory):
-    #         ctype = ContentType.objects.get_for_model(Cagetory)
-    #         parents = instance.get_ancestors(ascending=False, include_self=False)
-    #         parent_ids = parents.values('id')
-    #         tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
-    #         return ', '.join([(i.tags) for i in tags])
+        if isinstance(instance,Cagetory):
+            ctype = ContentType.objects.get_for_model(Cagetory)
+            parents = instance.get_ancestors(ascending=False, include_self=False)
+            parent_ids = parents.values('id')
+            tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+            return ', '.join([(i.tags) for i in tags])
 
-    #     elif isinstance(instance,Product) and instance.product_cagetory_id:
-    #         cagetory = instance.product_cagetory
-    #         ctype = ContentType.objects.get_for_model(Cagetory)
-    #         parents = cagetory.get_ancestors(ascending=False, include_self=True)
-    #         parent_ids = parents.values('id')
-    #         tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
-    #         return ', '.join([(i.tags) for i in tags])
+        elif isinstance(instance,Product) and instance.product_cagetory_id:
+            cagetory = instance.product_cagetory
+            ctype = ContentType.objects.get_for_model(Cagetory)
+            parents = cagetory.get_ancestors(ascending=False, include_self=True)
+            parent_ids = parents.values('id')
+            tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+            return ', '.join([(i.tags) for i in tags])
 
-    #     else :
-    #         return ''
+        else :
+            return ''
 
 
 # register(TaggedInfo)

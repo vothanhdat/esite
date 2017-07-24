@@ -1,7 +1,10 @@
 from dal import autocomplete
 from django.conf.urls import url
+from tagging.models import Tag
 
 from ..models import SpecificDetail,Specific,Cagetory,Product
+from django.http import HttpResponse
+from django.views.decorators.cache import cache_page
 
 
 
@@ -95,6 +98,11 @@ class CagetoryAutoComplete(autocomplete.Select2QuerySetView):
         return qs
 
 
+@cache_page(60 * 15)
+def TagAutocomplete(request):
+    return HttpResponse(','.join([e['name'] for e in Tag.objects.all().values('name')]))
+
+
 
 app_name = 'econ'
 urlpatterns = [
@@ -116,5 +124,10 @@ urlpatterns = [
         r'^cagetory/$',
         CagetoryAutoComplete.as_view(),
         name='cagetory-ac'
+    ),
+    url(
+        r'^tags/$',
+        TagAutocomplete,
+        name='tag-ac'
     ),
 ]

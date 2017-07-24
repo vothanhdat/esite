@@ -127,21 +127,18 @@
             };
         }
 
-        try {
             
-            $(this).select2({
-                tokenSeparators: element.attr('data-tags') ? [','] : null,
-                debug: true,
-                placeholder: '',
-                minimumInputLength: 0,
-                allowClear: !$(this).is('required'),
-                templateResult: template,
-                templateSelection: template,
-                ajax: ajax,
-            });
-        } catch (error) {
-            debugger;
-        }
+        $(this).select2({
+            tokenSeparators: element.attr('data-tags') ? [','] : null,
+            debug: true,
+            placeholder: '',
+            minimumInputLength: 0,
+            allowClear: !$(this).is('required'),
+            templateResult: template,
+            templateSelection: template,
+            ajax: ajax,
+        });
+
 
         $(this).on('select2:selecting', function (e) {
             var data = e.params.args.data;
@@ -178,6 +175,25 @@
 
 
     });
+
+
+    $(document).on('autocompleteLightInitialize', '[data-autocomplete-light-function=customtagging2]', function () {
+        var element = $(this);
+        var urldata = $(this).attr('data-autocomplete-light-url');
+        if (urldata) {
+            
+            $.get(urldata).then((datastring) => {
+                var data = datastring.split(',')
+                $(this).select2({
+                    placeholder: '',
+                    dropdownCssClass:'customtagging2',
+                    data : data,
+                });
+            })
+            
+        }
+    });
+
 
     // Remove this block when this is merged upstream:
     // https://github.com/select2/select2/pull/4249

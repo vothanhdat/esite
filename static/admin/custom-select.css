@@ -1,0 +1,3 @@
+.customtagging2 ul li[aria-selected="true"]{
+    display: none;
+}
