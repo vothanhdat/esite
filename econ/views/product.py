@@ -11,8 +11,8 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 # @login_required
 def index(request,product_id,object=None):
-    product = object or Product.objects.get(id=product_id)
 
+    product = object or Product.objects.get(id=product_id)
 
     product_details = product.productspecdetail_set.prefetch_related(
         'spec',

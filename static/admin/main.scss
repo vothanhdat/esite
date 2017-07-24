@@ -91,6 +91,10 @@ $color_ming_approx: #3a667b;
 }
 
 
+#productimage_set-group fieldset .original >p {
+	display: none;
+}
+
 .dynamic-productimage_set > td.original > p {
 	display: none;
 }
