@@ -51,7 +51,7 @@ INSTALLED_APPS = (
     'hitcount',
     'tagging',
     'zinnia',
-
+    'ckeditor_uploader',
 )
 
 
@@ -179,9 +179,7 @@ CACHEOPS_REDIS = {
     'db': 1,             # SELECT non-default redis database
                          # using separate redis db or redis instance
                          # is highly recommended
-
     'socket_timeout': 3,   # connection timeout in seconds, optional
-    'unix_socket_path': '' # replaces host and port
 }
 
 
@@ -196,6 +194,8 @@ CACHES = {
     }
 }
 
+
+CKEDITOR_UPLOAD_PATH = "media/"
 from .ckeditor_conf import CKEDITOR_CONFIGS
 
 ZINNIA_MAIL_COMMENT_REPLY = False

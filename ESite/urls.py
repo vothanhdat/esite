@@ -26,11 +26,10 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^oauth/', include('social_django.urls', namespace='social')),
-    # url(r'^nested_admin/', include('nested_admin.urls')),
-    # url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'hitcount/', include('hitcount.urls', namespace='hitcount')),
     url(r'^weblog/', include('zinnia.urls')),
     url(r'^comments/', include('django_comments.urls')),
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^', include('econ.urls')),
 ]
 
