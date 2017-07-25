@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'tagging',
     'zinnia',
     'ckeditor_uploader',
+    'nested_admin',
 )
 
 

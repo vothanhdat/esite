@@ -5,7 +5,7 @@ from django.forms import Textarea
 from django.contrib.contenttypes.admin  import GenericStackedInline, BaseGenericInlineFormSet
 from django import forms
 from dal import autocomplete
-from ..models import TaggedInfo
+# from ..models import TaggedInfo
 from util.wiget.autocomplete import AutoTaggingWiget
 from tagging.models import Tag
 from django.core.cache import cache
@@ -34,7 +34,7 @@ class TaggedInfoForm(autocomplete.FutureModelForm):
         EntryAdminForm's Meta.
         """
         fields = forms.ALL_FIELDS
-        model = TaggedInfo
+        # model = TaggedInfo
         widgets = {
             'tags': AutoTaggingWiget('econ:tag-ac')
         }
@@ -54,7 +54,7 @@ class RequiredInlineFormSet(BaseGenericInlineFormSet):
         return form
 
 class TagInline(GenericStackedInline):
-    model = TaggedInfo
+    # model = TaggedInfo
     
 
 

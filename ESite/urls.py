@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^weblog/', include('zinnia.urls')),
     url(r'^comments/', include('django_comments.urls')),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
+    url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^', include('econ.urls')),
 ]
 

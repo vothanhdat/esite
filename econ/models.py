@@ -5,7 +5,7 @@ from django.utils.text import *
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
 from abc import ABCMeta, abstractmethod
-from mptt.models import MPTTModel, TreeForeignKey
+from mptt.models import MPTTModel, TreeForeignKey, TreeManager
 from django.utils.functional import cached_property
 from ckeditor.fields import RichTextField
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -13,6 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
 from tagging.registry import register
 from tagging.fields import TagField
+from tagging.models import Tag
 
 # from util.func import memoized_method
 # from functools import lru_cache
@@ -55,6 +56,7 @@ class Agency(models.Model):
         through='AgencyMember',
         through_fields=('agency', 'user'),
     )
+    slug = models.SlugField(unique=True,null=True, blank=True)
     def __str__(self):
         return self.agency_name
 
@@ -104,7 +106,8 @@ class Cagetory(MPTTModel):
         related_name='children',
         db_index=True,
     )
-    tags = GenericRelation('TaggedInfo')
+    tags = TagField()
+    slug = models.SlugField(unique=True,null=True, blank=True)
 
     optiontype = models.IntegerField(choices=OPTIONS_CHOICES, default=1)   
 
@@ -127,7 +130,10 @@ class Cagetory(MPTTModel):
         allcagetory_ids = self.get_descendants(include_self=True).values('id')
         return Product.objects.filter(product_cagetory__id__in=allcagetory_ids)
 
-
+    # def parent_tags(self):
+    #     parents = self.get_ancestors(ascending=False, include_self=False)
+    #     tags = Tag.objects.usage_for_queryset(parents)
+    #     return tags
     
     def allspecific(self):
         path_ids = self.path_ids()
@@ -148,8 +154,9 @@ class Brand(models.Model):
     brand_name = models.CharField(max_length=100)
     brand_sym = models.CharField(max_length=20)
     brand_logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
-    tags = GenericRelation('TaggedInfo')
-    
+    tags = TagField()
+    slug = models.SlugField(unique=True,null=True, blank=True)
+
     def __str__(self):
         return self.brand_name
 
@@ -161,10 +168,21 @@ class Product(models.Model):
     product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     product_quatity = models.IntegerField(verbose_name='numbers',default=0)
-    tags = GenericRelation('TaggedInfo')
+    tags = TagField()
+    slug = models.SlugField(unique=True,null=True, blank=True)
+
+
+    # def parent_tags(self):
+    #     cagetory = self.product_cagetory
+    #     parents = cagetory.get_ancestors(ascending=False, include_self=True)
+    #     tags = Tag.objects.usage_for_queryset(parents)
+    #     tags +=  Tag.objects.get_for_object(self.product_branch)
+    #     return tags
 
     def __str__(self):
         return self.product_name
+
+
 
 
 class ProductInfo(models.Model):
@@ -239,43 +257,43 @@ class ProductSpecDetail(models.Model):
 
 
 
-class TaggedInfo(models.Model):
-    slug = models.SlugField(unique=True)
-    tags = TagField()
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+# class TaggedInfo(models.Model):
+#     slug = models.SlugField(unique=True)
+#     tags = TagField()
+#     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+#     object_id = models.PositiveIntegerField()
+#     content_object = GenericForeignKey('content_type', 'object_id')
 
-    def __str__(self):              # __unicode__ on Python 2
-        return self.slug
+#     def __str__(self):              # __unicode__ on Python 2
+#         return self.slug
 
-    def parent_tags(self,instance):
+#     def parent_tags(self,instance):
 
 
-        if isinstance(instance,Cagetory):
-            ctype = ContentType.objects.get_for_model(Cagetory)
-            parents = instance.get_ancestors(ascending=False, include_self=False)
-            parent_ids = parents.values('id')
-            tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
-            return ', '.join([(i.tags) for i in tags])
+#         if isinstance(instance,Cagetory):
+#             ctype = ContentType.objects.get_for_model(Cagetory)
+#             parents = instance.get_ancestors(ascending=False, include_self=False)
+#             parent_ids = parents.values('id')
+#             tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+#             return ', '.join([(i.tags) for i in tags])
 
-        elif isinstance(instance,Product) and instance.product_cagetory_id:
-            cagetory = instance.product_cagetory
-            ctype = ContentType.objects.get_for_model(Cagetory)
-            parents = cagetory.get_ancestors(ascending=False, include_self=True)
-            parent_ids = parents.values('id')
-            tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
+#         elif isinstance(instance,Product) and instance.product_cagetory_id:
+#             cagetory = instance.product_cagetory
+#             ctype = ContentType.objects.get_for_model(Cagetory)
+#             parents = cagetory.get_ancestors(ascending=False, include_self=True)
+#             parent_ids = parents.values('id')
+#             tags =  TaggedInfo.objects.filter(content_type__pk = ctype.id,object_id__in=parent_ids)
 
-            ctype = ContentType.objects.get_for_model(Brand)
-            tags = tags | TaggedInfo.objects.filter(
-                content_type__pk = ContentType.objects.get_for_model(Brand).id,
-                object_id=instance.product_branch_id
-            )
+#             ctype = ContentType.objects.get_for_model(Brand)
+#             tags = tags | TaggedInfo.objects.filter(
+#                 content_type__pk = ContentType.objects.get_for_model(Brand).id,
+#                 object_id=instance.product_branch_id
+#             )
 
-            return ', '.join([(i.tags) for i in tags])
+#             return ', '.join([(i.tags) for i in tags])
 
-        else :
-            return ''
+#         else :
+#             return ''
 
 
 # register(TaggedInfo)

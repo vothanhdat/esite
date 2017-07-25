@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.admin.sites import site
 from util.wiget.autocomplete import AutoCompleteWiget,Exclude
 from econ.models import Specific, SpecificDetail, ProductSpecDetail
+from nested_admin.nested import NestedModelAdmin,NestedInlineModelAdmin,NestedStackedInline,NestedTabularInline
 
 class SpecificDetailForm(forms.ModelForm):
   class Meta:
@@ -32,7 +33,7 @@ class SpecificDetailForm(forms.ModelForm):
       return super(SpecificDetailForm,self).get_initial_for_field(field, field_name)
       
 
-class SpecificDetailInline(admin.TabularInline):
+class SpecificDetailInline(NestedTabularInline):
   model = ProductSpecDetail
   form = SpecificDetailForm
   extra = 1
