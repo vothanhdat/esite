@@ -109,21 +109,74 @@ $color_ming_approx: #3a667b;
 .form-row.field-specific_detail {
 	padding: 2px 8px;
 }
-#productoption_set-group > fieldset> .djn-items >.djn-item {
-	>h3{
-		// display: none;
-	}
-	> .djn-group fieldset{
-		
-		.djn-td{
-			select ~ span ~span {
+
+
+
+
+.productoption-inline{
+	> .djn-items >.djn-item {
+		>h3{
+			// display: none;
+		}
+		> .djn-group fieldset{
+			table > thead {
 				display: none;
 			}
+			.djn-td{
+				select ~ span ~span {
+					display: none;
+				}
+			}
 		}
+		.select2-container{
+			min-width: 12em;
+		}
+		.vTextField {
+			width: 17em;
+		}
+	}
+	>.djn-add-item.add-row{
+		display: none;
+	}
+}
+.productoption-inline-container{
+	flex-wrap: nowrap;
+	display: flex;
+	>.prodoption-tabs{
+		width : 150px;
+		min-width: 150px;
+		a{
+			display: block;	
+			padding: 0.5em;
+			cursor: pointer;
+		}
+		a.tab-active{
+			background-color: #4f88a4;
+			color: #eee;
+		}
+		a.tab-new:before{
+			content:' ➕ ';
+			font-weight: bolder;
+			color:#70bf2b;
+			-webkit-text-stroke: 1px #70bf2b;
+		}
+        a[data-error]:after {
+            content: ' ! ';
+            font-weight: bolder;
+            color: $red;
+        }
+	}
+	>.djn-no-drag{
+		display: none;
+	}
+	>.djn-item{
+		flex : 1;
+		border: 1px solid #eee;
+		overflow: hidden;
 	}
 }
 
-#productoption_set-group > fieldset> .djn-items >.djn-item 
+.productoption-inline> .djn-items >.djn-item 
 .product-detail .detail-name {
 	min-width: 120px;
 }

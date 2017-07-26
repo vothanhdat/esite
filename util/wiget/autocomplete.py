@@ -10,8 +10,18 @@ class Exclude(forward.Forward):
         d.update(exclude=self.exclude)
         return d
 
+class Include(forward.Forward):
+    type = "include"
+    def __init__(self, include):
+        self.include = include
+    def to_dict(self):
+        d = super(Include, self).to_dict()
+        d.update(include=self.include)
+        return d
+
 
 forward.Exclude = Exclude
+forward.Include = Include
 
 
 class AutoCompleteWiget(autocomplete.ModelSelect2):

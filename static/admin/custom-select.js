@@ -1,21 +1,22 @@
 ; (function ($) {
 
 
-
+    /**
+     * 
+     * @param {HTMLElement[]} element 
+     */
     function get_forwardList(element) {
-        var divSelector = "div.dal-forward-conf#dal-forward-conf-for-" + element.attr("id");
-        var form = element.length > 0 ? $(element[0].form) : $();
-        var forwardElem = form.find(divSelector).find('script');
+        var parent = element[0] && element[0].parentElement
+        var script = parent.querySelector('.dal-forward-conf script')
+
         try {
-            var forwardList = JSON.parse(forwardElem.text());
+            var forwardList = JSON.parse(script.innerHTML);
             if (forwardList instanceof Array)
                 return forwardList;
             throw "";
         } catch (e) {
             return [];
         }
-
-
     }
 
 
@@ -72,11 +73,20 @@
 
             if (exclude_field && exclude_field.exclude) {
                 var [pre, pos] = exclude_field.exclude.split('---')
-                var $field_selector = '[name^=' + prefix + pre + ']' + '[name$=' + pos + ']'
-                var $field_selector_bk = '[name^=' + pre + ']' + '[name$=' + pos + ']'
+                var $exclude_field_selector = '[name^=' + prefix + pre + ']' + '[name$=' + pos + ']'
+                var $exclude_field_selector_bk = '[name^=' + pre + ']' + '[name$=' + pos + ']'
             }
 
+        }
 
+        if (forwardList.find(e => e.type == 'include')) {
+            var include_field = forwardList.find(e => e.type == 'include')
+
+            if (include_field && include_field.include) {
+                var [pre, pos] = include_field.include.split('---')
+                var $include_field_selector = '[name^=' + prefix + pre + ']' + '[name$=' + pos + ']'
+                var $include_field_selector_bk = '[name^=' + pre + ']' + '[name$=' + pos + ']'
+            }
         }
         // Templating helper
         function template(item) {
@@ -112,14 +122,26 @@
                             value.id = value.text;
                         });
                     }
-                    if ($field_selector) {
-                        var $field = $($field_selector);
+
+
+                    if ($exclude_field_selector) {
+                        var $field = $($exclude_field_selector);
                         if (!$field.length)
-                            $field = $($field_selector_bk);
+                            $field = $($exclude_field_selector_bk);
                         var self = $(element).val()
                         var list_id = [...$field].map(e => $(e).val()).filter(e => e && e != self)
                         data.results = [...data.results]
                             .filter(e => e && e.id && list_id.indexOf(e.id) == -1)
+                    }
+
+                    if ($include_field_selector) {
+                        var $field = $($include_field_selector);
+                        if (!$field.length)
+                            $field = $($include_field_selector_bk);
+                        var self = $(element).val()
+                        var list_id = [...$field].map(e => $(e).val()).filter(e => e && e != self)
+                        data.results = [...data.results]
+                            .filter(e => e && e.id && list_id.indexOf(e.id) > -1)
                     }
                     return data;
                 },
@@ -127,10 +149,10 @@
             };
         }
 
-            
+
         $(this).select2({
             tokenSeparators: element.attr('data-tags') ? [','] : null,
-            debug: true,
+            // debug: true,
             placeholder: '',
             minimumInputLength: 0,
             allowClear: !$(this).is('required'),
@@ -181,7 +203,7 @@
         var element = $(this);
         var urldata = $(this).attr('data-autocomplete-light-url');
         if (urldata) {
-            
+
             $.get(urldata).then((datastring) => {
                 var data = datastring.split(',')
                 $(this).select2({
@@ -190,8 +212,8 @@
                     data : data,
                 });
             })
-            
-        }
+
+        } 
     });
 
 
@@ -202,5 +224,68 @@
             '.select2-selection--single .select2-selection__rendered'
         ).text($(this).text());
     });
+
+
+
+    // Overide _registerDomEvents method cause undefined error
+    var Select2 = $(document.querySelector('select')).select2.amd.require('select2/core')
+    var Utils = $(document.querySelector('select')).select2.amd.require('select2/utils')
+
+    Select2.prototype._registerDomEvents = function () {
+
+        var self = this;
+
+        this.$element.on('change.select2', function () {
+            self.dataAdapter && self.dataAdapter.current(function (data) {
+                self.trigger('selection:update', {
+                    data: data
+                });
+            });
+        });
+
+        this.$element.on('focus.select2', function (evt) {
+            self.trigger('focus', evt);
+        });
+
+        this._syncA = Utils.bind(this._syncAttributes, this);
+        this._syncS = Utils.bind(this._syncSubtree, this);
+
+        if (this.$element[0].attachEvent) {
+            this.$element[0].attachEvent('onpropertychange', this._syncA);
+        }
+
+        var observer = window.MutationObserver ||
+            window.WebKitMutationObserver ||
+            window.MozMutationObserver
+            ;
+
+        if (observer != null) {
+            this._observer = new observer(function (mutations) {
+                $.each(mutations, self._syncA);
+                $.each(mutations, self._syncS);
+            });
+            this._observer.observe(this.$element[0], {
+                attributes: true,
+                childList: true,
+                subtree: false
+            });
+        } else if (this.$element[0].addEventListener) {
+            this.$element[0].addEventListener(
+                'DOMAttrModified',
+                self._syncA,
+                false
+            );
+            this.$element[0].addEventListener(
+                'DOMNodeInserted',
+                self._syncS,
+                false
+            );
+            this.$element[0].addEventListener(
+                'DOMNodeRemoved',
+                self._syncS,
+                false
+            );
+        }
+    };
 
 })(yl.jQuery);

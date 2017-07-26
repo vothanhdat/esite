@@ -9,7 +9,7 @@ from econ.models import Product, ProductOption, ProductImage, ProductPromotion, 
 from util.admin.admin_custommodelpopup import RANDOM_VAR
 from util.admin.admin_customtreefilter import CustomTreeRelatedFieldListFilter
 
-from .specificdetail  import SpecificDetailInline
+from .specificdetail  import SpecificDetailInline, OptionSpecificDetailInline
 from django import forms
 from tagging.fields import TagField
 from util.wiget.autocomplete import AutoTaggingWiget
@@ -18,66 +18,6 @@ from nested_admin.nested import NestedModelAdmin,NestedInlineModelAdmin,NestedSt
 
 
 __all__= ()
-
-
-
-# class ProductOptionInline(NestedStackedInline):
-#   template = "compact_admin_inline.html"
-#   model = ProductOption
-#   extra = 1
-#   readonly_fields = ('specific_detail',)
-#   fields = ('specific_detail', )
-#   can_delete = True
-#   verbose_name = "Options"
-#   verbose_name_plural = "Options"
-
-#   def specific_detail(self, instance):
-#     reference_url = ''
-#     render_content = 'Click to Add'
-#     random = rabdombase64()
-#     params = {
-#       "_popup": True,
-#       RANDOM_VAR : random,
-#     }
-#     if instance.id:
-#       reference_url = reverse( 'admin:econ_productoption_change', args=(instance.id,)  )
-#       render_content = render_to_string(
-#         'product_option_compact.html',
-#         { 'product' : instance }
-#       ) 
-#     else : 
-#       reference_url = reverse('admin:econ_productoption_add')
-#       if self.parent_obj:
-#         params['prod'] = self.parent_obj.id
-
-
-#     return format_html(
-#       '<a href="{}" target="_blank" id="{}" class="related-widget-wrapper-link add-related">{}</a>',
-#       addparamtourl(reference_url,params) ,
-#       random  ,
-#       render_content
-#     )
-
-
-#   def prod_details(self,instance):
-#     return instance.prod_details()
-
-
-#   def get_formset(self, request, obj=None, **kwargs):
-#     self.parent_obj = obj
-#     return super(ProductOptionInline, self).get_formset(request, obj, **kwargs)
-
-#   specific_detail.allow_tags = True
-#   can_delete = True
-#   show_change_link = True
-
-
-
-
-class NestedProductOptionInline(NestedStackedInline):
-  model = ProductOption
-  extra = 1
-  inlines=[SpecificDetailInline]
 
 class ProductImageInLine(NestedTabularInline):
   verbose_name = "Photos"
@@ -105,14 +45,20 @@ class ProSpecificDetailInline(SpecificDetailInline):
 
 class ProductForm(forms.ModelForm):
   class Media:
-    js = (
-      'product-admin.js',
-    )
+    js = ('product-admin.js',)
   class Meta:
     fields = ('__all__')
     widgets = {
       'product_cagetory' : AutoCompleteWiget('econ:cagetory-ac'),
     }
+
+
+class NestedProductOptionInline(NestedStackedInline):
+  model = ProductOption
+  inlines=[OptionSpecificDetailInline]
+  classes=('productoption-inline',)
+  extra = 1
+
 
 @admin.register(Product)
 class ProductAdmin(NestedModelAdmin):
