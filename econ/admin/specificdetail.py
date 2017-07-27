@@ -49,7 +49,7 @@ class OptionSpecificDetailInline(NestedTabularInline):
         'product_cagetory',
         'prod',
         Include(include='productspecdetail_set---specof'),
-        Exclude(exclude='productoption_set---specof'),
+        Exclude(exclude='productoption_set---specof',parent='fieldset'),
       ],
     )
 

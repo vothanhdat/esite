@@ -3,11 +3,15 @@ from dal import autocomplete, forward
 
 class Exclude(forward.Forward):
     type = "exclude"
-    def __init__(self, exclude):
+    def __init__(self, exclude,parent=None):
         self.exclude = exclude
+        self.parent = parent
     def to_dict(self):
         d = super(Exclude, self).to_dict()
         d.update(exclude=self.exclude)
+        if self.parent:
+            d.update(parent=self.parent)
+            
         return d
 
 class Include(forward.Forward):

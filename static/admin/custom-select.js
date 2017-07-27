@@ -73,8 +73,10 @@
 
             if (exclude_field && exclude_field.exclude) {
                 var [pre, pos] = exclude_field.exclude.split('---')
+                var $exclude_field_selector_parent = exclude_field.parent || ''
                 var $exclude_field_selector = '[name^=' + prefix + pre + ']' + '[name$=' + pos + ']'
                 var $exclude_field_selector_bk = '[name^=' + pre + ']' + '[name$=' + pos + ']'
+                console.log( $exclude_field_selector_parent)
             }
 
         }
@@ -125,9 +127,17 @@
 
 
                     if ($exclude_field_selector) {
-                        var $field = $($exclude_field_selector);
-                        if (!$field.length)
-                            $field = $($exclude_field_selector_bk);
+                        if($exclude_field_selector_parent){
+                            var parent = element.parents($exclude_field_selector_parent).slice(0,1);
+                            var $field = parent.find($exclude_field_selector);
+                            if (!$field.length)
+                                $field = parent.find($exclude_field_selector_bk);
+                        }else{
+                            var $field = $($exclude_field_selector);
+                            if (!$field.length)
+                                $field = $($exclude_field_selector_bk);
+                        }
+
                         var self = $(element).val()
                         var list_id = [...$field].map(e => $(e).val()).filter(e => e && e != self)
                         data.results = [...data.results]
