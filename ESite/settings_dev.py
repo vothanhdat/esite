@@ -38,3 +38,20 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.redirects.RedirectsPanel',
     'template_timings_panel.panels.TemplateTimings.TemplateTimings',
 ]
+
+GRAPHENE = {
+    'SCHEMA': 'econ.schema.schema', # Where your Graphene schema lives
+    'MIDDLEWARE': [
+        'graphene_django.debug.DjangoDebugMiddleware',
+    ]
+}
+
+
+CACHEOPS_REDIS = "redis://localhost:6379/1"
+
+
+# CACHEOPS = {
+#     'hitcount.*': {'ops': ('all'), 'timeout': 60*60, 'cache_on_save': True},
+#     'econ.*': {'ops': 'all', 'timeout': 60*60, 'cache_on_save': True},
+#     '*.*': {'timeout': 60*60},
+# }

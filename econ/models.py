@@ -182,7 +182,8 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 
-
+    def images(self):
+        return [e.url() for e in self.productimage_set.all()]
 
 
 class ProductInfo(models.Model):

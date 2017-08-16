@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'zinnia',
     'ckeditor_uploader',
     'nested_admin',
+    'graphene_django',
 )
 
 
@@ -195,6 +196,9 @@ CACHES = {
     }
 }
 
+GRAPHENE = {
+    'SCHEMA': 'econ.schema.schema' # Where your Graphene schema lives
+}
 
 CKEDITOR_UPLOAD_PATH = "media/"
 from .ckeditor_conf import CKEDITOR_CONFIGS

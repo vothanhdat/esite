@@ -14,17 +14,25 @@ from django.views.decorators.cache import cache_page
 # @cache_page(60 * 15)
 def index(request,product_id,object=None):
 
-    product = object or Product.objects.get(id=product_id)
+    product = Product.objects.prefetch_related(
 
-    product_details = product.productspecdetail_set.prefetch_related(
-        'spec',
-        'spec__detail_field'
-    )
+        'productimage_set',
+        'productspecdetail_set',
+        'productspecdetail_set__spec',
+        'productspecdetail_set__spec__detail_field'
+    ).select_related(
+        'productinfo',
+        'product_agency',
+        'product_branch',
+        'product_cagetory',
+    ).get(id=product_id)
+
+    # product_details = product.productspecdetail_set
 
     template = loader.get_template('product-detail.html')
     context = {
         'product': product,
-        'product_details': product_details
+        'product_details': product.productspecdetail_set.all()
     }
     
     return HttpResponse(template.render(context, request))

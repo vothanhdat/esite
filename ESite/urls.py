@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
+from graphene_django.views import GraphQLView
 
 import debug_toolbar
 
@@ -32,6 +33,7 @@ urlpatterns = [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^', include('econ.urls')),
+    url(r'^graphql', GraphQLView.as_view(graphiql=True)),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
