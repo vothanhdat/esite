@@ -31,27 +31,28 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = (
-    'econ',
-    'django.contrib.admin',
-    'dal',
-    'dal_select2',
     'django.contrib.auth',
     'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admin',
+    # 'haystack',
+    'econ',
+    'dal',
+    'dal_select2',
     'django_mptt_admin',
     'social_django',
     'mptt',
-    'django_comments',
+    # 'django_comments',
     "compressor",
     'ckeditor',
     'cacheops',
     'hitcount',
     'tagging',
-    'zinnia',
-    'ckeditor_uploader',
+    # 'zinnia',
+    # 'ckeditor_uploader',
     'nested_admin',
     'graphene_django',
 )
@@ -87,7 +88,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',  # <--
                 'social_django.context_processors.login_redirect',
-                'zinnia.context_processors.version', 
+                # 'zinnia.context_processors.version', 
                 'econ.context_processor.cagetory_list',
             ],
             # 'loaders':[
@@ -135,11 +136,11 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-# USE_I18N = True
+USE_I18N = True
 
-# USE_L10N = True
+USE_L10N = True
 
-# USE_TZ = True
+USE_TZ = True
 
 # LOGIN_URL = 'login'
 LOGOUT_URL = 'index'
@@ -199,6 +200,16 @@ CACHES = {
 GRAPHENE = {
     'SCHEMA': 'econ.schema.schema' # Where your Graphene schema lives
 }
+
+
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+#         'URL': 'http://127.0.0.1:9200/',
+#         'INDEX_NAME': 'haystack',
+#     },
+# }
+
 
 CKEDITOR_UPLOAD_PATH = "media/"
 from .ckeditor_conf import CKEDITOR_CONFIGS
