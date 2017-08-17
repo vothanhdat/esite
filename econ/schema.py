@@ -43,14 +43,54 @@ def get_field_names(info):
     results = iterate_field_names('', info.field_asts[0])
     return results
 
+def prefetch_product(query,fields,prefix):
+
+    prefetch_related_args = []
+    select_related_args = []
+    if ('%s.images' % prefix) in fields:
+        prefetch_related_args += ['productimage_set']
+
+    if ('%s.productspecdetailSet' % prefix) in fields:
+        prefetch_related_args += [
+            'productspecdetail_set__spec__detail_field'
+        ]
+    if ('%s.productinfo' % prefix) in fields:
+        select_related_args += ['productinfo']
+
+    if ('%s.productBranch' % prefix) in fields:
+        select_related_args += ['product_branch']
+
+    if ('%s.productAgency' % prefix) in fields:
+        select_related_args += ['product_agency']
+        
+    if ('%s.productCagetory' % prefix) in fields:
+        select_related_args += ['product_cagetory']
+
+    productQuery = query
+
+    if len(select_related_args)> 0:
+        productQuery = productQuery.select_related(*select_related_args)
+    if len(prefetch_related_args) > 0:
+        productQuery = productQuery.prefetch_related(*prefetch_related_args)
+        
+    return productQuery
 
 
+class ProductSet:
+    product_set = graphene.List(lambda: ProductsView)
 
-class AgencyView(DjangoObjectType):
+    def resolve_product_set(self, args, context, info):
+        return prefetch_product(
+            self.product_set,
+            get_field_names(info),
+            'productSet'
+        )
+
+class AgencyView(DjangoObjectType,ProductSet):
     class Meta:
         model = Agency
 
-class BrandView(DjangoObjectType):
+class BrandView(DjangoObjectType,ProductSet):
     class Meta:
         model = Brand
 
@@ -70,6 +110,8 @@ class ProductSpecDetailView(DjangoObjectType):
 
 
 class ProductsView(DjangoObjectType):
+    debug = graphene.Field(DjangoDebug, name='__debug')
+    
     class Meta:
         model = Product
 
@@ -94,7 +136,7 @@ class ProductInfoView(DjangoObjectType):
         model = ProductInfo
 
 
-class CagetoryView(DjangoObjectType):
+class CagetoryView(DjangoObjectType,ProductSet):
     class Meta:
         model = Cagetory
 
@@ -103,46 +145,20 @@ class CagetoryView(DjangoObjectType):
     def resolve_paths(self, args, context, info):
         return self.paths()#[(cagetory_name,id,slug) for (cagetory_name,id,slug) in self.paths()]
 
+
 class Query(graphene.ObjectType):
-    debug = graphene.Field(DjangoDebug, name='__debug')
     product = graphene.Field(ProductsView,id=graphene.Argument(graphene.String),slug=graphene.Argument(graphene.String))
 
     def resolve_product(root, args, context, info):
-        fields = get_field_names(info)
-
+        productQuery = prefetch_product(
+            Product.objects,
+            get_field_names(info),
+            'product'
+        )
+            
         id = args.get('id')
         slug = args.get('slug')
 
-        prefetch_related_args = []
-        select_related_args = []
-        if 'product.images' in fields:
-            prefetch_related_args += ['productimage_set']
-
-        if 'product.productspecdetailSet' in fields:
-            prefetch_related_args += [
-                'productspecdetail_set',
-                'productspecdetail_set__spec',
-                'productspecdetail_set__spec__detail_field'
-            ]
-        if 'product.productinfo' in fields:
-            select_related_args += ['productinfo']
-
-        if 'product.productBranch' in fields:
-            select_related_args += ['product_branch']
-
-        if 'product.productAgency' in fields:
-            select_related_args += ['product_agency']
-            
-        if 'product.productCagetory' in fields:
-            select_related_args += ['product_cagetory']
-
-        productQuery = Product.objects
-
-        if len(select_related_args)> 0:
-            productQuery = productQuery.select_related(*select_related_args)
-        if len(prefetch_related_args) > 0:
-            productQuery = productQuery.prefetch_related(*prefetch_related_args)
-            
         if id :
             return productQuery.get(id=id)
         elif slug:
