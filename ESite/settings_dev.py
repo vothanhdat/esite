@@ -47,7 +47,7 @@ GRAPHENE = {
 }
 
 
-CACHEOPS_REDIS = "redis://localhost:6379/1"
+# CACHEOPS_REDIS = "redis://localhost:6379/1"
 
 
 # CACHEOPS = {

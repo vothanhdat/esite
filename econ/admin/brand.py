@@ -8,3 +8,5 @@ class BrandAdmin(admin.ModelAdmin):
   formfield_overrides = {
     TagField: {'widget': AutoTaggingWiget('econ:tag-ac')},
   }
+  list_display = ('brand_name', 'slug', 'tags' )
+  # list_editable = ('slug', 'tags' )

@@ -65,10 +65,10 @@ class ProductAdmin(NestedModelAdmin):
 
   form = ProductForm
   inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,NestedProductOptionInline,ProductPromotionInLine]
-  list_display = ['product_name', 'product_cagetory', 'product_branch','product_price','product_quatity' ] 
+  list_display = ['product_name','slug', 'product_cagetory', 'product_branch','product_price','product_quatity' ] 
   list_filter = [ ('product_cagetory', CustomTreeRelatedFieldListFilter),'product_branch','product_agency']
   search_fields = ['product_name', 'product_cagetory__cagetory_name', 'product_branch__brand_name' ] 
-
+  list_editable = ('slug',)
   formfield_overrides = {
     TagField: {'widget': AutoTaggingWiget('econ:tag-ac')},
   }

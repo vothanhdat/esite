@@ -20,7 +20,7 @@ MIDDLEWARE = (
 
 
 
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'sadyugfh513 5gdx4r84g13xdf gx3df5g1 x35d1'
 
 
 
