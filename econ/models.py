@@ -18,6 +18,16 @@ from tagging.models import Tag
 # from util.func import memoized_method
 # from functools import lru_cache
 
+
+class Slug(models.Model):
+    slug = models.SlugField(unique=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self): 
+        return self.slug
+
 class BaseUser(User):
     GENDER = (
         ('U','Unknow'), 
@@ -56,7 +66,7 @@ class Agency(models.Model):
         through='AgencyMember',
         through_fields=('agency', 'user'),
     )
-    slug = models.SlugField(unique=True,null=True, blank=True)
+    slug = GenericRelation(Slug)
     def __str__(self):
         return self.agency_name
 
@@ -107,7 +117,7 @@ class Cagetory(MPTTModel):
         db_index=True,
     )
     tags = TagField()
-    slug = models.SlugField(unique=True,null=True, blank=True)
+    slug = GenericRelation(Slug)
 
     optiontype = models.IntegerField(choices=OPTIONS_CHOICES, default=1)   
 
@@ -155,7 +165,7 @@ class Brand(models.Model):
     brand_sym = models.CharField(max_length=20)
     brand_logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
     tags = TagField()
-    slug = models.SlugField(unique=True,null=True, blank=True)
+    slug = GenericRelation(Slug)
 
     def __str__(self):
         return self.brand_name
@@ -169,7 +179,7 @@ class Product(models.Model):
     product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     product_quatity = models.IntegerField(verbose_name='numbers',default=0)
     tags = TagField()
-    slug = models.SlugField(unique=True,null=True, blank=True)
+    slug = GenericRelation(Slug)
 
 
     # def parent_tags(self):
@@ -255,6 +265,8 @@ class ProductSpecDetail(models.Model):
             return self.spec.detail_field
         else:
             return None
+
+
 
 
 

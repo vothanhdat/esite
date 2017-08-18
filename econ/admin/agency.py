@@ -1,6 +1,11 @@
+from django import forms
 from django.contrib import admin
 from ..models import AgencyMember, AgencyPromotion,Agency
 
+from .slug  import SlugFieldFormMixin
+
+class AgencyForm(SlugFieldFormMixin, forms.ModelForm):
+  pass
 
 
 @admin.register(Agency)
@@ -15,4 +20,5 @@ class AgencyAdmin(admin.ModelAdmin):
     fk_name = 'apply_to'
     extra = 1
     
+  form = AgencyForm
   inlines = [AgencyMembersInline,AgencyPromotionsInline]

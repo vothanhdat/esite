@@ -15,6 +15,7 @@ from tagging.fields import TagField
 from util.wiget.autocomplete import AutoTaggingWiget
 from django.utils.html import format_html_join
 from nested_admin.nested import NestedModelAdmin,NestedInlineModelAdmin,NestedStackedInline,NestedTabularInline
+from .slug  import SlugFieldFormMixin
 
 
 __all__= ()
@@ -43,7 +44,7 @@ class ProSpecificDetailInline(SpecificDetailInline):
   verbose_name_plural = "Specific"
 
 
-class ProductForm(forms.ModelForm):
+class ProductForm(SlugFieldFormMixin, forms.ModelForm):
   class Media:
     js = ('product-admin.js',)
   class Meta:
@@ -65,10 +66,9 @@ class ProductAdmin(NestedModelAdmin):
 
   form = ProductForm
   inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,NestedProductOptionInline,ProductPromotionInLine]
-  list_display = ['product_name','slug', 'product_cagetory', 'product_branch','product_price','product_quatity' ] 
+  list_display = ['product_name','slug_field','product_cagetory', 'product_branch','product_price','product_quatity' ] 
   list_filter = [ ('product_cagetory', CustomTreeRelatedFieldListFilter),'product_branch','product_agency']
   search_fields = ['product_name', 'product_cagetory__cagetory_name', 'product_branch__brand_name' ] 
-  list_editable = ('slug',)
   formfield_overrides = {
     TagField: {'widget': AutoTaggingWiget('econ:tag-ac')},
   }
@@ -78,7 +78,9 @@ class ProductAdmin(NestedModelAdmin):
         'fields': ('product_name', 'product_cagetory', 'product_branch','product_agency', 'product_price','product_quatity')
     }),
     ('Tagged', {
-        'fields': ('tags', 'slug'),
+        'fields': ('tags', 'slug_field'),
     }),
   )
 
+  def slug_field(self,instance):
+    return instance.slug.first()
