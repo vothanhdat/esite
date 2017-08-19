@@ -1,0 +1,7 @@
+{{ object.product_name }}
+{{ object.product_cagetory }}
+{{ object.tags }}
+{% for detail in object.productspecdetail_set.all %}
+    {{detail.spec.detail_field}} : {{detail.spec}}
+{% endfor %}
+{{ object.productinfo.info|striptags }}

@@ -15,10 +15,7 @@ from django.views.decorators.cache import cache_page
 def index(request,product_id,object=None):
 
     product = Product.objects.prefetch_related(
-
         'productimage_set',
-        'productspecdetail_set',
-        'productspecdetail_set__spec',
         'productspecdetail_set__spec__detail_field'
     ).select_related(
         'productinfo',

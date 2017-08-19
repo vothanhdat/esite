@@ -1,7 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType,DjangoConnectionField
 from graphene_django.debug import DjangoDebug
-from graphene.types.generic import GenericScalar
 
 from django.db.models import Prefetch
 from models import (
@@ -16,6 +15,8 @@ from models import (
     Brand,
     Agency,
 )
+
+from haystack.query import SearchQuerySet
 
 
 def get_field_names(info):
@@ -148,6 +149,11 @@ class CagetoryView(DjangoObjectType,ProductSet):
 
 class Query(graphene.ObjectType):
     product = graphene.Field(ProductsView,id=graphene.Argument(graphene.String),slug=graphene.Argument(graphene.String))
+    products = graphene.List(ProductsView,search=graphene.Argument(graphene.String))
+
+    cagetory = graphene.Field(CagetoryView,id=graphene.Argument(graphene.String),slug=graphene.Argument(graphene.String))
+    cagetories = graphene.List(CagetoryView,search=graphene.Argument(graphene.String))
+
 
     def resolve_product(root, args, context, info):
         productQuery = prefetch_product(
@@ -166,6 +172,41 @@ class Query(graphene.ObjectType):
         else:
             return productQuery.none()
 
+    def resolve_products(root, args, context, info):
+        productQuery = None
+
+        search = args.get('search')
+
+        if search:
+            ids = SearchQuerySet().models(Product).filter(content=search).values_list('pk',flat=True)[:]
+            productQuery = Product.objects.filter(id__in=ids)
+        else :
+            productQuery = Product.objects.all()
+
+        return prefetch_product(
+            productQuery,
+            get_field_names(info),
+            'products'
+        )
+
+    def resolve_cagetory(root, args, context, info):
+        id = args.get('id')
+        slug = args.get('slug')
+
+        if id :
+            return Cagetory.objects.get(id=id)
+        elif slug:
+            return Cagetory.objects.get(slug=slug)
+        else:
+            return Cagetory.objects.none()
+
+    def resolve_cagetories(root, args, context, info):
+        search = args.get('search')
+        if search :
+            ids = SearchQuerySet().models(Cagetory).filter(content=search).values_list('pk',flat=True)[:]
+            return Cagetory.objects.filter(id__in=ids)
+        else:
+            return Cagetory.objects.all()
 
 
 schema = graphene.Schema(query=Query)

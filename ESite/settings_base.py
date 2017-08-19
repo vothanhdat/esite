@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    # 'haystack',
+    'haystack',
     'econ',
     'dal',
     'dal_select2',
@@ -202,17 +202,17 @@ GRAPHENE = {
 }
 
 
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-#         'URL': 'http://127.0.0.1:9200/',
-#         'INDEX_NAME': 'haystack',
-#     },
-# }
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
 
 
 CKEDITOR_UPLOAD_PATH = "media/"
 from .ckeditor_conf import CKEDITOR_CONFIGS
 
-ZINNIA_MAIL_COMMENT_REPLY = False
-ZINNIA_MAIL_COMMENT_AUTHORS = False
+# ZINNIA_MAIL_COMMENT_REPLY = False
+# ZINNIA_MAIL_COMMENT_AUTHORS = False
