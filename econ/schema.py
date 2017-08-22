@@ -1,9 +1,10 @@
 import graphene
+from itertools import chain
 from graphene_django import DjangoObjectType,DjangoConnectionField
 from graphene_django.debug import DjangoDebug
 
 from django.db.models import Prefetch
-from models import (
+from .models import (
     Specific,
     SpecificDetail,
     ProductSpecDetail,
@@ -21,17 +22,24 @@ from haystack.query import SearchQuerySet
 
 def get_field_names(info):
 
-    from graphql.language.ast import FragmentSpread
+    from graphql.language.ast import FragmentSpread,InlineFragment
     fragments = info.fragments
 
     def iterate_field_names(prefix, field):
-        name = field.name.value
 
         if isinstance(field, FragmentSpread):
+            name = field.name.value
             results = []
             new_prefix = prefix
             sub_selection = fragments[field.name.value].selection_set.selections
+        elif isinstance(field, InlineFragment):
+            name = field.type_condition.name.value
+            results = [prefix + 'type_' + name]
+            new_prefix = prefix + 'type_' + name + "."
+            sub_selection = field.selection_set.selections if field.selection_set else []
+
         else:
+            name = field.name.value
             results = [prefix + name]
             new_prefix = prefix + name + "."
             sub_selection = field.selection_set.selections if field.selection_set else []
@@ -69,11 +77,11 @@ def prefetch_product(query,fields,prefix):
 
     productQuery = query
 
-    if len(select_related_args)> 0:
-        productQuery = productQuery.select_related(*select_related_args)
-    if len(prefetch_related_args) > 0:
-        productQuery = productQuery.prefetch_related(*prefetch_related_args)
-        
+    print prefix
+    print fields
+    print select_related_args
+    print prefetch_related_args
+
     return productQuery
 
 
@@ -131,6 +139,17 @@ class ProductImagesView(DjangoObjectType):
     def resolve_url(self, args, context, info):
         return self.url()
     
+class ProductSpecValueView(DjangoObjectType):
+    
+    class Meta:
+        model = SpecificDetail
+
+class ProductSpecView(DjangoObjectType):
+    
+    class Meta:
+        model = Specific
+
+
 
 class ProductInfoView(DjangoObjectType):
     class Meta:
@@ -142,10 +161,54 @@ class CagetoryView(DjangoObjectType,ProductSet):
         model = Cagetory
 
     paths = graphene.List(lambda: CagetoryView)
+    specs = graphene.List(lambda: ProductSpecView)
 
     def resolve_paths(self, args, context, info):
         return self.paths()#[(cagetory_name,id,slug) for (cagetory_name,id,slug) in self.paths()]
 
+    def resolve_specs(self, args, context, info):
+        return self.specific_set.all()
+
+class SearchResultView(graphene.types.Union):
+    class Meta:
+        types = [ProductsView, BrandView, CagetoryView]
+
+    searchTypeMapping = {
+        'product' : lambda  values, fieldInfo = [], prefix = '' : prefetch_product(
+            Product.objects.filter(id__in=values),
+            fieldInfo,
+            '%s.type_ProductsView' % prefix
+        ),
+        'cagetory' :lambda  values, fieldInfo = [], prefix = '' : Cagetory.objects.filter(id__in=values),
+        'brand' : lambda  values, fieldInfo = [], prefix = '' : Brand.objects.filter(id__in=values),
+    }
+
+    @staticmethod
+    def process_search_datas(searchqueryset,fieldInfo,prefix):
+        datas = searchqueryset.values_list('pk','model_name')[:]
+        results = {}
+        querySet = []
+        for pk,ob_type in datas:
+            if not results.has_key(ob_type):
+                results[ob_type] = []
+            results[ob_type].append(pk)
+
+        for key in results.keys():
+            values = results.get(key)
+            objectType = SearchResultView.searchTypeMapping.get(key)
+            if objectType:
+                querySet += [objectType(values,fieldInfo,prefix)]
+
+        return chain(*querySet)
+# searchTypeMapping = {
+#     'product' : lambda  values, fieldInfo : prefetch_product(
+#         Product.objects.filter(id__in=values),
+#         fieldInfo,
+#         'search.type_ProductsView'
+#     ),
+#     'cagetory' : lambda  values, fieldInfo : Cagetory.objects.filter(id__in=values),
+#     'brand' : lambda values, fieldInfo : Brand.objects.filter(id__in=values),
+# }
 
 class Query(graphene.ObjectType):
     product = graphene.Field(ProductsView,id=graphene.Argument(graphene.String),slug=graphene.Argument(graphene.String))
@@ -153,6 +216,11 @@ class Query(graphene.ObjectType):
 
     cagetory = graphene.Field(CagetoryView,id=graphene.Argument(graphene.String),slug=graphene.Argument(graphene.String))
     cagetories = graphene.List(CagetoryView,search=graphene.Argument(graphene.String))
+
+
+    search = graphene.List(SearchResultView,search=graphene.Argument(graphene.String))
+    fuzysearch = graphene.List(SearchResultView,search=graphene.Argument(graphene.String))
+    autocomplete = graphene.List(graphene.String,search=graphene.Argument(graphene.String))
 
 
     def resolve_product(root, args, context, info):
@@ -208,5 +276,35 @@ class Query(graphene.ObjectType):
         else:
             return Cagetory.objects.all()
 
+    def resolve_search(root,args,context,info):
+        fieldInfo = get_field_names(info)
+        search = args.get('search')
+        if search :
+            # datas = SearchQuerySet().filter(content=search)
+            return SearchResultView.process_search_datas(
+                SearchQuerySet().filter(content=search),
+                fieldInfo,
+                'search'
+            )
+        else:
+            return []
+
+    def resolve_fuzysearch(root,args,context,info):
+        fieldInfo = get_field_names(info)
+        search = args.get('search')
+        if search :
+            # datas = SearchQuerySet().filter(content=search)
+            return SearchResultView.process_search_datas(
+                SearchQuerySet().autocomplete(content_auto=search),
+                fieldInfo,
+                'fuzysearch',
+            )
+        else:
+            return []
+    
+    def resolve_autocomplete(root,args,context,info):
+        search = args.get('search')
+        sqs = SearchQuerySet().autocomplete(content_auto=search).values_list('content_auto',flat=True) [:5]
+        return sqs
 
 schema = graphene.Schema(query=Query)

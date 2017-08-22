@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('agency_name', models.CharField(blank=True, max_length=100, null=True)),
                 ('agency_id', models.CharField(blank=True, max_length=20, null=True)),
-                ('agency_logo', models.ImageField(blank=True, null=True, upload_to=b'media/%Y/%m/%d/%H/%M/%S/')),
+                ('agency_logo', models.ImageField(blank=True, null=True, upload_to='media/%Y/%m/%d/%H/%M/%S/')),
             ],
         ),
         migrations.CreateModel(
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('promotion_name', models.CharField(max_length=100)),
-                ('promotion_type', models.CharField(choices=[(b'M', b'Minus'), (b'P', b'Percentage'), (b'O', b'Offer')], default=b'P', max_length=1)),
+                ('promotion_type', models.CharField(choices=[('M', 'Minus'), ('P', 'Percentage'), ('O', 'Offer')], default='P', max_length=1)),
                 ('promotion_value', models.FloatField()),
                 ('promotion_start', models.DateTimeField(null=True)),
                 ('promotion_end', models.DateTimeField(null=True)),
@@ -62,8 +62,8 @@ class Migration(migrations.Migration):
                 ('baseuser_bio', models.TextField(blank=True, max_length=500)),
                 ('baseuser_address', models.TextField(blank=True, max_length=500)),
                 ('baseuser_birthday', models.DateField(blank=True, null=True)),
-                ('baseuser_gender', models.CharField(choices=[(b'U', b'Unknow'), (b'M', b'Male'), (b'F', b'Female')], default=b'U', max_length=1)),
-                ('baseuser_avatar', models.ImageField(blank=True, null=True, upload_to=b'media/%Y/%m/%d/%H/%M/%S/')),
+                ('baseuser_gender', models.CharField(choices=[('U', 'Unknow'), ('M', 'Male'), ('F', 'Female')], default='U', max_length=1)),
+                ('baseuser_avatar', models.ImageField(blank=True, null=True, upload_to='media/%Y/%m/%d/%H/%M/%S/')),
             ],
             options={
                 'abstract': False,
@@ -81,7 +81,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('brand_name', models.CharField(max_length=100)),
                 ('brand_sym', models.CharField(max_length=20)),
-                ('brand_logo', models.ImageField(blank=True, null=True, upload_to=b'media/%Y/%m/%d/%H/%M/%S/')),
+                ('brand_logo', models.ImageField(blank=True, null=True, upload_to='media/%Y/%m/%d/%H/%M/%S/')),
                 ('tags', tagging.fields.TagField(blank=True, max_length=255)),
             ],
         ),
@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('cagetory_name', models.CharField(max_length=50)),
                 ('tags', tagging.fields.TagField(blank=True, max_length=255)),
-                ('optiontype', models.IntegerField(choices=[(1, b'Inherit'), (2, b'Option by specify'), (3, b'Option by generic')], default=1)),
+                ('optiontype', models.IntegerField(choices=[(1, 'Inherit'), (2, 'Option by specify'), (3, 'Option by generic')], default=1)),
                 ('lft', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
@@ -107,9 +107,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('product_name', models.CharField(max_length=100)),
-                ('product_price_currency', djmoney.models.fields.CurrencyField(choices=[(b'EUR', 'Euro'), (b'USD', 'US Dollar'), (b'VND', b'Vietnam Dong')], default=b'USD', editable=False, max_length=3)),
-                ('product_price', djmoney.models.fields.MoneyField(decimal_places=2, default=Decimal('0.0'), default_currency=b'USD', max_digits=10)),
-                ('product_quatity', models.IntegerField(default=0, verbose_name=b'numbers')),
+                ('product_price_currency', djmoney.models.fields.CurrencyField(choices=[('EUR', 'Euro'), ('USD', 'US Dollar'), ('VND', 'Vietnam Dong')], default='USD', editable=False, max_length=3)),
+                ('product_price', djmoney.models.fields.MoneyField(decimal_places=2, default=Decimal('0.0'), default_currency='USD', max_digits=10)),
+                ('product_quatity', models.IntegerField(default=0, verbose_name='numbers')),
                 ('tags', tagging.fields.TagField(blank=True, max_length=255)),
             ],
         ),
@@ -117,7 +117,7 @@ class Migration(migrations.Migration):
             name='ProductImage',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(blank=True, null=True, upload_to=b'media/%Y/%m/%d/%H/%M/%S/')),
+                ('image', models.ImageField(blank=True, null=True, upload_to='media/%Y/%m/%d/%H/%M/%S/')),
                 ('image_link', models.CharField(blank=True, max_length=300, null=True)),
             ],
             options={
@@ -128,15 +128,15 @@ class Migration(migrations.Migration):
             name='ProductOption',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('product_price_currency', djmoney.models.fields.CurrencyField(choices=[(b'EUR', 'Euro'), (b'USD', 'US Dollar'), (b'VND', b'Vietnam Dong')], default=b'USD', editable=False, max_length=3)),
-                ('product_price', djmoney.models.fields.MoneyField(decimal_places=2, default=Decimal('0.0'), default_currency=b'USD', max_digits=10)),
+                ('product_price_currency', djmoney.models.fields.CurrencyField(choices=[('EUR', 'Euro'), ('USD', 'US Dollar'), ('VND', 'Vietnam Dong')], default='USD', editable=False, max_length=3)),
+                ('product_price', djmoney.models.fields.MoneyField(decimal_places=2, default=Decimal('0.0'), default_currency='USD', max_digits=10)),
             ],
         ),
         migrations.CreateModel(
             name='ProductOptionImage',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(blank=True, null=True, upload_to=b'media/%Y/%m/%d/%H/%M/%S/')),
+                ('image', models.ImageField(blank=True, null=True, upload_to='media/%Y/%m/%d/%H/%M/%S/')),
                 ('image_link', models.CharField(blank=True, max_length=300, null=True)),
                 ('productoption', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='econ.ProductOption')),
             ],
@@ -149,7 +149,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('promotion_name', models.CharField(max_length=100)),
-                ('promotion_type', models.CharField(choices=[(b'M', b'Minus'), (b'P', b'Percentage'), (b'O', b'Offer')], default=b'P', max_length=1)),
+                ('promotion_type', models.CharField(choices=[('M', 'Minus'), ('P', 'Percentage'), ('O', 'Offer')], default='P', max_length=1)),
                 ('promotion_value', models.FloatField()),
                 ('promotion_start', models.DateTimeField(null=True)),
                 ('promotion_end', models.DateTimeField(null=True)),

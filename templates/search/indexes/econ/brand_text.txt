@@ -1,0 +1,3 @@
+{{ object.brand_name }}
+{{ object.brand_sym }}
+{{ object.tags }}
