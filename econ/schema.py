@@ -17,7 +17,7 @@ from .models import (
     Agency,
 )
 
-from haystack.query import SearchQuerySet
+from haystack.query import SearchQuerySet, SQ
 
 
 def get_field_names(info):
@@ -295,7 +295,7 @@ class Query(graphene.ObjectType):
         if search :
             # datas = SearchQuerySet().filter(content=search)
             return SearchResultView.process_search_datas(
-                SearchQuerySet().autocomplete(content_auto=search),
+                SearchQuerySet().autocomplete(title=search),
                 fieldInfo,
                 'fuzysearch',
             )
@@ -304,7 +304,9 @@ class Query(graphene.ObjectType):
     
     def resolve_autocomplete(root,args,context,info):
         search = args.get('search')
-        sqs = SearchQuerySet().autocomplete(content_auto=search).values_list('content_auto',flat=True) [:5]
+        sqs = SearchQuerySet().filter(
+            (SQ(tags=search) | SQ(title=search))
+        ).values_list('title',flat=True) [:5]
         return sqs
 
 schema = graphene.Schema(query=Query)

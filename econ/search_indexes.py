@@ -5,7 +5,8 @@ from .models import Product, Cagetory, Brand
 
 class ProductIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    content_auto = indexes.NgramField(model_attr='product_name')
+    title = indexes.NgramField(model_attr='product_name')
+    tags = indexes.NgramField(model_attr='tags')
 
     def get_model(self):
         return Product
@@ -17,7 +18,8 @@ class ProductIndex(indexes.SearchIndex, indexes.Indexable):
 
 class CagetoryIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    content_auto = indexes.NgramField(model_attr='cagetory_name')
+    title = indexes.NgramField(model_attr='cagetory_name')
+    tags = indexes.NgramField(model_attr='tags')
 
     def get_model(self):
         return Cagetory
@@ -29,7 +31,8 @@ class CagetoryIndex(indexes.SearchIndex, indexes.Indexable):
 
 class BrandIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    content_auto = indexes.NgramField(model_attr='brand_name')
+    title = indexes.NgramField(model_attr='brand_name')
+    tags = indexes.NgramField(model_attr='tags')
 
     def get_model(self):
         return Brand
