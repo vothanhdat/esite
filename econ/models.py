@@ -77,17 +77,16 @@ class Image(models.Model):
 
 
 class Agency(models.Model):
-    agency_name = models.CharField(max_length=100,null=True, blank=True)
-    agency_id = models.CharField(max_length=20,null=True, blank=True)
-    agency_logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
-    agency_member = models.ManyToManyField(
+    name = models.CharField(max_length=100,null=True, blank=True)
+    logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
+    member = models.ManyToManyField(
         BaseUser,
         through='AgencyMember',
         through_fields=('agency', 'user'),
     )
     slug = GenericRelation(Slug)
     def __str__(self):
-        return self.agency_name
+        return self.name
 
 
 class Promotion(models.Model) : 
@@ -127,7 +126,7 @@ class Cagetory(MPTTModel,ModifyLog):
         (3,'Option by generic'),
     )
 
-    cagetory_name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
     parent = TreeForeignKey(
         'self',
         null=True,
@@ -147,7 +146,7 @@ class Cagetory(MPTTModel,ModifyLog):
             return self.optiontype
 
     def __str__(self):
-        return self.cagetory_name
+        return self.name
 
     def paths(self):
         return self.get_ancestors(ascending=False, include_self=True)
@@ -180,14 +179,14 @@ class Cagetory(MPTTModel,ModifyLog):
 Cagetory.incrementCount = 0
 
 class Brand(ModifyLog,models.Model):
-    brand_name = models.CharField(max_length=100)
-    brand_sym = models.CharField(max_length=20)
-    brand_logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
+    name = models.CharField(max_length=100)
+    sym = models.CharField(max_length=20)
+    logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
     tags = TagField()
     slug = GenericRelation(Slug)
 
     def __str__(self):
-        return self.brand_name
+        return self.name
 
 
 class Product(ModifyLog,models.Model):

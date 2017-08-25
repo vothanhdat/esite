@@ -165,7 +165,7 @@ class CagetoryView(DjangoObjectType,ProductSet):
     specs = graphene.List(lambda: ProductSpecView)
 
     def resolve_paths(self, args, context, info):
-        return self.paths()#[(cagetory_name,id,slug) for (cagetory_name,id,slug) in self.paths()]
+        return self.paths()#[(name,id,slug) for (name,id,slug) in self.paths()]
 
     def resolve_specs(self, args, context, info):
         return self.specific_set.all()

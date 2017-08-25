@@ -20,7 +20,7 @@ class ProductIndex(indexes.SearchIndex, indexes.Indexable):
 
 class CagetoryIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    title = indexes.NgramField(model_attr='cagetory_name')
+    title = indexes.NgramField(model_attr='name')
     tags = indexes.NgramField(model_attr='tags')
     lastupdate = indexes.DateTimeField(model_attr='modified')
 
@@ -34,7 +34,7 @@ class CagetoryIndex(indexes.SearchIndex, indexes.Indexable):
 
 class BrandIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    title = indexes.NgramField(model_attr='brand_name')
+    title = indexes.NgramField(model_attr='name')
     tags = indexes.NgramField(model_attr='tags')
     lastupdate = indexes.DateTimeField(model_attr='modified')
 

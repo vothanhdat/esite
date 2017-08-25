@@ -23,7 +23,7 @@ class CagetoryAdmin(DjangoMpttAdmin):
   formfield_overrides = {
     TagField: {'widget': AutoTaggingWiget('econ:tag-ac')},
   }
-  list_display = ('cagetory_name', 'tags', 'slug_field','optiontype','parent' )
+  list_display = ('name', 'tags', 'slug_field','optiontype','parent' )
   # list_editable = ('slug','tags', 'optiontype','parent' )
   def slug_field(self, instance):
     return instance.slug.first()

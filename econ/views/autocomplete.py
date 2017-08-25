@@ -98,7 +98,7 @@ class CagetoryAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = Cagetory.objects.all()
         if self.q:
-            qs = qs.filter(cagetory_name__istartswith=self.q)
+            qs = qs.filter(name__istartswith=self.q)
         return qs
 
 

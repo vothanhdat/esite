@@ -14,7 +14,7 @@ class BrandAdmin(admin.ModelAdmin):
   formfield_overrides = {
     TagField: {'widget': AutoTaggingWiget('econ:tag-ac')},
   }
-  list_display = ('brand_name','slug_field','tags' )
+  list_display = ('name','slug_field','tags' )
 
   def slug_field(self,instance):
     return instance.slug.first()

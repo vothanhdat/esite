@@ -72,7 +72,7 @@ class ProductAdmin(NestedModelAdmin):
   inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,NestedProductOptionInline,ProductPromotionInLine]
   list_display = ['name','slug_field','cagetory', 'branch','price','quatity' ] 
   list_filter = [ ('cagetory', CustomTreeRelatedFieldListFilter),'branch','agency']
-  search_fields = ['name', 'cagetory__cagetory_name', 'branch__brand_name' ] 
+  search_fields = ['name', 'cagetory__name', 'branch__name' ] 
  
   fieldsets = (
     (None, {

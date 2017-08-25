@@ -1,7 +1,7 @@
-{{ object.cagetory_name }}
+{{ object.name }}
 {{ object.tags }}
 {% for parent in object.paths %}
-    {{parent.cagetory_name }}
+    {{parent.name }}
 {% endfor %}
 {% for parent in object.allspecific %}
     {{detail.specific_name}}
