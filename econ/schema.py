@@ -78,12 +78,7 @@ def prefetch_product(query,fields,prefix):
 
     productQuery = query
 
-    print prefix
-    print fields
-    print select_related_args
-    print prefetch_related_args
-
-    return productQuery
+    return productQuery.select_related(*select_related_args).prefetch_related(*prefetch_related_args)
 
 
 class ProductSet:

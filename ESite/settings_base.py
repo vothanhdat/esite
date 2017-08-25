@@ -45,7 +45,7 @@ INSTALLED_APPS = (
     'django_mptt_admin',
     'social_django',
     'mptt',
-    'import_export',
+    # 'import_export',
     # 'django_comments',
     "compressor",
     'ckeditor',

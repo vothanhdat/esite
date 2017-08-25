@@ -14,9 +14,27 @@ from django.contrib.contenttypes.fields import GenericRelation
 from tagging.registry import register
 from tagging.fields import TagField
 from tagging.models import Tag
+from django.utils import timezone
 
 # from util.func import memoized_method
 # from functools import lru_cache
+
+
+class ModifyLog(models.Model):
+
+    class Meta:
+         abstract = True
+
+    created     = models.DateTimeField(editable=False,default=timezone.now)
+    modified    = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.created = timezone.now()
+        self.modified = timezone.now()
+        return super(ModifyLog,self).save(*args, **kwargs)
+
 
 
 class Slug(models.Model):
@@ -101,7 +119,7 @@ class AgencyMember(models.Model):
 
 
 
-class Cagetory(MPTTModel):
+class Cagetory(MPTTModel,ModifyLog):
     OPTIONS_CHOICES = (
         (1,'Inherit'),
         (2,'Option by specify'),
@@ -160,7 +178,7 @@ class Cagetory(MPTTModel):
 
 Cagetory.incrementCount = 0
 
-class Brand(models.Model):
+class Brand(ModifyLog,models.Model):
     brand_name = models.CharField(max_length=100)
     brand_sym = models.CharField(max_length=20)
     brand_logo = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
@@ -171,7 +189,7 @@ class Brand(models.Model):
         return self.brand_name
 
 
-class Product(models.Model):
+class Product(ModifyLog,models.Model):
     product_name = models.CharField(max_length=100)
     product_cagetory = models.ForeignKey(Cagetory)
     product_branch = models.ForeignKey(Brand)
