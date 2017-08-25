@@ -15,7 +15,7 @@ import itertools
 def index(request):
     product_list = Product.objects.all().prefetch_related(
         'productimage_set',
-        'product_agency'
+        'agency'
     )
     template = loader.get_template('list_product.html')
     context = {
@@ -28,7 +28,7 @@ def indexbycagetory(request,cagetory_id,object=None):
     cagetoty = object or Cagetory.objects.get(id=cagetory_id)
     product_list = cagetoty.allproducts().prefetch_related(
         'productimage_set',
-        'product_agency'
+        'agency'
     )
     template = loader.get_template('list_product.html')
     context = {
@@ -41,8 +41,8 @@ def indexbybrand(request,brand_id,object=None):
     page = request.GET.get('page') or 1
     brand = object or Brand.objects.get(id=brand_id)
     product_list = brand.product_set.prefetch_related(
-        Prefetch('productimage_set', to_attr='images'),
-        'product_agency'
+        'productimage_set',
+        'agency'
     )
     template = loader.get_template('list_product.html')
     context = {

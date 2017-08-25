@@ -13,7 +13,7 @@ class SpecificDetailForm(forms.ModelForm):
   specofwidget = AutoCompleteWiget(
     'econ:spec-ac',
     forward=[
-      'product_cagetory',
+      'cagetory',
       'prod',
       Exclude(exclude='productspecdetail_set---specof')
     ],
@@ -46,7 +46,7 @@ class OptionSpecificDetailInline(NestedTabularInline):
     specofwidget = AutoCompleteWiget(
       'econ:spec-ac',
       forward=[
-        'product_cagetory',
+        'cagetory',
         'prod',
         Include(include='productspecdetail_set---specof'),
         Exclude(exclude='productoption_set---specof',parent='fieldset'),

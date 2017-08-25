@@ -13,7 +13,7 @@ class ProductOptionAdmin(CustomAdminPopup):
   popup_response_template = "product_option_compact.html"
   inlines = [ProductOptionImageInline, SpecificDetailInline]
   readonly_fields = ('product',)
-  fields = ('product','product_price',)
+  fields = ('product','price',)
 
   def product(self, instance):
     try:

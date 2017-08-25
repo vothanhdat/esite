@@ -52,7 +52,7 @@ class ProductForm(SlugFieldFormMixin, forms.ModelForm):
   class Meta:
     fields = ('__all__')
     widgets = {
-      'product_cagetory' : AutoCompleteWiget('econ:cagetory-ac'),
+      'cagetory' : AutoCompleteWiget('econ:cagetory-ac'),
       'tags' : AutoTaggingWiget('econ:tag-ac'),
     }
 
@@ -70,13 +70,13 @@ class ProductAdmin(NestedModelAdmin):
 
   form = ProductForm
   inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,NestedProductOptionInline,ProductPromotionInLine]
-  list_display = ['product_name','slug_field','product_cagetory', 'product_branch','product_price','product_quatity' ] 
-  list_filter = [ ('product_cagetory', CustomTreeRelatedFieldListFilter),'product_branch','product_agency']
-  search_fields = ['product_name', 'product_cagetory__cagetory_name', 'product_branch__brand_name' ] 
+  list_display = ['name','slug_field','cagetory', 'branch','price','quatity' ] 
+  list_filter = [ ('cagetory', CustomTreeRelatedFieldListFilter),'branch','agency']
+  search_fields = ['name', 'cagetory__cagetory_name', 'branch__brand_name' ] 
  
   fieldsets = (
     (None, {
-        'fields': ('product_name', 'product_cagetory', 'product_branch','product_agency', 'product_price','product_quatity')
+        'fields': ('name', 'cagetory', 'branch','agency', 'price','quatity')
     }),
     ('Tagged', {
         'fields': ('tags', 'slug_field'),
@@ -85,3 +85,11 @@ class ProductAdmin(NestedModelAdmin):
 
   def slug_field(self,instance):
     return instance.slug.first()
+
+
+  def save_related(self, request, form, formsets, change):
+    r = super(ProductAdmin,self).save_related(request, form, formsets, change)
+    
+    if hasattr(form,'save_related') and callable(form.save_related):
+      form.save_related(request, form, formsets, change)
+    return r

@@ -68,13 +68,13 @@ def prefetch_product(query,fields,prefix):
         select_related_args += ['productinfo']
 
     if ('%s.productBranch' % prefix) in fields:
-        select_related_args += ['product_branch']
+        select_related_args += ['branch']
 
     if ('%s.productAgency' % prefix) in fields:
-        select_related_args += ['product_agency']
+        select_related_args += ['agency']
         
     if ('%s.productCagetory' % prefix) in fields:
-        select_related_args += ['product_cagetory']
+        select_related_args += ['cagetory']
 
     productQuery = query
 

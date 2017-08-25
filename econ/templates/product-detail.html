@@ -18,12 +18,12 @@
             });
         });
     </script>
-    <h1>{{ product.product_name }}</h1>
-    <h2>{{ product.product_price }}</h2>
+    <h1>{{ product.name }}</h1>
+    <h2>{{ product.price }}</h2>
 
-    {% with cagetory_paths=product.product_cagetory.paths %} {% include 'cagetory_path.html' %} {% endwith %}
+    {% with cagetory_paths=product.cagetory.paths %} {% include 'cagetory_path.html' %} {% endwith %}
 
-    <div class="product-agency">{{ product.product_agency }}</div class="">
+    <div class="product-agency">{{ product.agency }}</div class="">
 
     {% with details=product.productspecdetail_set.all %}
         <div class="product-details-title">Specification : </div>

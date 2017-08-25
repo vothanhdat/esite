@@ -5,7 +5,7 @@ from .models import Product, Cagetory, Brand
 
 class ProductIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    title = indexes.NgramField(model_attr='product_name')
+    title = indexes.NgramField(model_attr='name')
     tags = indexes.NgramField(model_attr='tags')
     lastupdate = indexes.DateTimeField(model_attr='modified')
 

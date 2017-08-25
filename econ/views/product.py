@@ -19,9 +19,9 @@ def index(request,product_id,object=None):
         'productspecdetail_set__spec__detail_field'
     ).select_related(
         'productinfo',
-        'product_agency',
-        'product_branch',
-        'product_cagetory',
+        'agency',
+        'branch',
+        'cagetory',
     ).get(id=product_id)
 
     # product_details = product.productspecdetail_set

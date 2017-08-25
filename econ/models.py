@@ -37,6 +37,7 @@ class ModifyLog(models.Model):
 
 
 
+
 class Slug(models.Model):
     slug = models.SlugField(unique=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -156,7 +157,7 @@ class Cagetory(MPTTModel,ModifyLog):
 
     def allproducts(self):
         allcagetory_ids = self.get_descendants(include_self=True).values('id')
-        return Product.objects.filter(product_cagetory__id__in=allcagetory_ids)
+        return Product.objects.filter(cagetory__id__in=allcagetory_ids)
 
     # def parent_tags(self):
     #     parents = self.get_ancestors(ascending=False, include_self=False)
@@ -190,25 +191,25 @@ class Brand(ModifyLog,models.Model):
 
 
 class Product(ModifyLog,models.Model):
-    product_name = models.CharField(max_length=100)
-    product_cagetory = models.ForeignKey(Cagetory)
-    product_branch = models.ForeignKey(Brand)
-    product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
-    product_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
-    product_quatity = models.IntegerField(verbose_name='numbers',default=0)
+    name = models.CharField(max_length=100)
+    cagetory = models.ForeignKey(Cagetory)
+    branch = models.ForeignKey(Brand)
+    price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
+    quatity = models.IntegerField(verbose_name='numbers',default=0)
     tags = TagField()
     slug = GenericRelation(Slug)
 
 
     # def parent_tags(self):
-    #     cagetory = self.product_cagetory
+    #     cagetory = self.cagetory
     #     parents = cagetory.get_ancestors(ascending=False, include_self=True)
     #     tags = Tag.objects.usage_for_queryset(parents)
-    #     tags +=  Tag.objects.get_for_object(self.product_branch)
+    #     tags +=  Tag.objects.get_for_object(self.branch)
     #     return tags
 
     def __str__(self):
-        return self.product_name
+        return self.name
 
     def images(self):
         return [e.url() for e in self.productimage_set.all()]
@@ -223,7 +224,7 @@ class ProductInfo(models.Model):
     info = RichTextField(null=True, blank=True)
 
     def __str__(self):
-        return self.product.product_name
+        return self.product.name
 
 class ProductPromotion(Promotion) : 
     apply_to = models.ManyToManyField(Product,null=True,blank=True)
@@ -253,7 +254,7 @@ class SpecificDetail(models.Model):
 
 class ProductOption(models.Model):
     prod = models.ForeignKey(Product,on_delete=models.CASCADE)
-    product_price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
     
     def prod_details(self):

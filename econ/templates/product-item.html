@@ -2,7 +2,7 @@
     <a href="{% url 'econ:product' product.id %}">
         <img src="{{product.images|first}}" alt="">      
     </a>
-    <div class="product-name" href="{% url 'econ:product' product.id %}">{{ product.product_name }}</div>
-    <div class="product-price">{{ product.product_price }}</div class="product-price">
-    <div class="product-agency">{{ product.product_agency }}</div class="">
+    <div class="product-name" href="{% url 'econ:product' product.id %}">{{ product.name }}</div>
+    <div class="product-price">{{ product.price }}</div class="product-price">
+    <div class="product-agency">{{ product.agency }}</div class="">
 </div>

@@ -63,7 +63,7 @@ class SpecificAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         
         qs = Specific.objects.all()
-        specific_of = self.forwarded.get('product_cagetory', None)
+        specific_of = self.forwarded.get('cagetory', None)
         prod_id = self.forwarded.get('prod', None)
 
         if specific_of:
@@ -83,7 +83,7 @@ class SpecificAutoComplete(autocomplete.Select2QuerySetView):
         return qs
 
     def create_object(self, text):
-        specific_of = self.forwarded.get('product_cagetory', None)
+        specific_of = self.forwarded.get('cagetory', None)
         if not specific_of:
             raise Exception('Choose cagetory before create new Specific')
         return self.get_queryset().create(**{

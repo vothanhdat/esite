@@ -16,7 +16,7 @@ from django.db.models import Count
 #   def field_choices(self, field, request, model_admin):
 #     print ''
 #     # remote_field(field).name
-#     # .annotate(count = Count('product_cagetory')).order_by('-count').filter(count__gt=0)
+#     # .annotate(count = Count('cagetory')).order_by('-count').filter(count__gt=0)
 #     return field.related_model._default_manager.all()
 
 class CustomTreeRelatedFieldListFilter(TreeRelatedFieldListFilter):
@@ -79,4 +79,4 @@ class InheritTreeRelatedFieldListFilter(CustomTreeRelatedFieldListFilter):
 
   # def queryset(self, request):        
   #   print 'queryset'
-  #   return Product.objects.all().annotate(count = Count('product_cagetory')).order_by('-count').filter(count__gt=0)#.filter(postvote__vote='Y')
+  #   return Product.objects.all().annotate(count = Count('cagetory')).order_by('-count').filter(count__gt=0)#.filter(postvote__vote='Y')
