@@ -1,8 +1,13 @@
+
 .mptt-filter-root{
-    padding-left: 4px;
+    >input{
+        margin: 5px 15px;
+        display: block;
+        width: -webkit-fill-available;
+        font-size: 0.9em;
+        padding: 4px 9px;
+    }
 }
-
-
 
 .mptt-filter-item{
     >input{
@@ -43,3 +48,4 @@
         font-weight: bold;
     }
 }
+

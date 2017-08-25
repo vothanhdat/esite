@@ -1,73 +1,159 @@
-{% load i18n %}
-{% load mptt_admin %}
-{% load static %}
-{% load compress %}
+{% load i18n %} {% load mptt_admin %} {% load static %} {% load compress %}
 
 <h3>{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</h3>
 {% compress css %}
-    <link rel="stylesheet" type="text/x-scss" href="{% static "scss/custom-mptt-filter.scss" %}" />
-{% endcompress %}
+<link rel="stylesheet" type="text/x-scss" href="{% static "scss/custom-mptt-filter.scss" %}" /> {% endcompress %}
 
-<div class='mptt-filter-root' data-mptttree="{{title}}">
+<div class='mptt-filter-root' data-mptttree="{{title|slugify}}" id="mptt-filter-root{{title|slugify}}">
+    <input type="text" placeholder="filter" id="filter" name='filter' /> 
+    <style id="style-a"> </style>
+    <style id="style-b"> </style>
     {% for choice in choices %}
-        <div class="mptt-filter-item {% if choice.selected %} selected {% endif %}" data-mpttparentid="{{choice.parent_id}}" data-mpttid="{{choice.display.id}}">
-            <input type="checkbox" checked id="mptt-filter-{{title}}-{{choice.display.id}}"/>
-            <label for="mptt-filter-{{title}}-{{choice.display.id}}"></label>
-            <a href="{{ choice.query_string|iriencode }}">{{choice.display}}</a>
-            <div class="mptt-filter-childs" > </div>
-        </div>
-    
+    <div class="mptt-filter-item {% if choice.selected %} selected {% endif %}" data-mpttparentid="{{choice.parent_id}}" data-mpttid="{{choice.display.id}}"
+        data-mpttlevel="{{choice.display.level}}" data-mptttitle="{{choice.display}}">
+        <input type="checkbox" checked id="mptt-filter-{{title}}-{{choice.display.id}}" />
+        <label for="mptt-filter-{{title}}-{{choice.display.id}}"></label>
+        <a href="{{ choice.query_string|iriencode }}">{{choice.display}} ({{choice.count}})</a>
+        <div class="mptt-filter-childs"> </div>
+    </div>
+
     {% endfor %}
 </div>
 
 <script>
-    !function(){
-        var mpttTree = [...document.querySelectorAll('[data-mpttid]')]
+    !function () {
+        var rootID = "mptt-filter-root{{title|slugify}}"
+        var rootContainer = document.getElementById(rootID)
+        var mpttTree = [...rootContainer.querySelectorAll('[data-mpttid]')]
         var mpttTreeIndex = mpttTree
             .reduce((e, f) => (e[f.dataset.mpttid] = f, e), {})
+        var isSave = true;
 
-        for(var e of mpttTree){
+
+        for (var e of mpttTree) {
             var parent_id = e.dataset.mpttparentid
-            if(parent_id && mpttTreeIndex[parent_id]){
+            if (parent_id && mpttTreeIndex[parent_id]) {
                 e.remove()
                 mpttTreeIndex[parent_id].children[3].appendChild(e)
             }
         }
 
-        for(var e of mpttTree){
-            if (e.children[3].childElementCount == 0){
+        for (var e of mpttTree) {
+            if (e.children[3].childElementCount == 0) {
                 e.children[1].style.visibility = 'hidden'
             }
         }
-        
+
 
         var rawdata = localStorage.getItem('mptt-filter-input')
-        try{
+        try {
             var data = JSON.parse(rawdata) || {}
-        }catch(e){
+        } catch (e) {
             var data = {}
         }
 
-        for(var e of [...document.querySelectorAll('[data-mpttid] input')]){
-            e.checked = data[e.id] 
+        for (var e of [...rootContainer.querySelectorAll('[data-mpttid] input')]) {
+            e.checked = data[e.id]
         }
 
-        function onchange(){
-            data[this.id] = this.checked
-            localStorage.setItem('mptt-filter-input',JSON.stringify(data))
+        function onchange() {
+            if(isSave){
+                data[this.id] = this.checked
+                localStorage.setItem('mptt-filter-input', JSON.stringify(data))
+            }
         }
 
         mpttTree.map(e => e.children[0]).forEach(e => {
-            e.addEventListener("change",onchange)
+            e.addEventListener("change", onchange)
         })
-        
-        var parent = document.querySelector("[data-mpttid].selected")
 
-        if(parent){
-            do{
+
+        var parent = rootContainer.querySelector("[data-mpttid].selected")
+
+        if (parent) {
+            do {
                 var parent = parent.parentElement.parentElement
                 parent && parent.classList.add('boiled');
-            }while(parent && parent.dataset['mpttid'])
+            } while (parent && parent.dataset['mpttid'])
+
         }
+
+
+        /**
+        @type {HTMLInputElement}
+        */
+        var input = rootContainer.querySelector('#filter')
+
+        /**
+        @type {HTMLStyleElement}
+        */
+        var style1 = rootContainer.querySelector('style#style-a')
+        var style2 = rootContainer.querySelector('style#style-b')
+
+
+        console.log({ input, style1 })
+
+        var mpttSearchData = mpttTree.map(e => ({
+            id: e.dataset.mpttid,
+            parent: e.dataset.mpttparentid,
+            level: e.dataset.mpttlevel,
+            title: (e.dataset.mptttitle + '').toLowerCase(),
+        })).sort((e, f) => (e.level - f.level) * 10000 + e.title.localeCompare(f.title));
+
+        input.addEventListener("input", function () {
+            var styleContent = "";
+
+            var value = this.value;
+
+            for (var e of [...rootContainer.querySelectorAll('[data-mpttid] input')]) {
+                e.checked = data[e.id]
+            }
+
+            if (!value.trim()) {
+                style1.innerHTML = styleContent;
+                style2.innerHTML = styleContent;
+
+
+                return;
+            }
+            isSave = false;
+
+            var values = value
+                .toLowerCase()
+                .replace(/ +/, ' ')
+                .split(' ')
+                .filter(e => e);
+            var idIdx = {}
+            var count = 0;
+            for(var { title, id, parent } of mpttSearchData){
+                idIdx[id] = idIdx[parent] || values.every(f => title.includes(f));
+                if(idIdx[id])
+                    count++;
+            }
+
+            if(count < 10){
+                for(var i in mpttTreeIndex)
+                    mpttTreeIndex[i].children[0].checked = true;
+            }
+
+            for(var { title, id, parent } of [...mpttSearchData].reverse())
+                if(idIdx[id])
+                    idIdx[parent] = true;
+
+            var findResult = mpttSearchData.filter(({  id }) => idIdx[id] );
+            var rootSeletor =  `div[data-mptttree=${rootContainer.dataset.mptttree}]`
+
+            style1.innerHTML = `${rootSeletor} .mptt-filter-item {display:none;}`
+            style2.innerHTML = [
+                findResult.map(e => `${rootSeletor} div[data-mpttid="${e.id}"].mptt-filter-item `).join(','),
+                `{display:block;}`
+            ].join('')
+
+            isSave = true;
+            
+        });
+
+
     }()
+
 </script>

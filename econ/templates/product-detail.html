@@ -25,7 +25,7 @@
 
     <div class="product-agency">{{ product.product_agency }}</div class="">
 
-    {% with details=product_details %}
+    {% with details=product.productspecdetail_set.all %}
         <div class="product-details-title">Specification : </div>
         {% include "product_specific_detail.html" %} 
     {% endwith %}

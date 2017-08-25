@@ -14,7 +14,7 @@ import itertools
 # Create your views here.
 def index(request):
     product_list = Product.objects.all().prefetch_related(
-        Prefetch('productimage_set', to_attr='images'),
+        'productimage_set',
         'product_agency'
     )
     template = loader.get_template('list_product.html')
@@ -27,7 +27,7 @@ def indexbycagetory(request,cagetory_id,object=None):
     page = request.GET.get('page') or 1
     cagetoty = object or Cagetory.objects.get(id=cagetory_id)
     product_list = cagetoty.allproducts().prefetch_related(
-        Prefetch('productimage_set', to_attr='images'),
+        'productimage_set',
         'product_agency'
     )
     template = loader.get_template('list_product.html')

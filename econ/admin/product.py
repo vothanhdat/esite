@@ -37,6 +37,8 @@ class ProductInfoInline(NestedStackedInline):
   model = ProductInfo
   verbose_name = "Detail"
   verbose_name_plural = "Detail"
+  can_delete = False
+  is_sortable = False
 
 
 class ProSpecificDetailInline(SpecificDetailInline):
@@ -51,6 +53,7 @@ class ProductForm(SlugFieldFormMixin, forms.ModelForm):
     fields = ('__all__')
     widgets = {
       'product_cagetory' : AutoCompleteWiget('econ:cagetory-ac'),
+      'tags' : AutoTaggingWiget('econ:tag-ac'),
     }
 
 
@@ -59,6 +62,7 @@ class NestedProductOptionInline(NestedStackedInline):
   inlines=[OptionSpecificDetailInline]
   classes=('productoption-inline',)
   extra = 1
+  is_sortable = False
 
 
 @admin.register(Product)
@@ -69,10 +73,7 @@ class ProductAdmin(NestedModelAdmin):
   list_display = ['product_name','slug_field','product_cagetory', 'product_branch','product_price','product_quatity' ] 
   list_filter = [ ('product_cagetory', CustomTreeRelatedFieldListFilter),'product_branch','product_agency']
   search_fields = ['product_name', 'product_cagetory__cagetory_name', 'product_branch__brand_name' ] 
-  formfield_overrides = {
-    TagField: {'widget': AutoTaggingWiget('econ:tag-ac')},
-  }
-
+ 
   fieldsets = (
     (None, {
         'fields': ('product_name', 'product_cagetory', 'product_branch','product_agency', 'product_price','product_quatity')

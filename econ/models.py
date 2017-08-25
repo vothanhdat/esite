@@ -205,7 +205,7 @@ class ProductInfo(models.Model):
     info = RichTextField(null=True, blank=True)
 
     def __str__(self):
-        return self.info
+        return self.product.product_name
 
 class ProductPromotion(Promotion) : 
     apply_to = models.ManyToManyField(Product,null=True,blank=True)

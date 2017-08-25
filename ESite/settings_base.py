@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'django_mptt_admin',
     'social_django',
     'mptt',
+    'import_export',
     # 'django_comments',
     "compressor",
     'ckeditor',
@@ -148,20 +149,25 @@ LOGOUT_URL = 'index'
 
 SOCIAL_AUTH_FACEBOOK_KEY = '1472925602767492'  # App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'd68f6faf5dca9addeb4b0a8d0db0e4e1'  # App Secret
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'public_profile', ]
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    'fields': 'id,name,email', 
+    'fields': 'id, name, email, cover, gender', 
+    'locale': 'en_US',
 }
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '787750051756-iviqd3qlke519oooi925130fj1kmnq0g.apps.googleusercontent.com'  # App ID
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'STEIr2IaCVngvg_1Q0sLOGHT'  # App Secret
+
+
+SOCIAL_AUTH_TWITTER_KEY = 'uD41ct94nBHuPuYgOYA83kIL9'
+SOCIAL_AUTH_TWITTER_SECRET = '5aUztBHKmOZbNx4S9DQpeFvLz0jfVskvqIelIUUahCtLTvWhnX'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfile")
-STATICFILES_DIRS = ( os.path.join(BASE_DIR, "static"), )
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"), )
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -169,7 +175,7 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-MEDIA_URL ='/media/'
+MEDIA_URL = '/media/'
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),

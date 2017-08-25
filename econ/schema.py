@@ -1,7 +1,8 @@
 import graphene
-from itertools import chain
+from itertools import chain, groupby
 from graphene_django import DjangoObjectType,DjangoConnectionField
 from graphene_django.debug import DjangoDebug
+from django.contrib.auth.models import User
 
 from django.db.models import Prefetch
 from .models import (
@@ -155,6 +156,11 @@ class ProductInfoView(DjangoObjectType):
     class Meta:
         model = ProductInfo
 
+class UserInfoView(DjangoObjectType):
+    class Meta:
+        model = User
+
+    
 
 class CagetoryView(DjangoObjectType,ProductSet):
     class Meta:
@@ -200,15 +206,7 @@ class SearchResultView(graphene.types.Union):
                 querySet += [objectType(values,fieldInfo,prefix)]
 
         return chain(*querySet)
-# searchTypeMapping = {
-#     'product' : lambda  values, fieldInfo : prefetch_product(
-#         Product.objects.filter(id__in=values),
-#         fieldInfo,
-#         'search.type_ProductsView'
-#     ),
-#     'cagetory' : lambda  values, fieldInfo : Cagetory.objects.filter(id__in=values),
-#     'brand' : lambda values, fieldInfo : Brand.objects.filter(id__in=values),
-# }
+
 
 class Query(graphene.ObjectType):
     product = graphene.Field(ProductsView,id=graphene.Argument(graphene.String),slug=graphene.Argument(graphene.String))
@@ -222,7 +220,10 @@ class Query(graphene.ObjectType):
     fuzysearch = graphene.List(SearchResultView,search=graphene.Argument(graphene.String))
     autocomplete = graphene.List(graphene.String,search=graphene.Argument(graphene.String))
 
+    profile = graphene.Field(UserInfoView)
 
+    def resolve_profile(root, args, context, info):
+        return context.user
     def resolve_product(root, args, context, info):
         productQuery = prefetch_product(
             Product.objects,

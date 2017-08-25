@@ -29,7 +29,7 @@ def index(request,product_id,object=None):
     template = loader.get_template('product-detail.html')
     context = {
         'product': product,
-        'product_details': product.productspecdetail_set.all()
+        # 'product_details': product.productspecdetail_set.all()
     }
     
     return HttpResponse(template.render(context, request))

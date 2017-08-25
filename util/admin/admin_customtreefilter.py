@@ -8,16 +8,22 @@ from django.utils.html import format_html, mark_safe
 from django.contrib.admin.utils import get_model_from_relation
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 
 
     
-
+# class CustomTreeCountAnotate(TreeRelatedFieldListFilter):
+#   def field_choices(self, field, request, model_admin):
+#     print ''
+#     # remote_field(field).name
+#     # .annotate(count = Count('product_cagetory')).order_by('-count').filter(count__gt=0)
+#     return field.related_model._default_manager.all()
 
 class CustomTreeRelatedFieldListFilter(TreeRelatedFieldListFilter):
   template='custom/custom_mptt_filter.html'
-  
   def field_choices(self, field, request, model_admin):
-    return field.related_model._default_manager.all()
+    field_name = remote_field(field).name
+    return field.related_model._default_manager.all().annotate(count = Count(field_name))
 
   def choices(self, cl):
     yield {
@@ -26,6 +32,7 @@ class CustomTreeRelatedFieldListFilter(TreeRelatedFieldListFilter):
         self.changed_lookup_kwarg: None,
       }, [self.lookup_kwarg, self.lookup_kwarg_isnull]),
       'display': _('All'),
+      'count': self.lookup_choices.count(),
     }
     for model in self.lookup_choices:
       yield {
@@ -33,6 +40,7 @@ class CustomTreeRelatedFieldListFilter(TreeRelatedFieldListFilter):
           self.changed_lookup_kwarg: model.id,
         }, [self.lookup_kwarg_isnull]),
         'display': model,
+        'count': model.count,
         'parent_id': model.parent_id,
         'selected': (long(self.lookup_val) == model.id) if self.lookup_val else False,
       }
@@ -63,7 +71,12 @@ class InheritTreeRelatedFieldListFilter(CustomTreeRelatedFieldListFilter):
         self.used_parameters.update(
           {'%s__%s__in' % (self.field_path, self.rel_name): other_models}
         )
+        
       # #### MPTT ADDITION END
       return queryset.filter(**self.used_parameters)
     except ValidationError as e:
       raise IncorrectLookupParameters(e)
+
+  # def queryset(self, request):        
+  #   print 'queryset'
+  #   return Product.objects.all().annotate(count = Count('product_cagetory')).order_by('-count').filter(count__gt=0)#.filter(postvote__vote='Y')
