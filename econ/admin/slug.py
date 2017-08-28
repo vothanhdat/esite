@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.template.defaultfilters import slugify
 from django.contrib.contenttypes.admin import GenericTabularInline
-
+from util.wiget.slugwidget import SlugWiget
 from ..models import Slug
 
 class SlugInline(GenericTabularInline):
@@ -10,7 +10,7 @@ class SlugInline(GenericTabularInline):
 
 
 class SlugFieldFormMixin(forms.Form):
-  slug_field = forms.CharField()
+  slug_field = forms.CharField(widget=SlugWiget)
 
   def get_initial_for_field(self,field, field_name):
     instance = self.instance
@@ -32,7 +32,12 @@ class SlugFieldFormMixin(forms.Form):
     return slug
 
   def save_related(self, request, form, formsets, change):
-    Slug.objects.create(
-      content_object=form.instance, 
-      slug=self.cleaned_data.get('slug_field', None)
-    )
+    slug = form.instance.slug.first()
+    if slug : 
+      slug.slug = self.cleaned_data.get('slug_field', None)
+      slug.save()
+    else :
+      Slug.objects.create(
+        content_object=form.instance, 
+        slug=self.cleaned_data.get('slug_field', None)
+      )
