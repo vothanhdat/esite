@@ -64,6 +64,17 @@ def prefetch_product(query,fields,prefix):
         prefetch_related_args += [
             'productspecdetail_set__spec__detail_field'
         ]
+
+    if ('%s.productoptionSet.' % prefix) in fields:
+        prefetch_related_args += [
+            'productoption_set'
+        ]
+
+    if ('%s.productoptionSet.productspecdetailSet' % prefix) in fields:
+        prefetch_related_args += [
+            'productoption_set__productspecdetail_set__spec__detail_field'
+        ]
+
     if ('%s.productinfo' % prefix) in fields:
         select_related_args += ['productinfo']
 
@@ -75,6 +86,8 @@ def prefetch_product(query,fields,prefix):
         
     if ('%s.productCagetory' % prefix) in fields:
         select_related_args += ['cagetory']
+
+    print fields
 
     productQuery = query
 
@@ -202,6 +215,10 @@ class SearchResultView(graphene.types.Union):
 
         return chain(*querySet)
 
+
+class ProductOptionView(DjangoObjectType):
+    class Meta:
+        model = ProductOption
 
 class Query(graphene.ObjectType):
     product = graphene.Field(ProductsView,id=graphene.Argument(graphene.String),slug=graphene.Argument(graphene.String))
