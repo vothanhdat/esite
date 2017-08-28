@@ -7,8 +7,8 @@ class BaseUser(User):
         ('M','Male'), 
         ('F','Female'), 
     )
-    baseuser_bio = models.TextField(max_length=500, blank=True)
-    baseuser_address = models.TextField(max_length=500, blank=True)
-    baseuser_birthday = models.DateField(null=True, blank=True)
-    baseuser_gender = models.CharField(max_length=1, choices=GENDER,default='U')
-    baseuser_avatar = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
+    address = models.TextField(max_length=500, blank=True)
+    birthday = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=1, choices=GENDER,default='U')
+    avatar = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)

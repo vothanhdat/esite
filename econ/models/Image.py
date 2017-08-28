@@ -6,7 +6,7 @@ class Image(models.Model):
          abstract = True
     
     image = models.ImageField(upload_to='media/%Y/%m/%d/%H/%M/%S/',null=True, blank=True)
-    image_link = models.CharField(max_length=300,null=True, blank=True)
+    link = models.CharField(max_length=300,null=True, blank=True)
     
     def __str__(self):
         return self.url()
@@ -15,4 +15,4 @@ class Image(models.Model):
         if(self.image):
             return self.image.url
         else :
-            return self.image_link
+            return self.link
