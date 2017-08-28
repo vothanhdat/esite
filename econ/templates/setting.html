@@ -39,7 +39,22 @@
 
   <h3>Facebook</h3>
   {% if facebook_login %}
-    <p>Connected as <a href="https://facebook.com/{{ facebook_login.extra_data.id }}/" target="_blank">{{ facebook_login.extra_data.id }}</a></p>
+    <p>Connected as <a href="https://facebook.com/{{ facebook_login.extra_data.id }}/" target="_blank" id="facebook-name">{{ facebook_login.extra_data.id }}</a></p>
+    <script>
+      setTimeout(async () => {
+        let data = await $.get('https://graph.facebook.com/me?' + $.param({
+          access_token: "{{facebook_login.extra_data.access_token}}",
+          fields: 'id,name,picture,email,link'
+        }))
+        console.log(data)
+        // var url = 'https://graph.facebook.com/me/picture?' + $.param({
+        //   access_token: token,
+        // })
+        document.getElementById('facebook-name').innerText = data.name
+
+      })
+
+    </script>
     {% if can_disconnect %}
       <form method="post" action="{% url 'social:disconnect' 'facebook' %}">
         {% csrf_token %}
