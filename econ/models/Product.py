@@ -4,7 +4,7 @@ from tagging.fields import TagField
 from djmoney.models.fields import MoneyField
 from ckeditor.fields import RichTextField
 
-from .Slug import Slug
+from .Slug import Slug, SlugMixin
 # from .Cagetory import Cagetory
 from .ModifyLog import ModifyLog
 from .Agency import Agency
@@ -12,7 +12,7 @@ from .Brand import Brand
 from .Image import Image
 from .Promotion import Promotion
 
-class Product(ModifyLog,models.Model):
+class Product(ModifyLog,SlugMixin,models.Model):
     name = models.CharField(max_length=100)
     cagetory = models.ForeignKey('Cagetory')
     branch = models.ForeignKey(Brand)
@@ -20,7 +20,6 @@ class Product(ModifyLog,models.Model):
     # agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     quatity = models.IntegerField(verbose_name='numbers',default=0)
     tags = TagField()
-    slug = GenericRelation(Slug)
 
 
     # def parent_tags(self):

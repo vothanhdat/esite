@@ -9,11 +9,13 @@
     <style id="style-a"> </style>
     <style id="style-b"> </style>
     {% for choice in choices %}
-    <div class="mptt-filter-item {% if choice.selected %} selected {% endif %}" data-mpttparentid="{{choice.parent_id}}" data-mpttid="{{choice.display.id}}"
+    <div class="mptt-filter-item {% if choice.selected %} selected {% endif %}" 
+        data-mpttparentid="{{choice.parent_id}}" data-mpttid="{{choice.display.id}}"
+        data-mpttcount="{{choice.count}}"
         data-mpttlevel="{{choice.display.level}}" data-mptttitle="{{choice.display}}">
         <input type="checkbox" checked id="mptt-filter-{{title}}-{{choice.display.id}}" />
         <label for="mptt-filter-{{title}}-{{choice.display.id}}"></label>
-        <a href="{{ choice.query_string|iriencode }}">{{choice.display}} ({{choice.count}})</a>
+        <a href="{{ choice.query_string|iriencode }}">{{choice.display}} (<span id="count">0</span>)</a>
         <div class="mptt-filter-childs"> </div>
     </div>
 
@@ -97,8 +99,27 @@
             id: e.dataset.mpttid,
             parent: e.dataset.mpttparentid,
             level: e.dataset.mpttlevel,
+            count: parseInt( e.dataset.mpttcount),
             title: (e.dataset.mptttitle + '').toLowerCase(),
         })).sort((e, f) => (e.level - f.level) * 10000 + e.title.localeCompare(f.title));
+
+        var mpttSearchDataReverse =  [...mpttSearchData].reverse()
+
+        var mpttSearchDataTreeIndex = mpttSearchData
+            .reduce((e, f) => (e[f.id] = f, e), {})
+
+        for( var {id, parent, count} of mpttSearchDataReverse){
+            if(parent != id && mpttSearchDataTreeIndex[parent]){
+                mpttSearchDataTreeIndex[parent].count += count
+            }
+        }
+
+        for( var {id, parent, count} of mpttSearchDataReverse){
+            if(!count)
+                mpttTreeIndex[id].style.display = 'none';
+            else
+                mpttTreeIndex[id].querySelector('#count').innerText = count
+        }
 
         input.addEventListener("input", function () {
             var styleContent = "";
@@ -123,6 +144,7 @@
                 .replace(/ +/, ' ')
                 .split(' ')
                 .filter(e => e);
+
             var idIdx = {}
             var count = 0;
             for(var { title, id, parent } of mpttSearchData){
@@ -136,7 +158,7 @@
                     mpttTreeIndex[i].children[0].checked = true;
             }
 
-            for(var { title, id, parent } of [...mpttSearchData].reverse())
+            for(var { title, id, parent } of mpttSearchDataReverse)
                 if(idIdx[id])
                     idIdx[parent] = true;
 

@@ -41,3 +41,30 @@ class SlugFieldFormMixin(forms.Form):
         content_object=form.instance, 
         slug=self.cleaned_data.get('slug_field', None)
       )
+
+
+class SlugFieldListFormMixin(forms.Form):
+
+  slug_field = forms.CharField(widget=SlugWiget)
+
+  def __init__(self, *args, **kwargs):
+    instance = kwargs.get('instance')
+    if instance:
+      if instance.id:
+        initial = kwargs.get('initial', {})
+        initial['slug_field'] = instance.slug.first() 
+      kwargs['initial'] = initial
+    super(SlugFieldFormMixin, self).__init__(*args, **kwargs)
+
+
+  def save_related(self, *args, **kwargs):
+    slug = self.instance.slug.first()
+    if slug : 
+      slug.slug = self.cleaned_data.get('slug_field', None)
+      slug.save()
+    else :
+      Slug.objects.create(
+        content_object=form.instance, 
+        slug=self.cleaned_data.get('slug_field', None)
+      )
+      super(SlugFieldListFormMixin, self).save(*args, **kwargs)

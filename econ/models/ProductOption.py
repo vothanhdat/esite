@@ -9,6 +9,7 @@ from .Image import Image
 class ProductOption(models.Model):
     prod = models.ForeignKey(Product,on_delete=models.CASCADE)
     price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    quatity = models.IntegerField(default=0)
 
     
     def prod_details(self):

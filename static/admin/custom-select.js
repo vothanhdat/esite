@@ -212,9 +212,12 @@
     $(document).on('autocompleteLightInitialize', '[data-autocomplete-light-function=customtagging2]', function () {
         var element = $(this);
         var urldata = $(this).attr('data-autocomplete-light-url');
-        if (urldata) {
+        if (urldata) {  
 
-            $.get(urldata).then((datastring) => {
+            window.cachesTagged = window.cachesTagged || {};
+            window.cachesTagged[urldata] = window.cachesTagged[urldata] || $.get(urldata);
+
+            window.cachesTagged[urldata].then((datastring) => {
                 var data = datastring.split(',')
                 $(this).select2({
                     placeholder: '',

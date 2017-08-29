@@ -3,9 +3,9 @@ from mptt.models import MPTTModel, TreeForeignKey, TreeManager
 from django.contrib.contenttypes.fields import GenericRelation
 from tagging.fields import TagField
 from .ModifyLog import ModifyLog
-from .Slug import Slug
+from .Slug import Slug, SlugMixin
 
-class Cagetory(MPTTModel,ModifyLog):
+class Cagetory(MPTTModel, ModifyLog, SlugMixin):
     OPTIONS_CHOICES = (
         (1,'Inherit'),
         (2,'Option by specify'),
@@ -20,8 +20,8 @@ class Cagetory(MPTTModel,ModifyLog):
         related_name='children',
         db_index=True,
     )
+    allow_choose = models.BooleanField(default=True)
     tags = TagField()
-    slug = GenericRelation(Slug)
 
     optiontype = models.IntegerField(choices=OPTIONS_CHOICES, default=1)   
 

@@ -63,7 +63,9 @@ class NestedProductOptionInline(NestedStackedInline):
   classes=('productoption-inline',)
   extra = 1
   is_sortable = False
-
+  fields = (
+    ('quatity', 'price', ),
+  )
 
 @admin.register(Product)
 class ProductAdmin(NestedModelAdmin):
