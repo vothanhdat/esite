@@ -1,0 +1,8 @@
+from django.db import models
+from .Agency import Agency
+from .Customer import Customer
+
+class AgencyMember(models.Model):
+    agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    inviter = models.ForeignKey(Customer, on_delete=models.CASCADE,related_name="membership_invites",null=True, blank=True)

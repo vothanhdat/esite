@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
 from django.views import generic
-from ..models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail
+from ..models import Brand,Cagetory,Product,ProductImage,Customer,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail
 
 import itertools
 
@@ -15,7 +15,6 @@ import itertools
 def index(request):
     product_list = Product.objects.all().prefetch_related(
         'productimage_set',
-        'agency'
     )
     template = loader.get_template('list_product.html')
     context = {
@@ -28,7 +27,6 @@ def indexbycagetory(request,cagetory_id,object=None):
     cagetoty = object or Cagetory.objects.get(id=cagetory_id)
     product_list = cagetoty.allproducts().prefetch_related(
         'productimage_set',
-        'agency'
     )
     template = loader.get_template('list_product.html')
     context = {
@@ -42,7 +40,6 @@ def indexbybrand(request,brand_id,object=None):
     brand = object or Brand.objects.get(id=brand_id)
     product_list = brand.product_set.prefetch_related(
         'productimage_set',
-        'agency'
     )
     template = loader.get_template('list_product.html')
     context = {

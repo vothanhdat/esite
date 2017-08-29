@@ -1,6 +1,6 @@
 from django.core.cache import cache
 
-from ..models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail
+from ..models import Brand,Cagetory,Product,ProductImage,Customer,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail
 
 
 

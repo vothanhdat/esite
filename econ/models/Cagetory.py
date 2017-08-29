@@ -3,7 +3,6 @@ from mptt.models import MPTTModel, TreeForeignKey, TreeManager
 from django.contrib.contenttypes.fields import GenericRelation
 from tagging.fields import TagField
 from .ModifyLog import ModifyLog
-from .Product import Product
 from .Slug import Slug
 
 class Cagetory(MPTTModel,ModifyLog):
@@ -42,6 +41,7 @@ class Cagetory(MPTTModel,ModifyLog):
         return self.paths().values('id')
 
     def allproducts(self):
+        from .Product import Product
         allcagetory_ids = self.get_descendants(include_self=True).values('id')
         return Product.objects.filter(cagetory__id__in=allcagetory_ids)
 
@@ -51,6 +51,7 @@ class Cagetory(MPTTModel,ModifyLog):
     #     return tags
     
     def allspecific(self):
+        from .Specific import Specific
         path_ids = self.path_ids()
         return Specific.objects.filter(specific_of__id__in=path_ids)
 

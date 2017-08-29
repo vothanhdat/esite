@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class BaseUser(User):
+class Customer(User):
     GENDER = (
         ('U','Unknow'), 
         ('M','Male'), 

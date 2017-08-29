@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
 from django.views import generic
-from ..models import Brand,Cagetory,Product,ProductImage,BaseUser,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail
+from ..models import Brand,Cagetory,Product,ProductImage,Customer,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_page
 
@@ -19,7 +19,6 @@ def index(request,product_id,object=None):
         'productspecdetail_set__spec__detail_field'
     ).select_related(
         'productinfo',
-        'agency',
         'branch',
         'cagetory',
     ).get(id=product_id)

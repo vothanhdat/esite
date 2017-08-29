@@ -24,7 +24,7 @@ class ProductImageInLine(NestedTabularInline):
   verbose_name = "Photos"
   verbose_name_plural = "Photos"
   model = ProductImage
-  fields = ['image','image_link']
+  fields = ['image','link']
   extra = 1
 
 class ProductPromotionInLine(NestedStackedInline):
@@ -71,12 +71,12 @@ class ProductAdmin(NestedModelAdmin):
   form = ProductForm
   inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,NestedProductOptionInline,ProductPromotionInLine]
   list_display = ['name','slug_field','cagetory', 'branch','price','quatity' ] 
-  list_filter = [ ('cagetory', CustomTreeRelatedFieldListFilter),'branch','agency']
+  list_filter = [ ('cagetory', CustomTreeRelatedFieldListFilter),'branch',]
   search_fields = ['name', 'cagetory__name', 'branch__name' ] 
  
   fieldsets = (
     (None, {
-        'fields': ('name', 'cagetory', 'branch','agency', 'price','quatity')
+        'fields': ('name', 'cagetory', 'branch', 'price','quatity')
     }),
     ('Tagged', {
         'fields': ('tags', 'slug_field'),

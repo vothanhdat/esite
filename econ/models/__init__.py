@@ -1,7 +1,7 @@
-from .Agency import *
-from .AgencyMember import *
-from .AgencyPromotion import *
-from .BaseUser import *
+# from .Agency import *
+# from .AgencyMember import *
+# from .AgencyPromotion import *
+from .Customer import *
 from .Brand import *
 from .Cagetory import *
 from .Image import *
