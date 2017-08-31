@@ -72,22 +72,18 @@ class ProductAdmin(NestedModelAdmin):
 
   form = ProductForm
   inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,NestedProductOptionInline,ProductPromotionInLine]
-  list_display = ['name','slug_field','cagetory', 'branch','price','quatity' ] 
-  list_filter = [ ('cagetory', CustomTreeRelatedFieldListFilter),'branch',]
+  list_display = ['name','slug_field','isvariety', 'cagetory', 'branch','price','quatity' ] 
+  list_filter = [ ('cagetory', CustomTreeRelatedFieldListFilter),'isvariety', 'branch',]
   search_fields = ['name', 'cagetory__name', 'branch__name' ] 
  
   fieldsets = (
     (None, {
-        'fields': ('name', 'cagetory', 'branch', 'price','quatity')
+        'fields': ('name', 'cagetory', 'branch', 'price','quatity','isvariety')
     }),
     ('Tagged', {
         'fields': ('tags', 'slug_field'),
     }),
   )
-
-  def slug_field(self,instance):
-    return instance.slug.first()
-
 
   def save_related(self, request, form, formsets, change):
     r = super(ProductAdmin,self).save_related(request, form, formsets, change)
@@ -95,3 +91,12 @@ class ProductAdmin(NestedModelAdmin):
     if hasattr(form,'save_related') and callable(form.save_related):
       form.save_related(request, form, formsets, change)
     return r
+
+  def get_queryset(self, request):
+    qs = super(ProductAdmin, self).get_queryset(request)
+    return qs.prefetch_related(
+      'slug'
+    ) .select_related(
+      'cagetory',
+      'branch',
+    )

@@ -15,10 +15,10 @@ from .Promotion import Promotion
 class Product(ModifyLog,SlugMixin,models.Model):
     name = models.CharField(max_length=100)
     cagetory = models.ForeignKey('Cagetory')
-    branch = models.ForeignKey(Brand)
+    branch = models.ForeignKey('Brand')
     price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
-    # agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     quatity = models.IntegerField(verbose_name='numbers',default=0)
+    isvariety = models.BooleanField(default=True)
     tags = TagField()
 
 
