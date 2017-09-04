@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
 from django.views import generic
-from ..models import Brand,Cagetory,Product,ProductImage,Customer,Agency,AgencyMember,AgencyPromotion,ProductPromotion,Specific,SpecificDetail
+from ..models import Brand,Cagetory,Product,ProductImage,Customer,ProductPromotion,Specific,SpecificDetail
 
 import itertools
 

@@ -3,7 +3,8 @@ from django.contrib import admin
 from django.template.defaultfilters import slugify
 from django.contrib.contenttypes.admin import GenericTabularInline
 from util.wiget.slugwidget import SlugWiget
-from ..models import Slug
+from util.abstractmodels import Slug
+
 
 class SlugInline(GenericTabularInline):
     model = Slug

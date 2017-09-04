@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from tagging.fields import TagField
-from .ModifyLog import ModifyLog
-from .Slug import Slug, SlugMixin
+from util.abstractmodels import ModifyLog, SlugMixin
 
 class Brand(ModifyLog,SlugMixin,models.Model):
     name = models.CharField(max_length=100)

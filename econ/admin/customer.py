@@ -1,6 +1,6 @@
 from django.contrib import admin
 from util.admin.admin_customtreefilter import InheritTreeRelatedFieldListFilter
-from ..models import Customer,AgencyMember
+from ..models import Customer
 # class CustomerMemberInline(admin.StackedInline):
 #   model = AgencyMember
 #   fk_name = 'user'

@@ -15,7 +15,6 @@ from .models import (
     ProductOption,
     Cagetory,
     Brand,
-    Agency,
 )
 
 from haystack.query import SearchQuerySet, SQ
@@ -81,8 +80,6 @@ def prefetch_product(query,fields,prefix):
     if ('%s.productBranch' % prefix) in fields:
         select_related_args += ['branch']
 
-    # if ('%s.productAgency' % prefix) in fields:
-    #     select_related_args += ['agency']
         
     if ('%s.productCagetory' % prefix) in fields:
         select_related_args += ['cagetory']
@@ -102,11 +99,7 @@ class ProductSet:
             self.product_set,
             get_field_names(info),
             'productSet'
-        )
-
-class AgencyView(DjangoObjectType,ProductSet):
-    class Meta:
-        model = Agency
+        ) 
 
 class BrandView(DjangoObjectType,ProductSet):
     class Meta:

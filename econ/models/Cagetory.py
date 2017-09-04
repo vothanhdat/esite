@@ -2,8 +2,7 @@ from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey, TreeManager
 from django.contrib.contenttypes.fields import GenericRelation
 from tagging.fields import TagField
-from .ModifyLog import ModifyLog
-from .Slug import Slug, SlugMixin
+from util.abstractmodels import ModifyLog, SlugMixin
 
 class Cagetory(MPTTModel, ModifyLog, SlugMixin):
     OPTIONS_CHOICES = (

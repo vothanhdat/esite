@@ -4,13 +4,11 @@ from tagging.fields import TagField
 from djmoney.models.fields import MoneyField
 from ckeditor.fields import RichTextField
 
-from .Slug import Slug, SlugMixin
 # from .Cagetory import Cagetory
-from .ModifyLog import ModifyLog
-from .Agency import Agency
 from .Brand import Brand
 from .Image import Image
 from .Promotion import Promotion
+from util.abstractmodels import ModifyLog, SlugMixin
 
 class Product(ModifyLog,SlugMixin,models.Model):
     name = models.CharField(max_length=100)

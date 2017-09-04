@@ -11,7 +11,6 @@ class Promotion(models.Model) :
     value = models.FloatField()
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
-    # promotion_agency = models.ForeignKey(Agency, on_delete=models.CASCADE)
     class Meta:
         abstract = True
 

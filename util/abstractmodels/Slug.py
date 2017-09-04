@@ -4,6 +4,9 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 
 
 class Slug(models.Model):
+    class Meta:
+        app_label = 'econ'
+        
     slug = models.SlugField(unique=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()

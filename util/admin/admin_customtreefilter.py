@@ -23,7 +23,7 @@ class CustomTreeRelatedFieldListFilter(TreeRelatedFieldListFilter):
   template='custom/custom_mptt_filter.html'
   def field_choices(self, field, request, model_admin):
     field_name = remote_field(field).name
-    return field.related_model._default_manager.all().annotate(count = Count(field_name))
+    return field.related_model._default_manager.annotate(count = Count(field_name))
 
   def choices(self, cl):
     yield {
@@ -32,7 +32,7 @@ class CustomTreeRelatedFieldListFilter(TreeRelatedFieldListFilter):
         self.changed_lookup_kwarg: None,
       }, [self.lookup_kwarg, self.lookup_kwarg_isnull]),
       'display': _('All'),
-      'count': self.lookup_choices.count(),
+      'count': cl.model._default_manager.count(),
     }
     for model in self.lookup_choices:
       yield {
