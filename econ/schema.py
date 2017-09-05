@@ -8,7 +8,7 @@ from django.db.models import Prefetch
 from .models import (
     Specific,
     SpecificDetail,
-    ProductSpecDetail,
+    ProductOptionSpecDetail,
     Product,
     ProductImage,
     ProductInfo,
@@ -105,9 +105,9 @@ class BrandView(DjangoObjectType,ProductSet):
     class Meta:
         model = Brand
 
-class ProductSpecDetailView(DjangoObjectType):
+class ProductOptionSpecDetailView(DjangoObjectType):
     class Meta:
-        model = ProductSpecDetail
+        model = ProductOptionSpecDetail
 
     spec = graphene.Field(graphene.String)
     value = graphene.Field(graphene.String)

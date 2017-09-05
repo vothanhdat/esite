@@ -4,7 +4,7 @@ from ..models import Brand
 from util.abstractmodels import Slug
 from tagging.fields import TagField
 from util.wiget.autocomplete import AutoTaggingWiget
-from .slug  import SlugFieldFormMixin
+from util.admin.slug  import SlugFieldFormMixin
 
 class BrandForm(SlugFieldFormMixin, forms.ModelForm):
   pass
@@ -16,13 +16,3 @@ class BrandAdmin(admin.ModelAdmin):
     TagField: {'widget': AutoTaggingWiget('econ:tag-ac')},
   }
   list_display = ('name','slug_field','tags' )
-
-  def slug_field(self,instance):
-    return instance.slug.first()
-  # list_editable = ('slug', 'tags' )
-
-  # # inlines=[SlugModel,]
-  # def slug(self, x):
-  #   return x.slug
-
-# admin.site.register(SlugModel)

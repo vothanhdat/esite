@@ -61,24 +61,14 @@ class SpecificDetailAutoComplete(autocomplete.Select2QuerySetView):
 @loginRequired
 class SpecificAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        
         qs = Specific.objects.all()
-        specific_of = self.forwarded.get('cagetory', None)
-        prod_id = self.forwarded.get('prod', None)
-
-        if specific_of:
-            cagetory = Cagetory.objects.get(id=specific_of)
-            qs = cagetory.allspecific()
-        elif prod_id:
-            prod = Product.objects.get(id=prod_id)
-            specific_ids = prod.productspecdetail_set.values("spec__detail_field__id")
-            qs = qs.filter(id__in=specific_ids)
-        else :
-            return Specific.objects.none()
-            
-            
+        spec_types = self.forwarded.get('spec_types', None)
+        
+        if spec_types:
+            qs = qs.filter(id__in=spec_types)
         if self.q:
             qs = qs.filter(specific_name__istartswith=self.q)
+
 
         return qs
 

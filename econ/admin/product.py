@@ -4,18 +4,16 @@ from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 
 from util.func import rabdombase64,addparamtourl
-from util.wiget.autocomplete import AutoCompleteWiget
-from econ.models import Product, ProductOption, ProductImage, ProductPromotion, ProductSpecDetail, ProductInfo
+from util.wiget.autocomplete import AutoCompleteWiget, AutoCompleteMutipleWiget, AutoTaggingWiget
+from econ.models import Product, ProductOption, ProductImage, ProductPromotion, ProductInfo
 from util.admin.admin_custommodelpopup import RANDOM_VAR
 from util.admin.admin_customtreefilter import CustomTreeRelatedFieldListFilter
-
-from .specificdetail  import SpecificDetailInline, OptionSpecificDetailInline
+from .specificdetail  import OptionSpecificDetailInline
 from django import forms
 from tagging.fields import TagField
-from util.wiget.autocomplete import AutoTaggingWiget
 from django.utils.html import format_html_join
 from nested_admin.nested import NestedModelAdmin,NestedInlineModelAdmin,NestedStackedInline,NestedTabularInline
-from .slug  import SlugFieldFormMixin
+from util.admin.slug  import SlugFieldFormMixin
 
 
 __all__= ()
@@ -41,9 +39,9 @@ class ProductInfoInline(NestedStackedInline):
   is_sortable = False
 
 
-class ProSpecificDetailInline(SpecificDetailInline):
-  verbose_name = "Specific"
-  verbose_name_plural = "Specific"
+# class ProSpecificDetailInline(SpecificDetailInline):
+#   verbose_name = "Specific"
+#   verbose_name_plural = "Specific"
 
 
 class ProductForm(SlugFieldFormMixin, forms.ModelForm):
@@ -54,6 +52,12 @@ class ProductForm(SlugFieldFormMixin, forms.ModelForm):
     widgets = {
       'cagetory' : AutoCompleteWiget('econ:cagetory-ac'),
       'tags' : AutoTaggingWiget('econ:tag-ac'),
+      'spec_types' : AutoCompleteMutipleWiget(
+        'econ:spec-ac',
+        forward=[
+          'cagetory',
+        ],
+      )
     }
 
 
@@ -71,20 +75,18 @@ class NestedProductOptionInline(NestedStackedInline):
 class ProductAdmin(NestedModelAdmin):
 
   form = ProductForm
-  inlines = [ProSpecificDetailInline,ProductInfoInline,ProductImageInLine,NestedProductOptionInline,ProductPromotionInLine]
-  list_display = ['name','slug_field','isvariety', 'cagetory', 'branch','price','quatity' ] 
-  list_filter = [ ('cagetory', CustomTreeRelatedFieldListFilter),'isvariety', 'branch',]
-  list_editable = ['isvariety',]
+  inlines = [ProductInfoInline,ProductImageInLine,NestedProductOptionInline,ProductPromotionInLine]
+  list_display = ['name','slug_field', 'cagetory', 'branch',] 
+  list_filter = [ ('cagetory', CustomTreeRelatedFieldListFilter), 'branch',]
   search_fields = ['name', 'cagetory__name', 'branch__name' ] 
- 
-  # list_select_related = ('cagetory','branch')
-  # list_prefetch_related = ('slug',)
+  # filter_horizontal = ('spec',)
+
   fieldsets = (
     (None, {
-        'fields': ('name', 'cagetory', 'branch', 'price','quatity','isvariety')
+        'fields': ('name', 'cagetory', 'branch','spec_types')
     }),
     ('Tagged', {
-        'fields': ('tags', 'slug_field'),
+        'fields': ('tags', 'slug_field',),
     }),
   )
 

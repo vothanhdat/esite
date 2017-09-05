@@ -8,7 +8,7 @@ from ..models import Cagetory
 
 from tagging.fields import TagField
 from util.wiget.autocomplete import AutoTaggingWiget
-from .slug  import SlugFieldFormMixin, SlugFieldListFormMixin
+from util.admin.slug  import SlugFieldFormMixin
 from util.admin.admin_customtreefilter import CustomTreeRelatedFieldListFilter
 
 

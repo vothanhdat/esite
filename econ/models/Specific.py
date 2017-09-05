@@ -22,14 +22,12 @@ class SpecificDetail(models.Model):
         return self.detail_value
 
 
-class ProductSpecDetail(models.Model):
-    # specof = models.ForeignKey(Specific)
+class ProductOptionSpecDetail(models.Model):
     spec = models.ForeignKey(SpecificDetail,on_delete=models.CASCADE)
     desc = models.CharField(max_length=100,null=True,blank=True)
-    prod = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
     prod_option = models.ForeignKey(ProductOption,on_delete=models.CASCADE,null=True,blank=True)
     class Meta:
-        unique_together = ("prod","prod_option")
+        unique_together = ("spec","prod_option")
 
 
     def __str__(self):

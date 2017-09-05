@@ -74,9 +74,9 @@
             if (exclude_field && exclude_field.exclude) {
                 var [pre, pos] = exclude_field.exclude.split('---')
                 var $exclude_field_selector_parent = exclude_field.parent || ''
-                var $exclude_field_selector = '[name^=' + prefix + pre + ']' + '[name$=' + pos + ']'
-                var $exclude_field_selector_bk = '[name^=' + pre + ']' + '[name$=' + pos + ']'
-                console.log( $exclude_field_selector_parent)
+                var $exclude_field_selector = '[name^=' + prefix + pre + ']' + (pos ? '[name$=' + pos + ']' : '')
+                var $exclude_field_selector_bk = '[name^=' + pre + ']' + (pos ? '[name$=' + pos + ']' : '')
+                console.log($exclude_field_selector_parent)
             }
 
         }
@@ -86,8 +86,9 @@
 
             if (include_field && include_field.include) {
                 var [pre, pos] = include_field.include.split('---')
-                var $include_field_selector = '[name^=' + prefix + pre + ']' + '[name$=' + pos + ']'
-                var $include_field_selector_bk = '[name^=' + pre + ']' + '[name$=' + pos + ']'
+                var $include_field_selector_parent = include_field.parent || ''
+                var $include_field_selector = '[name^=' + prefix + pre + ']' + (pos ? '[name$=' + pos + ']' : '')
+                var $include_field_selector_bk = '[name^=' + pre + ']' + (pos ? '[name$=' + pos + ']' : '')
             }
         }
         // Templating helper
@@ -102,6 +103,7 @@
         }
 
         var ajax = null;
+        var customdata = null;
         if ($(this).attr('data-autocomplete-light-url')) {
             ajax = {
                 url: $(this).attr('data-autocomplete-light-url'),
@@ -127,32 +129,60 @@
 
 
                     if ($exclude_field_selector) {
-                        if($exclude_field_selector_parent){
-                            var parent = element.parents($exclude_field_selector_parent).slice(0,1);
-                            var $field = parent.find($exclude_field_selector);
-                            if (!$field.length)
-                                $field = parent.find($exclude_field_selector_bk);
-                        }else{
-                            var $field = $($exclude_field_selector);
-                            if (!$field.length)
-                                $field = $($exclude_field_selector_bk);
+                        var $field = $exclude_field_selector_parent
+                            ? element
+                                .parents($exclude_field_selector_parent)
+                                .slice(0, 1)
+                                .find($exclude_field_selector)
+                            : $($exclude_field_selector);
+
+                        if (!$field.length)
+                            $field = $($exclude_field_selector_bk);
+
+                        if ($field.length && $field[0].multiple) {
+                            var selected = [...$field[0].options].filter(e => e.selected).map(e => e.value)
+                            data.results = [...data.results]
+                                .filter(e => e && e.id && selected.indexOf(e.id) == -1)
+                        } else {
+                            var self = $(element).val()
+                            var list_id = [...$field].map(e => $(e).val()).filter(e => e && e != self)
+                            data.results = [...data.results]
+                                .filter(e => e && e.id && list_id.indexOf(e.id) == -1)
                         }
 
-                        var self = $(element).val()
-                        var list_id = [...$field].map(e => $(e).val()).filter(e => e && e != self)
-                        data.results = [...data.results]
-                            .filter(e => e && e.id && list_id.indexOf(e.id) == -1)
                     }
 
                     if ($include_field_selector) {
-                        var $field = $($include_field_selector);
+                        var $field = $include_field_selector_parent
+                            ? element
+                                .parents($include_field_selector_parent)
+                                .slice(0, 1)
+                                .find($include_field_selector)
+                            : $($include_field_selector);
+
                         if (!$field.length)
                             $field = $($include_field_selector_bk);
-                        var self = $(element).val()
-                        var list_id = [...$field].map(e => $(e).val()).filter(e => e && e != self)
-                        data.results = [...data.results]
-                            .filter(e => e && e.id && list_id.indexOf(e.id) > -1)
+
+                        if ($field.length && $field[0].multiple) {
+                            var selected = [...$field[0].options].filter(e => e.selected).map(e => e.value)
+                            data.results = [...data.results]
+                                .filter(e => e && e.id && selected.indexOf(e.id) > -1)
+                        } else {
+                            var self = $(element).val()
+                            var list_id = [...$field].map(e => $(e).val()).filter(e => e && e != self)
+                            data.results = [...data.results]
+                                .filter(e => e && e.id && list_id.indexOf(e.id) > -1)
+                        }
                     }
+
+
+
+                    if (element[0] && element[0].multiple) {
+                        var selected = [...element[0].options].filter(e => e.selected).map(e => e.value)
+                        data.results = [...data.results]
+                            .filter(e => e && e.id && selected.indexOf(e.id) == -1)
+                    }
+
                     return data;
                 },
                 cache: true
@@ -212,7 +242,7 @@
     $(document).on('autocompleteLightInitialize', '[data-autocomplete-light-function=customtagging2]', function () {
         var element = $(this);
         var urldata = $(this).attr('data-autocomplete-light-url');
-        if (urldata) {  
+        if (urldata) {
 
             window.cachesTagged = window.cachesTagged || {};
             window.cachesTagged[urldata] = window.cachesTagged[urldata] || $.get(urldata);
@@ -221,12 +251,12 @@
                 var data = datastring.split(',')
                 $(this).select2({
                     placeholder: '',
-                    dropdownCssClass:'customtagging2',
-                    data : data,
+                    dropdownCssClass: 'customtagging2',
+                    data: data,
                 });
             })
 
-        } 
+        }
     });
 
 

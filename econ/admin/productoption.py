@@ -3,7 +3,7 @@ from django.utils.html import format_html_join,format_html
 from django.contrib import admin
 from util.func import rabdombase64,addparamtourl
 from econ.models import ProductOption, Product, ProductOptionImage
-from .specificdetail import SpecificDetailInline
+from .specificdetail import OptionSpecificDetailInline
 
 class ProductOptionImageInline(admin.TabularInline):
   model = ProductOptionImage
@@ -11,7 +11,7 @@ class ProductOptionImageInline(admin.TabularInline):
 @admin.register(ProductOption)
 class ProductOptionAdmin(CustomAdminPopup):
   popup_response_template = "product_option_compact.html"
-  inlines = [ProductOptionImageInline, SpecificDetailInline]
+  inlines = [ProductOptionImageInline, OptionSpecificDetailInline]
   readonly_fields = ('product',)
   fields = ('product','price',)
 
