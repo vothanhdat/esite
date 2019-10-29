@@ -23,7 +23,7 @@ libsass==0.13.2
 MySQL-python==1.2.5
 oauthlib==2.0.2
 olefile==0.44
-Pillow==4.2.1
+Pillow==6.2.0
 py-moneyed==0.7.0
 PyJWT==1.5.2
 python-openid==2.2.5
