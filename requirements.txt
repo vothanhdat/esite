@@ -31,7 +31,7 @@ pytz==2017.2
 rcssmin==1.0.6
 readline==6.2.4.1
 redis==2.10.5
-requests==2.18.1
+requests==2.20.0
 requests-oauthlib==0.8.0
 rjsmin==1.0.12
 six==1.10.0
